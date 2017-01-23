@@ -137,6 +137,9 @@ class Leap(Option):
 		else:
 			self.cost = math.inf
 
+
+
+# UNIT TESTS
 # m = Map.Map.read_from_file('map.txt').get_map()
 # f = Forward(Map.Map.read_from_file('map.txt').get_map(), (0, 0), 'SOUTH')
 		

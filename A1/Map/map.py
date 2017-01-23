@@ -51,6 +51,8 @@ class Map:
 
         return cls(width, height, _map)
 
-# Map.read_from_file('map.txt').write_to_file('tmp.txt')
+
+# UNIT TESTS
+# Map.read_from_file('maps/example_map.txt').write_to_file('tmp.txt')
 # print(Map.read_from_file('tmp.txt').get_map())
 
