@@ -8,7 +8,7 @@ class Map:
     def __init__(self, width, height, _map):
         self.map = _map
         self.width = width
-        self.heihgt = height
+        self.height = height
  
 
     def get_map(self):
@@ -51,6 +51,6 @@ class Map:
 
         return cls(width, height, _map)
 
-Map.read_from_file('map.txt').write_to_file('tmp.txt')
-print(Map.read_from_file('tmp.txt').get_map())
+# Map.read_from_file('map.txt').write_to_file('tmp.txt')
+# print(Map.read_from_file('tmp.txt').get_map())
 

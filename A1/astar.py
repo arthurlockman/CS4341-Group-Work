@@ -8,6 +8,7 @@ John Lomi
 John Sawin
 """
 import sys
+from Map.Map import Map
 
 
 def main():
@@ -30,8 +31,7 @@ def main():
         exit()
 
     astar_map = load_map(sys.argv[1])
-    print(astar_map)
-
+    print(astar_map.get_map())
 
 def load_map(filename):
     """
