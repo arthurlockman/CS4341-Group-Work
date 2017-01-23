@@ -39,10 +39,7 @@ def load_map(filename):
     :param filename: The name of the file on disk to load.
     :return: A map constructed from the input file.
     """
-    with open(filename, 'r') as f:
-        file_contents = f.readlines()
-        return_map = [x.strip().split('\t') for x in file_contents]
-        return return_map
+    return Map.read_from_file(filename)
 
 
 if __name__ == '__main__':
