@@ -90,6 +90,19 @@ class GridCell:
             return '#'
         else:
             return str(self.cell_cost)
+    
+    def __gt__(self, other):
+        """
+        Is this greater than another?
+        """
+        # TODO: Implement
+        return self.get_f_val() > other.get_f_val()
+    
+    def __lt__(self, other):
+        """
+        Is this less than another?
+        """
+        return self.get_f_val() < other.get_f_val()
 
 """
 Unit Tests to make sure functionality is correct
