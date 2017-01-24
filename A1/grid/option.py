@@ -3,7 +3,12 @@ from grid import Grid
 from pose import Pose
 
 def expand_node(grid, pose):
-	pass
+	options = get_options(grid, pose)
+	child_poses = []
+
+	for opt in options:
+		child_poses.append(Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), pose.get_heuristic()))
+
 
 
 def get_options(grid, pose):

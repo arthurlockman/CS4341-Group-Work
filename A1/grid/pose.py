@@ -13,20 +13,20 @@ class Pose:
         self.heuristic = heuristic
 
     def __calc_heuristic__(self):
-	    if self.heuristic == 1:
-	        self.h_val = 0
-	    elif self.heuristic == 2:
-	        self.h_val = min(abs(pos[0] - goal[0]), abs(pos[1] - goal[1]))
-	    elif self.heuristic == 3:
-	        self.h_val = max(abs(pos[0] - goal[0]), abs(pos[1] - goal[1]))
-	    elif self.heuristic == 4:
-	        self.h_val = abs(pos[0] - goal[0]) + abs(pos[1] - goal[1])
-	    elif self.heuristic == 5:
-	        # TODO
-	        pass
-	    else:
-	        # TODO
-	        pass
+        if self.heuristic == 1:
+            self.h_val = 0
+        elif self.heuristic == 2:
+            self.h_val = min(abs(pos[0] - goal[0]), abs(pos[1] - goal[1]))
+        elif self.heuristic == 3:
+            self.h_val = max(abs(pos[0] - goal[0]), abs(pos[1] - goal[1]))
+        elif self.heuristic == 4:
+            self.h_val = abs(pos[0] - goal[0]) + abs(pos[1] - goal[1])
+        elif self.heuristic == 5:
+            # TODO
+            pass
+        else:
+            # TODO
+            pass
 
     def set_parent(self, parent_pose, edge_cost):
         self.parent = parent_pose
@@ -49,4 +49,7 @@ class Pose:
         return self.gridcell.get_position()
 
     def get_direction(self):
-    	   return self.direction
+           return self.direction
+
+    def get_heuristic(self):
+        return self.heuristic
