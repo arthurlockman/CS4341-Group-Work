@@ -5,10 +5,10 @@ Project 1
 Arthur Lockman
 Tucker Haydon
 John Lomi
-John Sawin
+Jon Sawin
 """
 import sys
-from Map.Map import Map
+from grid import Grid
 
 
 def main():
