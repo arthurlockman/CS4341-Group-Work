@@ -9,6 +9,8 @@ Jon Sawin
 """
 import sys
 from grid import Grid
+from pose import Pose
+import option
 
 
 def main():
@@ -32,6 +34,10 @@ def main():
 
     astar_map = load_map(sys.argv[1])
     print(astar_map.get_map())
+    goalPose = Astar(astar_map.start_pos, astar_map.goal_pos, astar_map, sys.argv[2])
+    path = getPath(goalPose)
+    printPath(path)
+
 
 def load_map(filename):
     """
@@ -39,7 +45,25 @@ def load_map(filename):
     :param filename: The name of the file on disk to load.
     :return: A map constructed from the input file.
     """
-    return Map.read_from_file(filename)
+    return Grid.read_from_file(filename)
+
+
+def Astar(start, goal, map , heuristic):
+    #initialize queue
+    startPose = Pose(start, 'N', heuristic)
+
+    #put start on Queue
+    poseList = [startPose]
+
+    #find goal
+    while poseList.len() > 0:
+        sorted(poseList, key=lambda Pose: Pose.get_f_val())
+        elt = poseList.pop()
+
+        if elt[0] == goal:
+            return elt
+        else:
+            poseList.append(option.expand_node(map, elt))
 
 
 if __name__ == '__main__':
