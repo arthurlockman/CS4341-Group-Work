@@ -32,38 +32,41 @@ def main():
         # TODO: fix this documentation once we have the right heuristics
         exit()
 
-    astar_map = load_map(sys.argv[1])
-    print(astar_map.get_map())
-    goalPose = Astar(astar_map.start_pos, astar_map.goal_pos, astar_map, sys.argv[2])
-    path = getPath(goalPose)
-    printPath(path)
+    filename = sys.argv[1]
+    heuristic = sys.argv[2]
+
+    grid = load_grid(filename)
+    goal_pose = Astar(grid.get_start_cell(), grid.get_goal_position(), grid, heuristic)
+
+    path = get_path(goal_pose)
+    print_path(path)
 
 
-def load_map(filename):
+def load_grid(filename):
     """
-    Load a map from a file on disk.
+    Load a grid from a file on disk.
     :param filename: The name of the file on disk to load.
-    :return: A map constructed from the input file.
+    :return: A grid constructed from the input file.
     """
     return Grid.read_from_file(filename)
 
 
-def Astar(start, goal, map , heuristic):
+def Astar(start_cell, goal_cell, grid, heuristic):
     #initialize queue
-    startPose = Pose(start, 'N', heuristic)
+    start_pose = Pose(start_cell, 'NORTH', heuristic)
 
     #put start on Queue
-    poseList = [startPose]
+    pose_list = [start_pose]
 
     #find goal
-    while poseList.len() > 0:
-        sorted(poseList, key=lambda Pose: Pose.get_f_val())
-        elt = poseList.pop()
+    while pose_list.len() > 0:
+        sorted(pose_list, key=lambda Pose: Pose.get_f_val())
+        elt = pose_list.pop()
 
-        if elt[0] == goal:
+        if elt[0] == goal_cell:
             return elt
         else:
-            poseList.append(option.expand_node(map, elt))
+            pose_list.append(option.expand_node(grid, elt))
 
 
 if __name__ == '__main__':

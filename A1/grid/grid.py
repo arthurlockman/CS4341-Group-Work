@@ -17,9 +17,20 @@ class Grid:
     def get_cell(self, row, col):
         return self.grid[row][col]
 
-
     def get_grid(self):
         return self.grid
+
+    def get_start_position(self):
+        return self.start_pos
+
+    def get_goal_position(self):
+        return self.goal_pos
+
+    def get_start_cell(self):
+        return self.grid[self.start_pos[0]][self.start_pos[1]]
+
+    def get_goal_cell(self):
+        return self.grid[self.goal_pos[0]][self.goal_pos[1]]        
 
     def write_to_file(self, filename):
         with open(filename, 'w+') as f:
@@ -55,8 +66,10 @@ class Grid:
                 for col in range(width):
                     if symbolic_grid[row][col] == 'S':
                         start_pos = (row, col)
+                        symbolic_grid[row][col] = 1
                     if symbolic_grid[row][col] == 'G':
                         goal_pos = (row, col)
+                        symbolic_grid[row][col] = 1
 
             grid = [[ GridCell((row, col), goal_pos, symbolic_grid[row][col]) for col in range(width)] for row in range(height)]
 
@@ -81,7 +94,6 @@ class Grid:
 
 
 # UNIT TESTS
-# Grid.create_new_grid().write_to_file('tmp.txt')
-# print(Grid.read_from_file('tmp.txt', 1).start_pos)
-# print(Grid.read_from_file('tmp.txt', 1).goal_pos)
+g = Grid.read_from_file('test_grid.txt')
+
 

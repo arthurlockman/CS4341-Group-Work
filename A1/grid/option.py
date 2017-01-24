@@ -166,8 +166,8 @@ class Leap(Option):
 
 # UNIT TESTS
 g = Grid.read_from_file('test_grid.txt')
-start_cell = g.get_cell(0,0)
-goal_cell = g.get_cell(6, 5)
+start_cell = g.get_start_cell()
+goal_cell = g.get_goal_cell()
 
 # Test basic forward
 f = Forward(g, (0, 0), 'SOUTH')
@@ -214,24 +214,24 @@ assert (l.cost == math.inf)
 # Test get options
 options = get_options(g, Pose(start_cell, 'NORTH', 1))
 assert (len(options) == 4)
-assert (options[0].get_cost() == math.inf)
+assert (options[0].get_cost() == 3)
 assert (options[1].get_cost() == 1)
 assert (options[2].get_cost() == 1)
-assert (options[3].get_cost() == math.inf)
+assert (options[3].get_cost() == 20)
 
 # Test expand_node
 child_poses = expand_node(g, Pose(start_cell, 'EAST', 1))
 assert (len(child_poses) == 4)
-assert (child_poses[0].get_position() == (0, 1))
+assert (child_poses[0].get_position() == (9, 5))
 assert (child_poses[0].get_direction() == 'EAST')
 
-assert (child_poses[1].get_position() == (0, 0))
+assert (child_poses[1].get_position() == (9, 4))
 assert (child_poses[1].get_direction() == 'SOUTH')
 
-assert (child_poses[2].get_position() == (0, 0))
+assert (child_poses[2].get_position() == (9, 4))
 assert (child_poses[2].get_direction() == 'NORTH')
 
-assert (child_poses[3].get_position() == (0, 3))
+assert (child_poses[3].get_position() == (9, 7))
 assert (child_poses[3].get_direction() == 'EAST')
 
 
