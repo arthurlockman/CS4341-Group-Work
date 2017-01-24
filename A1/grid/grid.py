@@ -78,9 +78,7 @@ class Grid:
 
 
 # UNIT TESTS
-# Map.read_from_file('maps/example_map.txt').write_to_file('tmp.txt')
-# print(Map.read_from_file('tmp.txt').get_map())
-Grid.create_new_grid().write_to_file('tmp.txt')
-print(Grid.read_from_file('tmp.txt', 1).start_pos)
-print(Grid.read_from_file('tmp.txt', 1).goal_pos)
+# Grid.create_new_grid().write_to_file('tmp.txt')
+# print(Grid.read_from_file('tmp.txt', 1).start_pos)
+# print(Grid.read_from_file('tmp.txt', 1).goal_pos)
 
