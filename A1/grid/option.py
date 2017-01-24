@@ -1,6 +1,8 @@
 import math
 from grid import Grid
 
+def expand_node(pose, grid, )
+
 def get_options(grid, position, direction):
 	return [
 		Forward(grid, position, direction),
