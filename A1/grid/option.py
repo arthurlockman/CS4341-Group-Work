@@ -9,6 +9,8 @@ def expand_node(grid, pose):
 	for opt in options:
 		child_poses.append(Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), pose.get_heuristic()))
 
+	return child_poses
+
 
 
 def get_options(grid, pose):
