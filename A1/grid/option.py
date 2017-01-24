@@ -3,7 +3,14 @@ from grid import Grid
 from pose import Pose
 
 def expand_node(grid, pose):
-	pass
+	options = get_options(grid, pose)
+	child_poses = []
+
+	for opt in options:
+		child_poses.append(Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), pose.get_heuristic()))
+
+	return child_poses
+
 
 
 def get_options(grid, pose):
@@ -211,6 +218,21 @@ assert (options[0].get_cost() == math.inf)
 assert (options[1].get_cost() == 1)
 assert (options[2].get_cost() == 1)
 assert (options[3].get_cost() == math.inf)
+
+# Test expand_node
+child_poses = expand_node(g, Pose(start_cell, 'EAST', 1))
+assert (len(child_poses) == 4)
+assert (child_poses[0].get_position() == (0, 1))
+assert (child_poses[0].get_direction() == 'EAST')
+
+assert (child_poses[1].get_position() == (0, 0))
+assert (child_poses[1].get_direction() == 'SOUTH')
+
+assert (child_poses[2].get_position() == (0, 0))
+assert (child_poses[2].get_direction() == 'NORTH')
+
+assert (child_poses[3].get_position() == (0, 3))
+assert (child_poses[3].get_direction() == 'EAST')
 
 
 

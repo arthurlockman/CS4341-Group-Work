@@ -57,4 +57,7 @@ class Pose:
         return self.gridcell.get_position()
 
     def get_direction(self):
-    	   return self.direction
+           return self.direction
+
+    def get_heuristic(self):
+        return self.heuristic
