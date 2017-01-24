@@ -1,10 +1,10 @@
 import math
-import Map
+from grid import Grid
 
 class Option():
 
-	def __init__(self, _map, start_position):
-		self.map = _map
+	def __init__(self, grid, start_position):
+		self.grid = grid
 		self.start_position = start_position
 
 	def get_cost(self):
@@ -19,17 +19,17 @@ class Option():
 	def get_end_direction(self):
 		return self.end_direction
 
-	def within_map_bounds(self, row, col):
-		num_rows = len(self.map)
-		num_cols = len(self.map[0])
+	def within_grid_bounds(self, row, col):
+		num_rows = len(self.grid)
+		num_cols = len(self.grid[0])
 
 		return row >= 0 and col >= 0 and row < num_rows and col < num_cols
 
 
 class Forward(Option):
 
-	def __init__(self, _map, start_position, start_direction):
-		super().__init__(_map, start_position)
+	def __init__(self, grid, start_position, start_direction):
+		super().__init__(grid, start_position)
 
 		# Still facing same direction
 		self.end_direction = start_direction
@@ -54,21 +54,21 @@ class Forward(Option):
 
 		self.end_position = (new_row, new_col)
 
-		if self.within_map_bounds(new_row, new_col):
-			self.cost = self.map[new_row][new_col]
+		if self.within_grid_bounds(new_row, new_col):
+			self.cost = self.grid[new_row][new_col].get_cell_cost()
 		else:
 			self.cost = math.inf
 
 class ClockwiseTurn(Option):
 
-	def __init__(self, _map, start_position, start_direction):
-		super().__init__(_map, start_position)
+	def __init__(self, grid, start_position, start_direction):
+		super().__init__(grid, start_position)
 
 		# Does not move anywhere
 		self.end_position = start_position
 
 		# Cost is equal to one third of the position cost
-		self.cost = math.ceil(self.map[start_position[0]][start_position[1]] / 3.0)
+		self.cost = math.ceil(self.grid[start_position[0]][start_position[1]].get_cell_cost() / 3.0)
 
 		if start_direction == 'NORTH':
 			self.end_direction = 'EAST'
@@ -83,14 +83,14 @@ class ClockwiseTurn(Option):
 
 class CounterclockwiseTurn(Option):
 
-	def __init__(self, _map, start_position, start_direction):
-		super().__init__(_map, start_position)
+	def __init__(self, grid, start_position, start_direction):
+		super().__init__(grid, start_position)
 
 		# Does not move anywhere
 		self.end_position = start_position
 
 		# Cost is equal to one third of the position cost
-		self.cost = math.ceil(self.map[start_position[0]][start_position[1]] / 3.0)
+		self.cost = math.ceil(self.grid[start_position[0]][start_position[1]].get_cell_cost() / 3.0)
 
 		if start_direction == 'NORTH':
 			self.end_direction = 'WEST'
@@ -105,8 +105,8 @@ class CounterclockwiseTurn(Option):
 
 class Leap(Option):
 
-	def __init__(self, _map, start_position, start_direction):
-		super().__init__(_map, start_position)
+	def __init__(self, grid, start_position, start_direction):
+		super().__init__(grid, start_position)
 
 		# Still facing same direction
 		self.end_direction = start_direction
@@ -131,7 +131,7 @@ class Leap(Option):
 
 		self.end_position = (new_row, new_col)
 
-		if self.within_map_bounds(new_row, new_col):
+		if self.within_grid_bounds(new_row, new_col):
 			# Constant cost
 			self.cost = 20
 		else:
@@ -140,6 +140,46 @@ class Leap(Option):
 
 
 # UNIT TESTS
-# m = Map.Map.read_from_file('map.txt').get_map()
-# f = Forward(Map.Map.read_from_file('map.txt').get_map(), (0, 0), 'SOUTH')
-		
+g = Grid.read_from_file('test_grid.txt').get_grid()
+
+# Test basic forward
+f = Forward(g, (0, 0), 'SOUTH')
+assert (f.end_direction == 'SOUTH')
+assert (f.end_position == (1, 0))
+assert (f.cost == 3)
+
+# Test forward off map. Infinite cost
+f = Forward(g, (0, 0), 'NORTH')
+assert (f.end_direction == 'NORTH')
+assert (f.end_position == (-1, 0))
+assert (f.cost == math.inf)
+
+# Test clockwise turn
+t = ClockwiseTurn(g, (0, 0), 'NORTH')
+assert (t.end_direction == 'EAST')
+assert (t.end_position == (0, 0))
+assert (t.cost == 1.0)
+
+# Test counterclockwise turn
+t = CounterclockwiseTurn(g, (0, 0), 'NORTH')
+assert (t.end_direction == 'WEST')
+assert (t.end_position == (0, 0))
+assert (t.cost == 1.0)
+
+# Test leap right
+l = Leap(g, (0, 0), 'EAST')
+assert (l.end_direction == 'EAST')
+assert (l.end_position == (0, 3))
+assert (l.cost == 20)
+
+# Test leap down
+l = Leap(g, (0, 0), 'SOUTH')
+assert (l.end_direction == 'SOUTH')
+assert (l.end_position == (3, 0))
+assert (l.cost == 20)
+
+# Test leap unacceptable
+l = Leap(g, (0, 0), 'NORTH')
+assert (l.end_direction == 'NORTH')
+assert (l.end_position == (-3, 0))
+assert (l.cost == math.inf)
