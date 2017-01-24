@@ -1,6 +1,15 @@
 import math
 from grid import Grid
 
+def get_options(grid, position, direction):
+	return [
+		Forward(grid, position, direction),
+		ClockwiseTurn(grid, position, direction),
+		CounterclockwiseTurn(grid, position, direction),
+		Leap(grid, position, direction)
+	]
+
+
 class Option():
 
 	def __init__(self, grid, start_position):
@@ -183,3 +192,15 @@ l = Leap(g, (0, 0), 'NORTH')
 assert (l.end_direction == 'NORTH')
 assert (l.end_position == (-3, 0))
 assert (l.cost == math.inf)
+
+# Test get options
+options = get_options(g, (0, 0), 'NORTH')
+assert (len(options) == 4)
+assert (options[0].get_cost() == math.inf)
+assert (options[1].get_cost() == 1)
+assert (options[2].get_cost() == 1)
+assert (options[3].get_cost() == math.inf)
+
+
+
+
