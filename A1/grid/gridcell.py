@@ -32,16 +32,16 @@ class GridCell:
 
     def get_direction_to_cell(self, goal_cell):
         difference = self - goal_cell
-        dir = ''
+        _dir = ''
         if difference[0] < 0:
-            dir += 'S'
+            _dir += 'S'
         elif difference[0] > 0:
-            dir += 'N'
+            _dir += 'N'
         if difference[1] < 0:
-            dir += 'E'
+            _dir += 'E'
         elif difference[1] > 0:
-            dir += 'W'
-        return dir
+            _dir += 'W'
+        return _dir
 
     def __eq__(self, other):
         return self.pos[0] == other.pos[0] and self.pos[1] == other.pos[1]
@@ -49,7 +49,7 @@ class GridCell:
     def __sub__(self, other):
         return self.pos[0] - other.pos[0], self.pos[1] - other.pos[1]
 
-    def __str__(self):
+    def write_to_string(self):
         if self.cell_cost == math.inf:
             return '#'
         else:

@@ -93,7 +93,10 @@ class ClockwiseTurn(Option):
 		self.end_position = start_position
 
 		# Cost is equal to one third of the position cost
-		self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
+		try:
+			self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
+		except OverflowError:
+			self.cost = math.inf
 
 		if start_direction == 'NORTH':
 			self.end_direction = 'EAST'
@@ -115,7 +118,10 @@ class CounterclockwiseTurn(Option):
 		self.end_position = start_position
 
 		# Cost is equal to one third of the position cost
-		self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
+		try:
+			self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
+		except OverflowError:
+			self.cost = math.inf
 
 		if start_direction == 'NORTH':
 			self.end_direction = 'WEST'

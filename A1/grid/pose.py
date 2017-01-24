@@ -1,4 +1,5 @@
 from .gridcell import GridCell
+import math
 
 class Pose:
     """
@@ -12,6 +13,7 @@ class Pose:
         self.gridcell = gridcell
         self.direction = direction
         self.heuristic = heuristic
+        self.f_val = math.inf
         self.__calc_heuristic__()
 
     def __calc_heuristic__(self):
@@ -50,7 +52,7 @@ class Pose:
     def set_parent(self, parent_pose, edge_cost):
         self.parent = parent_pose
         
-        f_val = parent_pose.get_f_val() + edge_cost + self.h_val()
+        f_val = parent_pose.get_f_val() + edge_cost + self.get_h_val()
     
     def get_g_val(self):
         return self.g_val
@@ -72,6 +74,9 @@ class Pose:
 
     def get_heuristic(self):
         return self.heuristic
+
+    def get_gridcell(self):
+        return self.gridcell        
 
 g1 = GridCell([0, 0], [10, 10], 8)
 g2 = GridCell([10, 10], [0, 0], 8)

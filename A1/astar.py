@@ -10,7 +10,7 @@ Jon Sawin
 import sys
 from grid.grid import Grid
 from grid.pose import Pose
-import grid.option
+import grid.option as opt
 
 
 def main():
@@ -36,7 +36,7 @@ def main():
     heuristic = sys.argv[2]
 
     grid = load_grid(filename)
-    goal_pose = Astar(grid.get_start_cell(), grid.get_goal_position(), grid, heuristic)
+    goal_pose = Astar(grid.get_start_cell(), grid.get_goal_cell(), grid, heuristic)
 
     # path = get_path(goal_pose)
     # print_path(path)
@@ -59,14 +59,14 @@ def Astar(start_cell, goal_cell, grid, heuristic):
     pose_list = [start_pose]
 
     #find goal
-    while pose_list.len() > 0:
-        sorted(pose_list, key=lambda Pose: Pose.get_f_val())
+    while len(pose_list) > 0:
+        pose_list.sort(key=lambda pose: pose.get_f_val())
         elt = pose_list.pop()
 
-        if elt[0] == goal_cell:
+        if elt.get_gridcell() == goal_cell:
             return elt
         else:
-            pose_list.append(option.expand_node(grid, elt))
+            pose_list.extend(opt.expand_node(grid, elt))
 
 
 if __name__ == '__main__':

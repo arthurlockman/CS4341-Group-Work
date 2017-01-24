@@ -42,7 +42,7 @@ class Grid:
                     elif (row, col) == self.goal_pos:
                         f.write('G')
                     else:
-                        f.write(self.grid[row][col].__str__())
+                        f.write(self.grid[row][col].write_to_string())
 
                     # Write a tab after each character, so long as it's not the last in the line
                     if(col != len(self.grid[0])-1):
@@ -94,6 +94,7 @@ class Grid:
 
 
 # UNIT TESTS
-# g = Grid.read_from_file('./test_grid.txt')
+g = Grid.read_from_file('grid/test_grid.txt')
+# assert(g.get_start_cell().pos)
 
 
