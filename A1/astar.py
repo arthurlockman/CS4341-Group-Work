@@ -9,8 +9,8 @@ Jon Sawin
 """
 import sys
 from grid.grid import Grid
-from pose import Pose
-import option
+from grid.pose import Pose
+import grid.option
 
 
 def main():

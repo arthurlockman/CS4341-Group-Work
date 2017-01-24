@@ -1,4 +1,4 @@
-from gridcell import GridCell
+from .gridcell import GridCell
 
 class Pose:
     """

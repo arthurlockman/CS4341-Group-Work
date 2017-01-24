@@ -1,6 +1,6 @@
 import math
-from grid import Grid
-from pose import Pose
+from .grid import Grid
+from .pose import Pose
 
 def expand_node(grid, pose):
 	options = get_options(grid, pose)
