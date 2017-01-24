@@ -8,7 +8,7 @@ John Lomi
 Jon Sawin
 """
 import sys
-from grid import Grid
+from grid.grid import Grid
 from pose import Pose
 import option
 
@@ -38,8 +38,8 @@ def main():
     grid = load_grid(filename)
     goal_pose = Astar(grid.get_start_cell(), grid.get_goal_position(), grid, heuristic)
 
-    path = get_path(goal_pose)
-    print_path(path)
+    # path = get_path(goal_pose)
+    # print_path(path)
 
 
 def load_grid(filename):
