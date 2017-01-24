@@ -1,5 +1,6 @@
 import math
 
+
 class GridCell:
     """
     Based on our own (Tucker and Arthur's) A* code from RBE 3002.
@@ -65,12 +66,45 @@ class GridCell:
     def set_cell_cost(self, new_cell_cost):
         self.cell_cost = new_cell_cost
     
+    def get_direction_to_cell(self, goal_cell):
+        difference = self - goal_cell
+        dir = ''
+        if difference[0] < 0:
+            dir += 'S'
+        elif difference[0] > 0:
+            dir += 'N'
+        if difference[1] < 0:
+            dir += 'E'
+        elif difference[1] > 0:
+            dir += 'W'
+        return dir
+    
     def __eq__(self, other):
         return self.pos[0] == other.pos[0] and self.pos[1] == other.pos[1]
+    
+    def __sub__(self, other):
+        return self.pos[0] - other.pos[0], self.pos[1] - other.pos[1]
 
     def __str__(self):
         if self.cell_cost == math.inf:
             return '#'
         else:
             return str(self.cell_cost)
-    
+
+"""
+Unit Tests to make sure functionality is correct
+"""
+g1 = GridCell([0, 0], [10, 10], 8, 1)
+g2 = GridCell([10, 10], [10, 10], 8, 1)
+g3 = GridCell([0, 5], [10, 10], 8, 1)
+g4 = GridCell([5, 5], [10, 10], 8, 1)
+assert(g1.get_direction_to_cell(g2) == 'SE')
+assert(g2.get_direction_to_cell(g1) == 'NW')
+assert(g3.get_direction_to_cell(g1) == 'W')
+assert(g1.get_direction_to_cell(g3) == 'E')
+assert(g3.get_direction_to_cell(g4) == 'S')
+assert(g4.get_direction_to_cell(g3) == 'N')
+assert(g1 - g2 == (-10, -10))
+assert(g2 == g2)
+assert(g1 != g2)
+
