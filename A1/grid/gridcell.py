@@ -29,7 +29,14 @@ class GridCell:
             self.h_val = abs(pos[0] - goal[0]) + abs(pos[1] - goal[1])
         elif self.heuristic == 5:
             # TODO
-            pass
+            goalcell = GridCell(self.goal, self.goal, 0, 0)
+            direction = self.get_direction_to_cell(goalcell)
+            if len(direction) == 1:
+                self.h_val = 1
+            elif len(direction) == 2:
+                self.h_val = 2
+            if direction[0] == 'N':
+                self.h_val -= 1
         else:
             # TODO
             pass
@@ -120,4 +127,12 @@ assert(g4.get_direction_to_cell(g3) == 'N')
 assert(g1 - g2 == (-10, -10))
 assert(g2 == g2)
 assert(g1 != g2)
+g5 = GridCell([0, 0], [10, 10], 8, 5)
+assert(g5.get_h_val() == 2)
+g6 = GridCell([10, 10], [0, 0], 8, 5)
+assert(g6.get_h_val() == 1)
+g7 = GridCell([5, 5], [8, 5], 8, 5)
+assert(g7.get_h_val() == 1)
+g8 = GridCell([5, 5], [2, 5], 8, 5)
+assert(g8.get_h_val() == 0)
 
