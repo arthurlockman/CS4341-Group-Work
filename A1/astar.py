@@ -33,7 +33,7 @@ def main():
         exit()
 
     filename = sys.argv[1]
-    heuristic = sys.argv[2]
+    heuristic = int(sys.argv[2])
 
     grid = load_grid(filename)
     goal_pose = Astar(grid.get_start_cell(), grid.get_goal_cell(), grid, heuristic)
@@ -52,15 +52,16 @@ def load_grid(filename):
 
 
 def Astar(start_cell, goal_cell, grid, heuristic):
-    #initialize queue
+    # Initialize queue
     start_pose = Pose(start_cell, 'NORTH', heuristic)
 
-    #put start on Queue
+    # Put start on Queue
     pose_list = [start_pose]
 
-    #find goal
+    # Find goal
     while len(pose_list) > 0:
         pose_list.sort(key=lambda pose: pose.get_f_val())
+        _tmp += 1
         elt = pose_list.pop()
 
         if elt.get_gridcell() == goal_cell:

@@ -2,12 +2,15 @@ import math
 from .grid import Grid
 from .pose import Pose
 
-def expand_node(grid, pose):
-	options = get_options(grid, pose)
+def expand_node(grid, parent_pose):
+	options = get_options(grid, parent_pose)
 	child_poses = []
 
 	for opt in options:
-		child_poses.append(Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), pose.get_heuristic()))
+		p = Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), parent_pose.get_heuristic())
+		p.set_parent(parent_pose, opt.get_cost())
+
+		child_poses.append(p)
 
 	return child_poses
 
@@ -18,6 +21,7 @@ def get_options(grid, pose):
 	position = pose.get_position()
 	direction = pose.get_direction()
 
+	# TODO Prune options whose cells are already explored.
 	return [
 		Forward(grid, position, direction),
 		ClockwiseTurn(grid, position, direction),
