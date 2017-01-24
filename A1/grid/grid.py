@@ -14,6 +14,9 @@ class Grid:
         self.start_pos = start_pos
         self.goal_pos = goal_pos
  
+    def get_cell(self, row, col):
+        return self.grid[row][col]
+
 
     def get_grid(self):
         return self.grid
@@ -39,7 +42,7 @@ class Grid:
 
 
     @classmethod
-    def read_from_file(cls, filename, heuristic=1):
+    def read_from_file(cls, filename):
         with open(filename, 'r') as f:
             file_contents = f.readlines()
 
@@ -55,12 +58,12 @@ class Grid:
                     if symbolic_grid[row][col] == 'G':
                         goal_pos = (row, col)
 
-            grid = [[ GridCell((row, col), goal_pos, symbolic_grid[row][col], heuristic) for col in range(width)] for row in range(height)]
+            grid = [[ GridCell((row, col), goal_pos, symbolic_grid[row][col]) for col in range(width)] for row in range(height)]
 
             return cls(width, height, grid, start_pos, goal_pos)
 
     @classmethod
-    def create_new_grid(cls, width=10, height=10, heuristic=1):
+    def create_new_grid(cls, width=10, height=10):
         num_map_values = len(cls.grid_values)
 
         # Create start and goal positions
@@ -68,7 +71,7 @@ class Grid:
         goal = (random.randint(0, width - 1), random.randint(0, height - 1))
 
         # Create a matrix of size [height][width]
-        grid = [[ GridCell((row, col), goal, cls.grid_values[random.randint(0, num_map_values - 1)], heuristic) for col in range(width)] for row in range(height)]
+        grid = [[ GridCell((row, col), goal, cls.grid_values[random.randint(0, num_map_values - 1)]) for col in range(width)] for row in range(height)]
 
         # Add a starting and goal positions
         grid[start[0]][start[1]].set_cell_cost(1)
