@@ -165,7 +165,7 @@ class Leap(Option):
 
 
 # UNIT TESTS
-g = Grid.read_from_file('test_grid.txt')
+g = Grid.read_from_file('./grid/test_grid.txt')
 start_cell = g.get_start_cell()
 goal_cell = g.get_goal_cell()
 
