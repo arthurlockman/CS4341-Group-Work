@@ -25,15 +25,24 @@ class Pose:
             self.h_val = max(abs(pos[0] - goal[0]), abs(pos[1] - goal[1]))
         elif self.heuristic == 4:
             self.h_val = abs(pos[0] - goal[0]) + abs(pos[1] - goal[1])
-        elif self.heuristic == 5:
+        elif self.heuristic == 5 or self.heuristic == 6:
             goalcell = GridCell(goal, goal, 0)
             dir_to_goal = self.gridcell.get_direction_to_cell(goalcell)
+            self.h_val = abs(pos[0] - goal[0]) + abs(pos[1] - goal[1])
             if len(dir_to_goal) == 1:
-                self.h_val = 1
+                self.h_val += 1
             elif len(dir_to_goal) == 2:
-                self.h_val = 2
+                self.h_val += 2
+            if (dir_to_goal == 'N' and self.direction == 'S') \
+            or (dir_to_goal == 'E' and self.direction == 'W') \
+            or (dir_to_goal == 'S' and self.direction == 'N') \
+            or (dir_to_goal == 'W' and self.direction == 'E'):
+                self.h_val += 1
             if self.direction in dir_to_goal:
                 self.h_val -= 1
+            
+            if self.heuristic == 6:
+                self.h_val *= 3
         else:
 	        # TODO
 	        pass
@@ -73,8 +82,13 @@ p1 = Pose(g1, 'N', 5)
 p2 = Pose(g2, 'N', 5)
 p3 = Pose(g3, 'N', 5)
 p4 = Pose(g4, 'N', 5)
+p5 = Pose(g3, 'S', 5)
+p6 = Pose(g1, 'N', 6)
 
-assert(p1.get_h_val() == 2)
-assert(p2.get_h_val() == 1)
-assert(p3.get_h_val() == 1)
-assert(p4.get_h_val() == 0)
+assert(p1.get_h_val() == 22)
+assert(p2.get_h_val() == 21)
+assert(p3.get_h_val() == 5)
+assert(p4.get_h_val() == 3)
+assert(p5.get_h_val() == 3)
+assert(p6.get_h_val() == 66)
+
