@@ -99,6 +99,7 @@ class Forward(Option):
 
         if self.within_grid_bounds(new_row, new_col):
             self.cost = self.grid.get_cell(new_row, new_col).get_cell_cost()
+            print(self.cost)
         else:
             self.cost = math.inf
 
