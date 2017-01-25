@@ -61,7 +61,6 @@ def Astar(start_cell, goal_cell, grid, heuristic):
 
     # Find goal
     while len(pose_list) > 0:
-        print(len(pose_list))
         pose_list.sort(key=lambda pose: pose.get_f_val())
         elt = pose_list.pop(0)
 
