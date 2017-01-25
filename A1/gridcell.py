@@ -67,7 +67,6 @@ class GridCell:
         """
         Is this greater than another?
         """
-        # TODO: Implement
         return self.get_f_val() > other.get_f_val()
     
     def __lt__(self, other):
@@ -77,7 +76,7 @@ class GridCell:
         return self.get_f_val() < other.get_f_val()
 
     def __str__(self):
-        return '(' + str(self.get_x_pos()) + ', ' + str(self.get_y_pos()) + ')' + ' c: ' + str(self.get_cell_cost())
+        return '(' + str(self.get_x_pos()) + ', ' + str(self.get_y_pos()) + ')' + ' cost ' + str(self.get_cell_cost())
 
     def __repr__(self):
         return self.__str__()

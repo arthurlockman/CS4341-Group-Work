@@ -11,6 +11,7 @@ class Pose:
     g_val = 0
 
     def __init__(self, gridcell, direction, heuristic):
+        self.parent_move = None
         self.gridcell = gridcell
         self.direction = direction
         self.heuristic = heuristic
@@ -53,9 +54,10 @@ class Pose:
             print("ERROR: Heuristic unsupported: " + str(self.heuristic))
             exit()
 
-    def set_parent(self, parent_pose, edge_cost):
+    def set_parent(self, parent_pose, edge_cost, parent_move):
         self.parent = parent_pose
         self.f_val = parent_pose.get_f_val() + edge_cost + self.h_val
+        self.parent_move = parent_move
 
     def get_g_val(self):
         return self.g_val
@@ -83,6 +85,9 @@ class Pose:
 
     def explore(self):
         self.gridcell.explore(self.direction)
+
+    def str_with_move(self):
+        return str(self.parent_move) + ' to ' + str(self)
 
     def __repr__(self):
         return self.__str__()

@@ -40,8 +40,12 @@ def main():
     goal_pose = Astar(grid.get_start_cell(), grid.get_goal_cell(), grid, heuristic)
 
     path = get_path(goal_pose)
-    print('\n'.join(str(v) for v in path))
-    print(grid)
+    print('Score: ', 0)  # TODO: Calculate score
+    print('Number of actions: ', len(path))
+    print('Number of nodes expanded:', 0)  # TODO: count number of expanded nodes
+    print('Branching factor: ', 0)  # TODO: Calculate branching factor
+    print('\nActions and path: ')
+    print('\n'.join(v.str_with_move() for v in path))
 
 
 def load_grid(filename):
@@ -56,6 +60,7 @@ def load_grid(filename):
 def Astar(start_cell, goal_cell, grid, heuristic):
     # Initialize queue
     start_pose = Pose(start_cell, 'NORTH', heuristic)
+    start_pose.parent_move = 'Start'
 
     # Put start on Queue
     pose_list = [start_pose]

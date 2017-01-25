@@ -13,7 +13,7 @@ def expand_node(grid, parent_pose):
     for opt in options:
         try:
             p = Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), parent_pose.get_heuristic())
-            p.set_parent(parent_pose, opt.get_cost())
+            p.set_parent(parent_pose, opt.get_cost(), opt)
             child_poses.append(p)
         except IndexError:
             # Forward or jumping off map. Not considered an option
@@ -26,7 +26,6 @@ def get_options(grid, pose):
     position = pose.get_position()
     direction = pose.get_direction()
 
-    # TODO Prune options whose cells are already explored. 
     # Careful here. Visiting a cell will explore it, but turning is a valid move on the square, rediscovering it.
     
     options = [opt for opt in [
@@ -102,6 +101,9 @@ class Forward(Option):
         else:
             self.cost = 10000
 
+    def __str__(self):
+        return 'Forward'
+
 
 class ClockwiseTurn(Option):
     def __init__(self, grid, start_position, start_direction):
@@ -127,6 +129,9 @@ class ClockwiseTurn(Option):
         else:
             print('ERROR: Direction unacceptable: ' + start_direction)
 
+    def __str__(self):
+        return 'CW Turn'
+
 
 class CounterclockwiseTurn(Option):
     def __init__(self, grid, start_position, start_direction):
@@ -151,6 +156,9 @@ class CounterclockwiseTurn(Option):
             self.end_direction = 'EAST'
         else:
             print('ERROR: Direction unacceptable: ' + start_direction)
+
+    def __str__(self):
+        return 'CCW Turn'
 
 
 class Leap(Option):
@@ -185,6 +193,9 @@ class Leap(Option):
             self.cost = 20
         else:
             self.cost = 10000
+
+    def __str__(self):
+        return 'Leap'
 
 
 # UNIT TESTS
