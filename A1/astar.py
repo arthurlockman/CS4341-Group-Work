@@ -57,14 +57,11 @@ def Astar(start_cell, goal_cell, grid, heuristic):
 
     # Put start on Queue
     pose_list = [start_pose]
-    # List of all nodes with parents
-    closed_list = []
 
     # Find goal
     while len(pose_list) > 0:
         pose_list.sort(key=lambda pose: pose.get_f_val())
-        elt = pose_list.pop()
-        closed_list.append(elt)  # Add elt to closed list since it's assumed to have a parent
+        elt = pose_list.pop(0)
 
         if elt.get_gridcell() == goal_cell:
             return elt

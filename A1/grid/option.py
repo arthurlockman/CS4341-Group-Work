@@ -7,11 +7,17 @@ def expand_node(grid, parent_pose):
     options = get_options(grid, parent_pose)
     child_poses = []
 
-    for opt in options:
-        p = Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), parent_pose.get_heuristic())
-        p.set_parent(parent_pose, opt.get_cost())
+    # Expand parent -> Cell is visited
+    parent_pose.get_gridcell().explore()
 
-        child_poses.append(p)
+    for opt in options:
+        try:
+            p = Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), parent_pose.get_heuristic())
+            p.set_parent(parent_pose, opt.get_cost())
+            child_poses.append(p)
+        except IndexError:
+            # Forward or jumping off map. Not considered an option
+            pass
 
     return child_poses
 
@@ -20,13 +26,24 @@ def get_options(grid, pose):
     position = pose.get_position()
     direction = pose.get_direction()
 
-    # TODO Prune options whose cells are already explored.
-    return [
+    # TODO Prune options whose cells are already explored. 
+    # Careful here. Visiting a cell will explore it, but turning is a valid move on the square, rediscovering it.
+    
+    # options = [opt for opt in [
+    #     Forward(grid, position, direction),
+    #     ClockwiseTurn(grid, position, direction),
+    #     CounterclockwiseTurn(grid, position, direction),
+    #     Leap(grid, position, direction)
+    # ] if (opt.get_cost() != math.inf) and (grid.get_cell(*opt.get_end_position()).is_explored() == False)]
+
+    options = [
         Forward(grid, position, direction),
         ClockwiseTurn(grid, position, direction),
         CounterclockwiseTurn(grid, position, direction),
         Leap(grid, position, direction)
-    ]
+    ] 
+
+    return options
 
 
 class Option():
