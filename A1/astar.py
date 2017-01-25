@@ -40,10 +40,10 @@ def main():
     goal_pose = Astar(grid.get_start_cell(), grid.get_goal_cell(), grid, heuristic)
 
     path = get_path(goal_pose)
-    print('Score: ', 0)  # TODO: Calculate score
+    print('Score: ', sum(i.get_g_val() for i in path))
     print('Number of actions: ', len(path))
     print('Number of nodes expanded:', 0)  # TODO: count number of expanded nodes
-    print('Branching factor: ', 0)  # TODO: Calculate branching factor
+    print('Branching factor: ', 0)  # TODO: Calculate branching factor (estimate as N^(1/d))
     print('\nActions and path: ')
     print('\n'.join(v.str_with_move() for v in path))
 
