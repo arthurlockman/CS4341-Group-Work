@@ -7,10 +7,11 @@ Tucker Haydon
 John Lomi
 Jon Sawin
 """
+
 import sys
-from grid.grid import Grid
-from grid.pose import Pose
-import grid.option as opt
+import option as opt
+from grid import Grid
+from pose import Pose
 
 
 def main():
@@ -60,6 +61,7 @@ def Astar(start_cell, goal_cell, grid, heuristic):
 
     # Find goal
     while len(pose_list) > 0:
+        print(len(pose_list))
         pose_list.sort(key=lambda pose: pose.get_f_val())
         elt = pose_list.pop(0)
 
@@ -67,7 +69,6 @@ def Astar(start_cell, goal_cell, grid, heuristic):
             return elt
         else:
             pose_list.extend(opt.expand_node(grid, elt))
-
 
 if __name__ == '__main__':
     main()

@@ -1,6 +1,6 @@
 import math
-from .grid import Grid
-from .pose import Pose
+from grid import Grid
+from pose import Pose
 
 
 def expand_node(grid, parent_pose):
@@ -8,7 +8,7 @@ def expand_node(grid, parent_pose):
     child_poses = []
 
     # Expand parent -> Cell is visited
-    parent_pose.get_gridcell().explore()
+    parent_pose.explore()
 
     for opt in options:
         try:
@@ -29,19 +29,19 @@ def get_options(grid, pose):
     # TODO Prune options whose cells are already explored. 
     # Careful here. Visiting a cell will explore it, but turning is a valid move on the square, rediscovering it.
     
-    # options = [opt for opt in [
-    #     Forward(grid, position, direction),
-    #     ClockwiseTurn(grid, position, direction),
-    #     CounterclockwiseTurn(grid, position, direction),
-    #     Leap(grid, position, direction)
-    # ] if (opt.get_cost() != math.inf) and (grid.get_cell(*opt.get_end_position()).is_explored() == False)]
-
-    options = [
+    options = [opt for opt in [
         Forward(grid, position, direction),
         ClockwiseTurn(grid, position, direction),
         CounterclockwiseTurn(grid, position, direction),
         Leap(grid, position, direction)
-    ] 
+    ] if (opt.get_cost() != math.inf) and (grid.get_cell(*opt.get_end_position()).is_explored(direction) == False)]
+
+    # options = [
+    #     Forward(grid, position, direction),
+    #     ClockwiseTurn(grid, position, direction),
+    #     CounterclockwiseTurn(grid, position, direction),
+    #     Leap(grid, position, direction)
+    # ] 
 
     return options
 
@@ -188,7 +188,7 @@ class Leap(Option):
 
 
 # UNIT TESTS
-g = Grid.read_from_file('./grid/test_grid.txt')
+g = Grid.read_from_file('grid10.txt')
 start_cell = g.get_start_cell()
 goal_cell = g.get_goal_cell()
 

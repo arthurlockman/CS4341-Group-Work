@@ -1,6 +1,6 @@
 import random
 import math
-from .gridcell import GridCell
+from gridcell import GridCell
 
 
 class Grid:
@@ -97,5 +97,5 @@ class Grid:
 
 
 # UNIT TESTS
-g = Grid.read_from_file('grid/test_grid.txt')
+g = Grid.read_from_file('grid10.txt')
 # assert(g.get_start_cell().pos)

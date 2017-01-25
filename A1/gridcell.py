@@ -12,6 +12,7 @@ class GridCell:
         self.goal = goal
         self.cell_cost = cell_cost
         self.explored = False
+        self.directions_explored = []
 
     def get_position(self):
         return self.pos
@@ -28,11 +29,11 @@ class GridCell:
     def get_y_pos(self):
         return self.pos[1]
 
-    def is_explored(self):
-        return self.explored
+    def is_explored(self, direction):
+        return direction in self.directions_explored
 
-    def explore(self):
-        self.explored = True
+    def explore(self, direction):
+        self.directions_explored.append(direction)
 
     def set_cell_cost(self, new_cell_cost):
         self.cell_cost = new_cell_cost
