@@ -1,6 +1,7 @@
 from .gridcell import GridCell
 import math
 
+
 class Pose:
     """
     F(n)        = G(n)      + H(n)
@@ -15,6 +16,7 @@ class Pose:
         self.heuristic = heuristic
         self.f_val = math.inf
         self.__calc_heuristic__()
+        self.parent = None
 
     def __calc_heuristic__(self):
         goal = self.gridcell.get_goal()
@@ -37,33 +39,32 @@ class Pose:
             elif len(dir_to_goal) == 2:
                 self.h_val += 2
             if (dir_to_goal == 'N' and self.direction == 'S') \
-            or (dir_to_goal == 'E' and self.direction == 'W') \
-            or (dir_to_goal == 'S' and self.direction == 'N') \
-            or (dir_to_goal == 'W' and self.direction == 'E'):
+                    or (dir_to_goal == 'E' and self.direction == 'W') \
+                    or (dir_to_goal == 'S' and self.direction == 'N') \
+                    or (dir_to_goal == 'W' and self.direction == 'E'):
                 self.h_val += 1
             if self.direction in dir_to_goal:
                 self.h_val -= 1
-            
+
             if self.heuristic == 6:
                 self.h_val *= 3
         else:
-            print("ERROR: Heuritstic unsupported: "+ str(self.heuristic))
+            print("ERROR: Heuritstic unsupported: " + str(self.heuristic))
             exit()
 
     def set_parent(self, parent_pose, edge_cost):
         self.parent = parent_pose
-        
         f_val = parent_pose.get_f_val() + edge_cost + self.h_val
-    
+
     def get_g_val(self):
         return self.g_val
-    
+
     def get_f_val(self):
         return self.f_val
-    
+
     def get_h_val(self):
         return self.h_val
-    
+
     def get_parent(self):
         return self.parent
 
@@ -77,7 +78,14 @@ class Pose:
         return self.heuristic
 
     def get_gridcell(self):
-        return self.gridcell        
+        return self.gridcell
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return str(self.get_gridcell()) + ' facing ' + self.get_direction()
+
 
 g1 = GridCell([0, 0], [10, 10], 8)
 g2 = GridCell([10, 10], [0, 0], 8)
@@ -91,10 +99,9 @@ p4 = Pose(g4, 'N', 5)
 p5 = Pose(g3, 'S', 5)
 p6 = Pose(g1, 'N', 6)
 
-assert(p1.get_h_val() == 22)
-assert(p2.get_h_val() == 21)
-assert(p3.get_h_val() == 5)
-assert(p4.get_h_val() == 3)
-assert(p5.get_h_val() == 3)
-assert(p6.get_h_val() == 66)
-
+assert (p1.get_h_val() == 22)
+assert (p2.get_h_val() == 21)
+assert (p3.get_h_val() == 5)
+assert (p4.get_h_val() == 3)
+assert (p5.get_h_val() == 3)
+assert (p6.get_h_val() == 66)

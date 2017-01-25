@@ -2,176 +2,172 @@ import math
 from .grid import Grid
 from .pose import Pose
 
+
 def expand_node(grid, parent_pose):
-	options = get_options(grid, parent_pose)
-	child_poses = []
+    options = get_options(grid, parent_pose)
+    child_poses = []
 
-	for opt in options:
-		p = Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), parent_pose.get_heuristic())
-		p.set_parent(parent_pose, opt.get_cost())
+    for opt in options:
+        p = Pose(grid.get_cell(*opt.get_end_position()), opt.get_end_direction(), parent_pose.get_heuristic())
+        p.set_parent(parent_pose, opt.get_cost())
 
-		child_poses.append(p)
+        child_poses.append(p)
 
-	return child_poses
-
+    return child_poses
 
 
 def get_options(grid, pose):
+    position = pose.get_position()
+    direction = pose.get_direction()
 
-	position = pose.get_position()
-	direction = pose.get_direction()
-
-	# TODO Prune options whose cells are already explored.
-	return [
-		Forward(grid, position, direction),
-		ClockwiseTurn(grid, position, direction),
-		CounterclockwiseTurn(grid, position, direction),
-		Leap(grid, position, direction)
-	]
+    # TODO Prune options whose cells are already explored.
+    return [
+        Forward(grid, position, direction),
+        ClockwiseTurn(grid, position, direction),
+        CounterclockwiseTurn(grid, position, direction),
+        Leap(grid, position, direction)
+    ]
 
 
 class Option():
+    def __init__(self, grid, start_position):
+        self.grid = grid
+        self.start_position = start_position
 
-	def __init__(self, grid, start_position):
-		self.grid = grid
-		self.start_position = start_position
+    def get_cost(self):
+        return self.cost
 
-	def get_cost(self):
-		return self.cost
+    def get_start_position(self):
+        return self.start_position
 
-	def get_start_position(self):
-		return self.start_position
+    def get_end_position(self):
+        return self.end_position
 
-	def get_end_position(self):
-		return self.end_position
+    def get_end_direction(self):
+        return self.end_direction
 
-	def get_end_direction(self):
-		return self.end_direction
+    def within_grid_bounds(self, row, col):
+        num_rows = len(self.grid.get_grid())
+        num_cols = len(self.grid.get_grid()[0])
 
-	def within_grid_bounds(self, row, col):
-		num_rows = len(self.grid.get_grid())
-		num_cols = len(self.grid.get_grid()[0])
-
-		return row >= 0 and col >= 0 and row < num_rows and col < num_cols
+        return row >= 0 and col >= 0 and row < num_rows and col < num_cols
 
 
 class Forward(Option):
+    def __init__(self, grid, start_position, start_direction):
+        super().__init__(grid, start_position)
 
-	def __init__(self, grid, start_position, start_direction):
-		super().__init__(grid, start_position)
+        # Still facing same direction
+        self.end_direction = start_direction
 
-		# Still facing same direction
-		self.end_direction = start_direction
+        current_row = start_position[0]
+        current_col = start_position[1]
 
-		current_row = start_position[0]
-		current_col = start_position[1]
+        if start_direction == 'NORTH':
+            new_row = current_row - 1
+            new_col = current_col
+        elif start_direction == 'EAST':
+            new_row = current_row
+            new_col = current_col + 1
+        elif start_direction == 'WEST':
+            new_row = current_row
+            new_col = current_col - 1
+        elif start_direction == 'SOUTH':
+            new_row = current_row + 1
+            new_col = current_col
+        else:
+            print('ERROR: Direction unacceptable: ' + start_direction)
 
-		if start_direction == 'NORTH':
-			new_row = current_row - 1
-			new_col = current_col
-		elif start_direction == 'EAST':
-			new_row = current_row
-			new_col = current_col + 1
-		elif start_direction == 'WEST':
-			new_row = current_row
-			new_col = current_col - 1
-		elif start_direction == 'SOUTH':
-			new_row = current_row + 1
-			new_col = current_col
-		else:
-			print('ERROR: Direction unacceptable: ' + start_direction)
+        self.end_position = (new_row, new_col)
 
-		self.end_position = (new_row, new_col)
+        if self.within_grid_bounds(new_row, new_col):
+            self.cost = self.grid.get_cell(new_row, new_col).get_cell_cost()
+        else:
+            self.cost = math.inf
 
-		if self.within_grid_bounds(new_row, new_col):
-			self.cost = self.grid.get_cell(new_row, new_col).get_cell_cost()
-		else:
-			self.cost = math.inf
 
 class ClockwiseTurn(Option):
+    def __init__(self, grid, start_position, start_direction):
+        super().__init__(grid, start_position)
 
-	def __init__(self, grid, start_position, start_direction):
-		super().__init__(grid, start_position)
+        # Does not move anywhere
+        self.end_position = start_position
 
-		# Does not move anywhere
-		self.end_position = start_position
+        # Cost is equal to one third of the position cost
+        try:
+            self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
+        except OverflowError:
+            self.cost = math.inf
 
-		# Cost is equal to one third of the position cost
-		try:
-			self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
-		except OverflowError:
-			self.cost = math.inf
+        if start_direction == 'NORTH':
+            self.end_direction = 'EAST'
+        elif start_direction == 'EAST':
+            self.end_direction = 'SOUTH'
+        elif start_direction == 'WEST':
+            self.end_direction = 'NORTH'
+        elif start_direction == 'SOUTH':
+            self.end_direction = 'WEST'
+        else:
+            print('ERROR: Direction unacceptable: ' + start_direction)
 
-		if start_direction == 'NORTH':
-			self.end_direction = 'EAST'
-		elif start_direction == 'EAST':
-			self.end_direction = 'SOUTH'
-		elif start_direction == 'WEST':
-			self.end_direction = 'NORTH'
-		elif start_direction == 'SOUTH':
-			self.end_direction = 'WEST'
-		else:
-			print('ERROR: Direction unacceptable: ' + start_direction)
 
 class CounterclockwiseTurn(Option):
+    def __init__(self, grid, start_position, start_direction):
+        super().__init__(grid, start_position)
 
-	def __init__(self, grid, start_position, start_direction):
-		super().__init__(grid, start_position)
+        # Does not move anywhere
+        self.end_position = start_position
 
-		# Does not move anywhere
-		self.end_position = start_position
+        # Cost is equal to one third of the position cost
+        try:
+            self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
+        except OverflowError:
+            self.cost = math.inf
 
-		# Cost is equal to one third of the position cost
-		try:
-			self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
-		except OverflowError:
-			self.cost = math.inf
+        if start_direction == 'NORTH':
+            self.end_direction = 'WEST'
+        elif start_direction == 'EAST':
+            self.end_direction = 'NORTH'
+        elif start_direction == 'WEST':
+            self.end_direction = 'SOUTH'
+        elif start_direction == 'SOUTH':
+            self.end_direction = 'EAST'
+        else:
+            print('ERROR: Direction unacceptable: ' + start_direction)
 
-		if start_direction == 'NORTH':
-			self.end_direction = 'WEST'
-		elif start_direction == 'EAST':
-			self.end_direction = 'NORTH'
-		elif start_direction == 'WEST':
-			self.end_direction = 'SOUTH'
-		elif start_direction == 'SOUTH':
-			self.end_direction = 'EAST'
-		else:
-			print('ERROR: Direction unacceptable: ' + start_direction)
 
 class Leap(Option):
+    def __init__(self, grid, start_position, start_direction):
+        super().__init__(grid, start_position)
 
-	def __init__(self, grid, start_position, start_direction):
-		super().__init__(grid, start_position)
+        # Still facing same direction
+        self.end_direction = start_direction
 
-		# Still facing same direction
-		self.end_direction = start_direction
+        current_row = start_position[0]
+        current_col = start_position[1]
 
-		current_row = start_position[0]
-		current_col = start_position[1]
+        if start_direction == 'NORTH':
+            new_row = current_row - 3
+            new_col = current_col
+        elif start_direction == 'EAST':
+            new_row = current_row
+            new_col = current_col + 3
+        elif start_direction == 'WEST':
+            new_row = current_row
+            new_col = current_col - 3
+        elif start_direction == 'SOUTH':
+            new_row = current_row + 3
+            new_col = current_col
+        else:
+            print('ERROR: Direction unacceptable: ' + start_direction)
 
-		if start_direction == 'NORTH':
-			new_row = current_row - 3
-			new_col = current_col
-		elif start_direction == 'EAST':
-			new_row = current_row
-			new_col = current_col + 3
-		elif start_direction == 'WEST':
-			new_row = current_row
-			new_col = current_col - 3
-		elif start_direction == 'SOUTH':
-			new_row = current_row + 3
-			new_col = current_col
-		else:
-			print('ERROR: Direction unacceptable: ' + start_direction)
+        self.end_position = (new_row, new_col)
 
-		self.end_position = (new_row, new_col)
-
-		if self.within_grid_bounds(new_row, new_col):
-			# Constant cost
-			self.cost = 20
-		else:
-			self.cost = math.inf
-
+        if self.within_grid_bounds(new_row, new_col):
+            # Constant cost
+            self.cost = 20
+        else:
+            self.cost = math.inf
 
 
 # UNIT TESTS
@@ -243,7 +239,3 @@ assert (child_poses[2].get_direction() == 'NORTH')
 
 assert (child_poses[3].get_position() == (9, 7))
 assert (child_poses[3].get_direction() == 'EAST')
-
-
-
-
