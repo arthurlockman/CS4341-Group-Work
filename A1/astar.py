@@ -12,6 +12,7 @@ import sys
 import option as opt
 from grid import Grid
 from pose import Pose
+from visualizer import Visualizer
 
 
 def main():
@@ -64,23 +65,27 @@ def Astar(start_cell, goal_cell, grid, heuristic):
     start_pose.parent_move = 'Start'
 
     # Put start on Queue
-    pose_list = [start_pose]
+    frontier = [start_pose]
 
     # Count number of nodes expanded
     node_count = 1
 
+    # Visualizer
+    # vis = Visualizer(750, 750)
+
     # Find goal
-    while len(pose_list) > 0:
-        pose_list.sort(key=lambda pose: pose.get_f_val())
-        elt = pose_list.pop(0)
+    while len(frontier) > 0:
+        frontier.sort(key=lambda pose: pose.get_f_val())
+        elt = frontier.pop(0)
 
         if elt.get_gridcell() == goal_cell:
             return elt, node_count
         else:
             _tmp = opt.expand_node(grid, elt)
             node_count += len(_tmp)
-            pose_list.extend(_tmp)
+            frontier.extend(_tmp)
 
+        # vis.visualize_grid(grid, frontier, goal_cell)
 
 def get_path(pose):
     """

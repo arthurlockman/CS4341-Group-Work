@@ -22,11 +22,11 @@ class GridCell:
 
     def get_cell_cost(self):
         return self.cell_cost
-    
-    def get_x_pos(self):
+
+    def get_row(self):
         return self.pos[0]
-    
-    def get_y_pos(self):
+
+    def get_col(self):
         return self.pos[1]
 
     def is_explored(self, direction):
@@ -76,7 +76,7 @@ class GridCell:
         return self.get_f_val() < other.get_f_val()
 
     def __str__(self):
-        return '(' + str(self.get_x_pos()) + ', ' + str(self.get_y_pos()) + ')' + ' cost ' + str(self.get_cell_cost())
+        return '(' + str(self.get_col()) + ', ' + str(self.get_row()) + ')' + ' cost ' + str(self.get_cell_cost())
 
     def __repr__(self):
         return self.__str__()

@@ -13,9 +13,9 @@ sizes = [10, 15, 20, 25, 30, 35, 40, 45, 50]
 for size in sizes:
 
     total_time = 0.0
-    grid = Grid.create_new_grid(size, size)
 
     for i in range(num_trials):
+        grid = Grid.create_new_grid(size, size)
 
         start_time = current_milli_time()
 
