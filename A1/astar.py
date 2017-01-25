@@ -64,6 +64,7 @@ def Astar(start_cell, goal_cell, grid, heuristic):
     while len(pose_list) > 0:
         pose_list.sort(key=lambda pose: pose.get_f_val())
         elt = pose_list.pop()
+        closed_list.append(elt)  # Add elt to closed list since it's assumed to have a parent
 
         if elt.get_gridcell() == goal_cell:
             return elt
