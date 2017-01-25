@@ -1,4 +1,4 @@
-from .gridcell import GridCell
+from gridcell import GridCell
 import math
 
 
@@ -81,11 +81,17 @@ class Pose:
     def get_gridcell(self):
         return self.gridcell
 
+    def explore(self):
+        self.gridcell.explore(self.direction)
+
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
         return str(self.get_gridcell()) + ' facing ' + self.get_direction()
+
+    def __eq__(self, other):
+        return self.get_position() == other.get_position() and self.get_direction() == other.get_direction()
 
 
 g1 = GridCell([0, 0], [10, 10], 8)

@@ -7,10 +7,11 @@ Tucker Haydon
 John Lomi
 Jon Sawin
 """
+
 import sys
-from grid.grid import Grid
-from grid.pose import Pose
-import grid.option as opt
+import option as opt
+from grid import Grid
+from pose import Pose
 
 
 def main():
