@@ -58,7 +58,7 @@ class GridCell:
         return self.pos[0] - other.pos[0], self.pos[1] - other.pos[1]
 
     def write_to_string(self):
-        if self.cell_cost == math.inf:
+        if self.cell_cost == 10000:
             return '#'
         else:
             return str(self.cell_cost)

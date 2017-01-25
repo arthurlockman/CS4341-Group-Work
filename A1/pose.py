@@ -14,7 +14,7 @@ class Pose:
         self.gridcell = gridcell
         self.direction = direction
         self.heuristic = heuristic
-        self.f_val = math.inf
+        self.f_val = 10000
         self.__calc_heuristic__()
         self.parent = None
         self.g_val = gridcell.get_cell_cost()

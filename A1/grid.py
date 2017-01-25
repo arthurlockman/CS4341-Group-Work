@@ -4,7 +4,7 @@ from gridcell import GridCell
 
 
 class Grid:
-    grid_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, math.inf]
+    grid_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10000]
 
     def __init__(self, width, height, grid, start_pos, goal_pos):
         self.grid = grid
@@ -65,7 +65,7 @@ class Grid:
 
             # Load in the grid, replacing hashtags with infinity and casting all numbers to ints
             symbolic_grid = [
-                [math.inf if item == '#' else (item if (item == 'S' or item == 'G') else int(item)) for item in
+                [10000 if item == '#' else (item if (item == 'S' or item == 'G') else int(item)) for item in
                  x.strip().split('\t')] for x in file_contents]
             height = len(symbolic_grid)
             width = len(symbolic_grid[0])

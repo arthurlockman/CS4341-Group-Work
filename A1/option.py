@@ -34,7 +34,7 @@ def get_options(grid, pose):
         ClockwiseTurn(grid, position, direction),
         CounterclockwiseTurn(grid, position, direction),
         Leap(grid, position, direction)
-    ] if (opt.get_cost() != math.inf) and (grid.get_cell(*opt.get_end_position()).is_explored(direction) == False)]
+    ] if (opt.get_cost() != 10000) and (grid.get_cell(*opt.get_end_position()).is_explored(direction) == False)]
 
     # options = [
     #     Forward(grid, position, direction),
@@ -99,9 +99,8 @@ class Forward(Option):
 
         if self.within_grid_bounds(new_row, new_col):
             self.cost = self.grid.get_cell(new_row, new_col).get_cell_cost()
-            print(self.cost)
         else:
-            self.cost = math.inf
+            self.cost = 10000
 
 
 class ClockwiseTurn(Option):
@@ -115,7 +114,7 @@ class ClockwiseTurn(Option):
         try:
             self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
         except OverflowError:
-            self.cost = math.inf
+            self.cost = 10000
 
         if start_direction == 'NORTH':
             self.end_direction = 'EAST'
@@ -140,7 +139,7 @@ class CounterclockwiseTurn(Option):
         try:
             self.cost = math.ceil(self.grid.get_cell(start_position[0], start_position[1]).get_cell_cost() / 3.0)
         except OverflowError:
-            self.cost = math.inf
+            self.cost = 10000
 
         if start_direction == 'NORTH':
             self.end_direction = 'WEST'
@@ -185,7 +184,7 @@ class Leap(Option):
             # Constant cost
             self.cost = 20
         else:
-            self.cost = math.inf
+            self.cost = 10000
 
 
 # UNIT TESTS
@@ -203,7 +202,7 @@ assert (f.cost == 3)
 f = Forward(g, (0, 0), 'NORTH')
 assert (f.end_direction == 'NORTH')
 assert (f.end_position == (-1, 0))
-assert (f.cost == math.inf)
+assert (f.cost == 10000)
 
 # Test clockwise turn
 t = ClockwiseTurn(g, (0, 0), 'NORTH')
@@ -233,7 +232,7 @@ assert (l.cost == 20)
 l = Leap(g, (0, 0), 'NORTH')
 assert (l.end_direction == 'NORTH')
 assert (l.end_position == (-3, 0))
-assert (l.cost == math.inf)
+assert (l.cost == 10000)
 
 # Test get options
 options = get_options(g, Pose(start_cell, 'NORTH', 1))
