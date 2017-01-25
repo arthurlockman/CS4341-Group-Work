@@ -39,8 +39,9 @@ def main():
     grid = load_grid(filename)
     goal_pose = Astar(grid.get_start_cell(), grid.get_goal_cell(), grid, heuristic)
 
-    # path = get_path(goal_pose)
-    # print_path(path)
+    path = get_path(goal_pose)
+    print('\n'.join(str(v) for v in path))
+    print(grid)
 
 
 def load_grid(filename):
@@ -68,6 +69,22 @@ def Astar(start_cell, goal_cell, grid, heuristic):
             return elt
         else:
             pose_list.extend(opt.expand_node(grid, elt))
+
+
+def get_path(pose):
+    """
+    Get a path from an ending pose.
+    :param pose: The pose (result of A*)
+    :return: A list of poses, the path
+    """
+    path = []
+    p = pose
+    while p.get_parent() is not None:
+        path.append(p)
+        p = p.get_parent()
+    path.append(p)
+    path.reverse()
+    return path
 
 if __name__ == '__main__':
     main()

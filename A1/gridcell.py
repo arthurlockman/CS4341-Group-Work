@@ -58,7 +58,7 @@ class GridCell:
         return self.pos[0] - other.pos[0], self.pos[1] - other.pos[1]
 
     def write_to_string(self):
-        if self.cell_cost == math.inf:
+        if self.cell_cost == 10000:
             return '#'
         else:
             return str(self.cell_cost)
@@ -77,7 +77,7 @@ class GridCell:
         return self.get_f_val() < other.get_f_val()
 
     def __str__(self):
-        return '(' + str(self.get_x_pos()) + ', ' + str(self.get_y_pos()) + ')'
+        return '(' + str(self.get_x_pos()) + ', ' + str(self.get_y_pos()) + ')' + ' c: ' + str(self.get_cell_cost())
 
     def __repr__(self):
         return self.__str__()

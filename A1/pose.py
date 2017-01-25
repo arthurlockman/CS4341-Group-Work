@@ -14,9 +14,10 @@ class Pose:
         self.gridcell = gridcell
         self.direction = direction
         self.heuristic = heuristic
-        self.f_val = math.inf
+        self.f_val = 10000
         self.__calc_heuristic__()
         self.parent = None
+        self.g_val = gridcell.get_cell_cost()
 
     def __calc_heuristic__(self):
         goal = self.gridcell.get_goal()
@@ -49,12 +50,12 @@ class Pose:
             if self.heuristic == 6:
                 self.h_val *= 3
         else:
-            print("ERROR: Heuritstic unsupported: " + str(self.heuristic))
+            print("ERROR: Heuristic unsupported: " + str(self.heuristic))
             exit()
 
     def set_parent(self, parent_pose, edge_cost):
         self.parent = parent_pose
-        f_val = parent_pose.get_f_val() + edge_cost + self.h_val
+        self.f_val = parent_pose.get_f_val() + edge_cost + self.h_val
 
     def get_g_val(self):
         return self.g_val

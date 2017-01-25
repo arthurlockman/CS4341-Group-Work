@@ -4,7 +4,7 @@ from gridcell import GridCell
 
 
 class Grid:
-    grid_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, math.inf]
+    grid_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10000]
 
     def __init__(self, width, height, grid, start_pos, goal_pos):
         self.grid = grid
@@ -33,22 +33,30 @@ class Grid:
 
     def write_to_file(self, filename):
         with open(filename, 'w+') as f:
-            for row in range(len(self.grid)):
-                for col in range(len(self.grid[0])):
+            f.write(str(self))
 
-                    if (row, col) == self.start_pos:
-                        f.write('S')
-                    elif (row, col) == self.goal_pos:
-                        f.write('G')
-                    else:
-                        f.write(self.grid[row][col].write_to_string())
+    def __str__(self):
+        _str = ''
+        for row in range(len(self.grid)):
+            for col in range(len(self.grid[0])):
 
-                    # Write a tab after each character, so long as it's not the last in the line
-                    if (col != len(self.grid[0]) - 1):
-                        f.write('\t')
+                if (row, col) == self.start_pos:
+                    _str += 'S'
+                elif (row, col) == self.goal_pos:
+                    _str += 'G'
+                else:
+                    _str += self.grid[row][col].write_to_string()
 
-                # Newline for every row
-                f.write('\n')
+                # Write a tab after each character, so long as it's not the last in the line
+                if (col != len(self.grid[0]) - 1):
+                    _str += '\t'
+
+            # Newline for every row
+            _str += '\n'
+        return _str
+
+    def __repr__(self):
+        return self.__str__()
 
     @classmethod
     def read_from_file(cls, filename):
@@ -57,7 +65,7 @@ class Grid:
 
             # Load in the grid, replacing hashtags with infinity and casting all numbers to ints
             symbolic_grid = [
-                [math.inf if item == '#' else (item if (item == 'S' or item == 'G') else int(item)) for item in
+                [10000 if item == '#' else (item if (item == 'S' or item == 'G') else int(item)) for item in
                  x.strip().split('\t')] for x in file_contents]
             height = len(symbolic_grid)
             width = len(symbolic_grid[0])
