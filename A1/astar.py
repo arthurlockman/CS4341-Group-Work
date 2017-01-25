@@ -37,13 +37,14 @@ def main():
     heuristic = int(sys.argv[2])
 
     grid = load_grid(filename)
-    goal_pose = Astar(grid.get_start_cell(), grid.get_goal_cell(), grid, heuristic)
+    goal_pose, node_count = Astar(grid.get_start_cell(), grid.get_goal_cell(), grid, heuristic)
 
     path = get_path(goal_pose)
     print('Score: ', sum(i.get_g_val() for i in path))
     print('Number of actions: ', len(path))
-    print('Number of nodes expanded:', 0)  # TODO: count number of expanded nodes
-    print('Branching factor: ', 0)  # TODO: Calculate branching factor (estimate as N^(1/d))
+    print('Number of nodes expanded:', node_count)
+    # Estimating branching factor to be  N^(1/d)
+    print('Branching factor: ', float(node_count) ** (1.0 / len(path)))
     print('\nActions and path: ')
     print('\n'.join(v.str_with_move() for v in path))
 
@@ -65,15 +66,20 @@ def Astar(start_cell, goal_cell, grid, heuristic):
     # Put start on Queue
     pose_list = [start_pose]
 
+    # Count number of nodes expanded
+    node_count = 1
+
     # Find goal
     while len(pose_list) > 0:
         pose_list.sort(key=lambda pose: pose.get_f_val())
         elt = pose_list.pop(0)
 
         if elt.get_gridcell() == goal_cell:
-            return elt
+            return elt, node_count
         else:
-            pose_list.extend(opt.expand_node(grid, elt))
+            _tmp = opt.expand_node(grid, elt)
+            node_count += len(_tmp)
+            pose_list.extend(_tmp)
 
 
 def get_path(pose):
