@@ -59,7 +59,7 @@ class Pose:
     def set_parent(self, parent_pose, edge_cost, parent_move):
         self.parent = parent_pose
         self.g_val = edge_cost
-        self.f_val = parent_pose.get_f_val() + self.g_val + self.h_val
+        self.f_val = parent_pose.get_f_val() - parent_pose.get_h_val() + self.g_val + self.h_val
         self.parent_move = parent_move
 
     def get_g_val(self):

@@ -49,6 +49,9 @@ def main():
     print('\nActions and path: ')
     print('\n'.join(v.str_with_move() for v in path))
 
+    # Wait for user to press a button
+    input()
+
 
 def load_grid(filename):
     """
@@ -79,10 +82,7 @@ def Astar(start_cell, goal_cell, grid, heuristic):
 
     # Find goal
     while len(frontier) > 0:
-        # print(frontier)
         frontier.sort(key=lambda pose: pose.get_f_val())
-        # print(frontier)
-        # input()
         lowest_cost_node = frontier.pop(0)
 
         if lowest_cost_node.get_gridcell() == goal_cell:
@@ -95,11 +95,8 @@ def Astar(start_cell, goal_cell, grid, heuristic):
         if visualize == True:
             vis.visualize_grid(grid, frontier, goal_cell)
 
-
     if visualize == True: 
         vis.visualize_solution(grid, lowest_cost_node)
-
-    input()
 
     return lowest_cost_node, node_count
 

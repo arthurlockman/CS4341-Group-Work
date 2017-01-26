@@ -33,6 +33,7 @@ def get_options(grid, pose):
         ClockwiseTurn(grid, position, direction),
         CounterclockwiseTurn(grid, position, direction),
         Leap(grid, position, direction)
+    # ] if (opt.get_cost() != 10000)]
     ] if (opt.get_cost() != 10000) and (grid.get_cell(*opt.get_end_position()).is_explored(direction) == False)]
 
     # options = [
