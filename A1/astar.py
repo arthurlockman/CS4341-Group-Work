@@ -60,6 +60,9 @@ def load_grid(filename):
 
 
 def Astar(start_cell, goal_cell, grid, heuristic):
+
+    visualize = len(sys.argv) > 3 and sys.argv[3] == '-v'
+
     # Initialize queue
     start_pose = Pose(start_cell, 'NORTH', heuristic)
     start_pose.parent_move = 'Start'
@@ -71,21 +74,32 @@ def Astar(start_cell, goal_cell, grid, heuristic):
     node_count = 1
 
     # Visualizer
-    # vis = Visualizer(750, 750)
+    if visualize == True:
+        vis = Visualizer(1200, 900)
 
     # Find goal
     while len(frontier) > 0:
         frontier.sort(key=lambda pose: pose.get_f_val())
-        elt = frontier.pop(0)
+        lowest_cost_node = frontier.pop(0)
 
-        if elt.get_gridcell() == goal_cell:
-            return elt, node_count
+        if lowest_cost_node.get_gridcell() == goal_cell:
+            break
         else:
-            _tmp = opt.expand_node(grid, elt)
+            _tmp = opt.expand_node(grid, lowest_cost_node)
             node_count += len(_tmp)
             frontier.extend(_tmp)
 
-        # vis.visualize_grid(grid, frontier, goal_cell)
+        # if visualize == True:
+        #     vis.visualize_grid(grid, frontier, goal_cell)
+
+    if visualize == True: 
+        vis.visualize_solution(grid, lowest_cost_node)
+
+    input()
+
+    return lowest_cost_node, node_count
+
+
 
 def get_path(pose):
     """

@@ -7,6 +7,7 @@ class GridCell:
     https://github.com/arthurlockman/RBE3002/blob/master/src/GridCell.py
     """
 
+
     def __init__(self, pos, goal, cell_cost):
         self.pos = pos
         self.goal = goal

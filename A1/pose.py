@@ -50,13 +50,16 @@ class Pose:
 
             if self.heuristic == 6:
                 self.h_val *= 3
+        elif self.heuristic == 7:
+            self.h_val =  math.sqrt(math.pow(pos[0] - goal[0], 2) + math.pow(pos[1] - goal[1], 2))
         else:
             print("ERROR: Heuristic unsupported: " + str(self.heuristic))
             exit()
 
     def set_parent(self, parent_pose, edge_cost, parent_move):
         self.parent = parent_pose
-        self.f_val = parent_pose.get_f_val() + edge_cost + self.h_val
+        self.g_val = edge_cost
+        self.f_val = parent_pose.get_f_val() + self.g_val + self.h_val
         self.parent_move = parent_move
 
     def get_g_val(self):
@@ -85,6 +88,9 @@ class Pose:
 
     def explore(self):
         self.gridcell.explore(self.direction)
+
+        if self.gridcell.get_cell_cost() > 10:
+            print("WEE WOO WEE WOO")
 
     def str_with_move(self):
         return str(self.parent_move) + ' to ' + str(self)
