@@ -79,7 +79,10 @@ def Astar(start_cell, goal_cell, grid, heuristic):
 
     # Find goal
     while len(frontier) > 0:
+        # print(frontier)
         frontier.sort(key=lambda pose: pose.get_f_val())
+        # print(frontier)
+        # input()
         lowest_cost_node = frontier.pop(0)
 
         if lowest_cost_node.get_gridcell() == goal_cell:
@@ -89,8 +92,9 @@ def Astar(start_cell, goal_cell, grid, heuristic):
             node_count += len(_tmp)
             frontier.extend(_tmp)
 
-        # if visualize == True:
-        #     vis.visualize_grid(grid, frontier, goal_cell)
+        if visualize == True:
+            vis.visualize_grid(grid, frontier, goal_cell)
+
 
     if visualize == True: 
         vis.visualize_solution(grid, lowest_cost_node)

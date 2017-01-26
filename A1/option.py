@@ -188,7 +188,7 @@ class Leap(Option):
 
         self.end_position = (new_row, new_col)
 
-        if self.within_grid_bounds(new_row, new_col):
+        if self.within_grid_bounds(new_row, new_col) and self.grid.get_cell(new_row, new_col).get_cell_cost() < 10:
             # Constant cost
             self.cost = 20
         else:

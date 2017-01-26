@@ -15,7 +15,7 @@ class Pose:
         self.gridcell = gridcell
         self.direction = direction
         self.heuristic = heuristic
-        self.f_val = 10000
+        self.f_val = 0
         self.__calc_heuristic__()
         self.parent = None
         self.g_val = gridcell.get_cell_cost()
@@ -89,9 +89,6 @@ class Pose:
     def explore(self):
         self.gridcell.explore(self.direction)
 
-        if self.gridcell.get_cell_cost() > 10:
-            print("WEE WOO WEE WOO")
-
     def str_with_move(self):
         return str(self.parent_move) + ' to ' + str(self)
 
@@ -99,7 +96,7 @@ class Pose:
         return self.__str__()
 
     def __str__(self):
-        return str(self.get_gridcell()) + ' facing ' + self.get_direction()
+        return str(self.get_gridcell()) + ' facing ' + self.get_direction() + ' cost ' + str(self.get_f_val())
 
     def __eq__(self, other):
         return self.get_position() == other.get_position() and self.get_direction() == other.get_direction()

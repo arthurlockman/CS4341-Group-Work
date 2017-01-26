@@ -77,7 +77,7 @@ class GridCell:
         return self.get_f_val() < other.get_f_val()
 
     def __str__(self):
-        return '(' + str(self.get_col()) + ', ' + str(self.get_row()) + ')' + ' cost ' + str(self.get_cell_cost())
+        return '(' + str(self.get_col()) + ', ' + str(self.get_row()) + ')'
 
     def __repr__(self):
         return self.__str__()

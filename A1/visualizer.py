@@ -65,10 +65,11 @@ class Visualizer:
                 upper_left_y = 0 + row * square_height
 
                 if grid.get_cell(row, col).is_explored('NORTH') or grid.get_cell(row, col).is_explored('SOUTH') or grid.get_cell(row, col).is_explored('EAST') or grid.get_cell(row, col).is_explored('WEST'):
-                    self.canvas.create_rectangle(upper_left_x, upper_left_y, upper_left_x + square_width, upper_left_y + square_height, fill="black")
+                    self.canvas.create_rectangle(upper_left_x, upper_left_y, upper_left_x + square_width, upper_left_y + square_height, fill="red")
                 else:
                     self.canvas.create_rectangle(upper_left_x, upper_left_y, upper_left_x + square_width, upper_left_y + square_height, fill="white")
-                    self.canvas.create_text(upper_left_x, upper_left_y, anchor=NW, text=grid.get_grid()[row][col].write_to_string())
+
+                self.canvas.create_text(upper_left_x, upper_left_y, anchor=NW, text=grid.get_grid()[row][col].write_to_string())
 
          # Draw frontier
         for pose in frontier:
