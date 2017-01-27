@@ -24,8 +24,11 @@ The command line options for the program are listed below.
                4: Vertical + horizontal
                5: Manhattan Distance + number of turns
                6: Heuristic 5 * 3
+               7: Distance formula
            -v: this option (if set) will provide a visualization of the A* progress
            -c: this option (if set) will print the output in a machine-readable format
+
+    Example: python3 astar.py grid25.txt 4 -v
 
 The same information can be printed by running the function `python3 astar.py` with 
 no arguments provided.
@@ -33,3 +36,6 @@ no arguments provided.
 Depending on your system configuration, the python 3 binary may be linked to either
 `python3` or simply `python`. If you're having trouble running the program, check to make
 sure that you're actually running under python 3.
+
+## Visualizing the Program
+A quick visualizer for A* algorithm was put together using Python3's Tkinter. To visualize the algorithm, run the program with the -v argument. Tkinter is not included in all python distributions, so it may not work out of the box on your machine. Included in the repo is an A*-visualization.mov file. It is a screen recording of the visualization of a 25x25 boards.

@@ -33,7 +33,7 @@ def main():
         print('           6: Heuristic 5 * 3')
         print('       -v: this option (if set) will provide a visualization of the A* progress')
         print('       -c: this option (if set) will print the output in a machine-readable format')
-        print('.          format: [path score], [path length], [# of nodes expanded]')
+        print('.          format: [path score], [path length], [# of nodes expanded], [branching factor]')
         exit()
 
     filename = sys.argv[1]
@@ -44,7 +44,10 @@ def main():
 
     path = get_path(goal_pose)
     if '-c' in sys.argv:
-        print(str(500 - sum(i.get_g_val() for i in path)) + ', ' + str(len(path)) + ', ' + str(node_count))
+        print(str(sys.argv[2]) + ', ' + str(sys.argv[1]) + \
+              ', ' + str(500 - sum(i.get_g_val() for i in path)) + \
+              ', ' + str(len(path)) + ', ' + str(node_count) + ', ' + \
+              str(float(node_count) ** (1.0 / len(path))))
     else:
         print('Score: ', 500 - sum(i.get_g_val() for i in path))
         print('Number of actions: ', len(path))
@@ -53,9 +56,8 @@ def main():
         print('Branching factor: ', float(node_count) ** (1.0 / len(path)))
         print('\nActions and path: ')
         print('\n'.join(v.str_with_move() for v in path))
-
-    # Wait for user to press a button
-    input()
+        # Wait for user to press a button
+        input()
 
 
 def load_grid(filename):
