@@ -32,6 +32,8 @@ def main():
         print('           5: Manhattan Distance + number of turns')
         print('           6: Heuristic 5 * 3')
         print('       -v: this option (if set) will provide a visualization of the A* progress')
+        print('       -c: this option (if set) will print the output in a machine-readable format')
+        print('.          format: [path score], [path length], [# of nodes expanded]')
         exit()
 
     filename = sys.argv[1]
@@ -41,13 +43,16 @@ def main():
     goal_pose, node_count = Astar(grid.get_start_cell(), grid.get_goal_cell(), grid, heuristic)
 
     path = get_path(goal_pose)
-    print('Score: ', 500 - sum(i.get_g_val() for i in path))
-    print('Number of actions: ', len(path))
-    print('Number of nodes expanded:', node_count)
-    # Estimating branching factor to be  N^(1/d)
-    print('Branching factor: ', float(node_count) ** (1.0 / len(path)))
-    print('\nActions and path: ')
-    print('\n'.join(v.str_with_move() for v in path))
+    if '-c' in sys.argv:
+        print(str(500 - sum(i.get_g_val() for i in path)) + ', ' + str(len(path)) + ', ' + str(node_count))
+    else:
+        print('Score: ', 500 - sum(i.get_g_val() for i in path))
+        print('Number of actions: ', len(path))
+        print('Number of nodes expanded:', node_count)
+        # Estimating branching factor to be  N^(1/d)
+        print('Branching factor: ', float(node_count) ** (1.0 / len(path)))
+        print('\nActions and path: ')
+        print('\n'.join(v.str_with_move() for v in path))
 
     # Wait for user to press a button
     input()

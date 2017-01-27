@@ -25,6 +25,7 @@ The command line options for the program are listed below.
                5: Manhattan Distance + number of turns
                6: Heuristic 5 * 3
            -v: this option (if set) will provide a visualization of the A* progress
+           -c: this option (if set) will print the output in a machine-readable format
 
 The same information can be printed by running the function `python3 astar.py` with 
 no arguments provided.
