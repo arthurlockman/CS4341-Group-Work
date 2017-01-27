@@ -29,9 +29,8 @@ def main():
         print('           2: Min(vertical, horizontal)')
         print('           3: Max(vertical, horizontal)')
         print('           4: Vertical + horizontal')
-        print('           5: Better admissable heuristic')
-        print('           6: Non-admissible heuristic')
-        # TODO: fix this documentation once we have the right heuristics
+        print('           5: Manhattan Distance + number of turns')
+        print('           6: Heuristic 5 * 3')
         exit()
 
     filename = sys.argv[1]
@@ -41,7 +40,7 @@ def main():
     goal_pose, node_count = Astar(grid.get_start_cell(), grid.get_goal_cell(), grid, heuristic)
 
     path = get_path(goal_pose)
-    print('Score: ', sum(i.get_g_val() for i in path))
+    print('Score: ', 500 - sum(i.get_g_val() for i in path))
     print('Number of actions: ', len(path))
     print('Number of nodes expanded:', node_count)
     # Estimating branching factor to be  N^(1/d)
