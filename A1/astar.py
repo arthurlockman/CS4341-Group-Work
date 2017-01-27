@@ -22,7 +22,7 @@ def main():
     """
     # If we don't have all of the params, exit and print help.
     if len(sys.argv) < 3:
-        print('Usage: astar.py [filename] [heurstic value (1-6)]')
+        print('Usage: python3 astar.py [filename] [heurstic value (1-6)] [-v]')
         print('       filename: should be the name or path to a map file to load')
         print('       heurstic: can be one of the following:')
         print('           1: 0 heuristic')
@@ -31,6 +31,7 @@ def main():
         print('           4: Vertical + horizontal')
         print('           5: Manhattan Distance + number of turns')
         print('           6: Heuristic 5 * 3')
+        print('       -v: this option (if set) will provide a visualization of the A* progress')
         exit()
 
     filename = sys.argv[1]
