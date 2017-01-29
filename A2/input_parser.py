@@ -1,7 +1,4 @@
 
-import sys
-
-
 class InputParser:
 
     def __init__(self):

@@ -1,7 +1,7 @@
 
 class Bin:
 
-    def __init__():
+    def __init__(self):
         self.number_list = []
 
     def score(self):
@@ -14,3 +14,116 @@ class Bin:
     @classmethod
     def swap(cls, bin1, index1, bin2, index2):
         pass
+
+class Bin1(Bin):
+
+    def __init__(self):
+        super().__init__()
+
+
+    def score(self):
+
+        # Adds even indexes, subtracts odd indexes
+        tmp_list = []
+        for i in range(len(self.number_list)):
+            if i % 2 == 0:
+                tmp_list.append(self.number_list[i])
+            else:
+                tmp_list.append(-1 * self.number_list[i])
+
+        return sum(tmp_list)
+
+class Bin2(Bin):
+
+    def __init__(self):
+        super().__init__()
+
+
+    def score(self):
+
+        score = 0
+        
+        for i in range(len(self.number_list) - 1):
+            if self.number_list[i] == self.number_list[i+1]:
+                score += 5
+            elif self.number_list[i] < self.number_list[i+1]:
+                score += 3
+            else:
+                score -= 10
+
+        return score
+
+
+
+class Bin3(Bin):
+
+    primes = [2, 3, 5, 7]
+
+    def __init__(self):
+        super().__init__()
+
+
+    def score(self):
+
+        score = 0
+        
+        number_list_len = len(self.number_list)
+
+        if number_list_len % 2 == 0:
+            bottom_half_numbers = self.number_list[:number_list_len//2]
+            top_half_numbers = self.number_list[number_list_len//2:]
+        else: 
+            bottom_half_numbers = self.number_list[:number_list_len//2]
+            top_half_numbers = self.number_list[number_list_len//2+1:]
+
+        # Score the bottom-haf numbers
+        for number in bottom_half_numbers:
+            if number < 0:
+                score -= 2
+            elif number in self.primes:
+                score += 4
+            else:
+                score -= number
+
+        # Score the top-half numbers
+        for number in top_half_numbers:
+            if number < 0:
+                score += 2
+            elif number in self.primes:
+                score -= 4
+            else:
+                score += number
+
+        return score
+
+
+
+# UNIT TESTS
+b1 = Bin1()
+b1.add(1)
+b1.add(2)
+b1.add(3)
+
+assert(b1.score() == 2)
+
+b2 = Bin2()
+b2.add(1)
+b2.add(2)
+b2.add(2)
+b2.add(1)
+b2.add(5)
+
+assert(b2.score() == 1)
+
+b3 = Bin3()
+b3.add(1)
+b3.add(-1)
+b3.add(4)
+b3.add(3)
+b3.add(-7)
+
+assert(b3.score() == -5)
+
+b3.add(5)
+assert(b3.score() == -13)
+
