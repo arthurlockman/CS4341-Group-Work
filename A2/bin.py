@@ -1,8 +1,8 @@
 
 class Bin:
 
-    def __init__(self):
-        self.number_list = []
+    def __init__(self, numbers):
+        self.number_list = numbers
 
     def score(self):
         # Override this function
