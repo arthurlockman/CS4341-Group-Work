@@ -8,18 +8,26 @@ class Bin:
         # Override this function
         raise
 
+    def get_bin_size(self):
+        return len(self.number_list)
+
     def add(self, number):
         self.number_list.append(number)
  
     def __str__(self):
-        return str(self.number_list + ': ' + self.score())
+        return str(self.number_list) + ': ' + str(self.score())
     
     def __repr__(self):
         return self.__str__()
 
     @classmethod
     def swap(cls, bin1, index1, bin2, index2):
-        pass
+        
+        bin1_num = bin1.number_list[index1]
+        bin2_num = bin2.number_list[index2]
+
+        bin1.number_list[index1] = bin2_num
+        bin2.number_list[index2] = bin1_num
 
 class Bin1(Bin):
 

@@ -17,7 +17,7 @@ def main():
         exit()
     algorithm_type = sys.argv[1]
     filename = sys.argv[2]
-    run_time = sys.argv[3]
+    run_time = int(sys.argv[3])
 
     _input = InputParser.parse_input(filename)
     shuffle(_input)
@@ -28,7 +28,7 @@ def main():
     bin_2 = Bin2(_input[_split:2*_split])
     bin_3 = Bin3(_input[2*_split:len(_input)])
 
-
+    Hill(bin_1, bin_2, bin_3, run_time).run()
 
     print(_input)
     if algorithm_type is 'hill':
