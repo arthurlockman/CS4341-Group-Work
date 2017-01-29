@@ -10,6 +10,12 @@ class Bin:
 
     def add(self, number):
         self.number_list.append(number)
+ 
+    def __str__(self):
+        return str(self.number_list + ': ' + self.score())
+    
+    def __repr__(self):
+        return self.__str__()
 
     @classmethod
     def swap(cls, bin1, index1, bin2, index2):
