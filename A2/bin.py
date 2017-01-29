@@ -17,8 +17,8 @@ class Bin:
 
 class Bin1(Bin):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, numbers):
+        super().__init__(numbers)
 
 
     def score(self):
@@ -35,8 +35,8 @@ class Bin1(Bin):
 
 class Bin2(Bin):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, numbers):
+        super().__init__(numbers)
 
 
     def score(self):
@@ -59,8 +59,8 @@ class Bin3(Bin):
 
     primes = [2, 3, 5, 7]
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, numbers):
+        super().__init__(numbers)
 
 
     def score(self):
@@ -99,29 +99,13 @@ class Bin3(Bin):
 
 
 # UNIT TESTS
-b1 = Bin1()
-b1.add(1)
-b1.add(2)
-b1.add(3)
-
+b1 = Bin1([1, 2, 3])
 assert(b1.score() == 2)
 
-b2 = Bin2()
-b2.add(1)
-b2.add(2)
-b2.add(2)
-b2.add(1)
-b2.add(5)
-
+b2 = Bin2([1, 2, 2, 1, 5])
 assert(b2.score() == 1)
 
-b3 = Bin3()
-b3.add(1)
-b3.add(-1)
-b3.add(4)
-b3.add(3)
-b3.add(-7)
-
+b3 = Bin3([1, -2, 4, 3, -7])
 assert(b3.score() == -5)
 
 b3.add(5)
