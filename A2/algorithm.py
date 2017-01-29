@@ -73,3 +73,24 @@ class Hill(Algorithm):
                 return self.bin1, self.bin2, self.bin3, best_score, end_time - current_milli_time()
 
         return self.bin1, self.bin2, self.bin3, best_score, 0
+
+
+class Annealing(Algorithm):
+    def __init__(self, bin1, bin2, bin3, running_time_seconds):
+        super().__init__(bin1, bin2, bin3, running_time_seconds)
+
+    def run(self):
+        end_time = current_milli_time() + self.running_time_seconds
+        best_score = None
+        while current_milli_time() < end_time:
+            start_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
+            best_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
+            best_swap = None
+
+            if best_score != start_score:
+                Bin.swap(*best_swap)
+
+            # Else terminate and restart
+            else:
+                return self.bin1, self.bin2, self.bin3, best_score, end_time - current_milli_time()
+        return self.bin1, self.bin2, self.bin3, best_score, 0
