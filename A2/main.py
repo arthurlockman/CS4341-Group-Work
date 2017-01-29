@@ -1,4 +1,5 @@
 from input_parser import InputParser
+import sys
 
 
 def main():

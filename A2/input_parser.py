@@ -12,5 +12,5 @@ class InputParser:
         # Remove the filename and cast all characters to ints
         with open(filename, 'r') as f:
             file_contents = f.readlines()
-            return list(map(int, file_contents.split()))
+            return list(map(int, file_contents[0].split()))
 
