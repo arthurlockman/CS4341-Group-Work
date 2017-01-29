@@ -1,6 +1,7 @@
 from input_parser import InputParser
 import sys
 from random import shuffle
+from algorithm import *
 
 
 def main():
