@@ -2,14 +2,15 @@
 class Bin:
 
     def __init__():
-        pass
+        self.number_list = []
 
-    def score():
-        pass
+    def score(self):
+        # Override this function
+        raise
 
-    def append():
-        pass
+    def add(self, number):
+        self.number_list.append(number)
 
     @classmethod
-    def swap(bin1, index1, bin2, index2):
+    def swap(cls, bin1, index1, bin2, index2):
         pass
