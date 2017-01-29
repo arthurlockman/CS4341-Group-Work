@@ -1,12 +1,21 @@
-import threading
 import time
 from bin import *
 import random
+import itertools, sys
 
 
 # Function for current time in millis
 def current_milli_time():
     return int(round(time.time() * 1000))
+
+
+spinner = itertools.cycle(['-', '/', '|', '\\'])
+
+
+def spin():
+    sys.stdout.write(next(spinner) + ' Working...')
+    sys.stdout.flush()
+    sys.stdout.write('\b\b\b\b\b\b\b\b\b\b\b\b')
 
 
 class Algorithm():
@@ -52,6 +61,8 @@ class Hill(Algorithm):
                 if score > best_score:
                     best_score = score
                     best_swap = (bin_a, a, bin_b, b)
+
+                spin()  # Give some indication of progress
 
             # If found swap, swap
             if best_score != start_score:
