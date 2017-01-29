@@ -2,7 +2,9 @@ from input_parser import InputParser
 
 
 def main():
-    print(InputParser.parse_input())
+    filename = sys.argv[1]
+    run_time = sys.argv[2]
+    print(InputParser.parse_input(filename))
 
 
 if __name__ == '__main__':
