@@ -23,7 +23,7 @@ class Hill(Algorithm):
 
     def run(self):
         
-        end_time = current_milli_time() + self.running_time_seconds * 1000
+        end_time = current_milli_time() + self.running_time_seconds
 
         while current_milli_time() < end_time:
             
@@ -56,15 +56,15 @@ class Hill(Algorithm):
             # If found swap, swap
             if best_score != start_score:
                 Bin.swap(*best_swap)
-                print(best_score)
+                # print(best_score)
 
             # Else terminate and restart
             else:
                 print("No better move")
-                return best_score
+                return (self.bin1, self.bin2, self.bin3, best_score, end_time - current_milli_time())
 
         print("Timeout")
-        return best_score
+        return (self.bin1, self.bin2, self.bin3, best_score, 0)
 
 
 
