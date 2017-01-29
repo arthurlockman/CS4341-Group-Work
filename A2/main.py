@@ -28,14 +28,11 @@ def main():
     bin_2 = Bin2(_input[_split:2*_split])
     bin_3 = Bin3(_input[2*_split:len(_input)])
 
-    Hill(bin_1, bin_2, bin_3, run_time).run()
-
-    print(_input)
-    if algorithm_type is 'hill':
-        print('Hill climbing')
-    elif algorithm_type is 'annealing':
+    if algorithm_type == 'hill':
+        Hill(bin_1, bin_2, bin_3, run_time).run()
+    elif algorithm_type == 'annealing':
         print('Annealing')
-    elif algorithm_type is 'ga':
+    elif algorithm_type == 'ga':
         print('Genetic Algorithm')
     else:
         print('Unsupported algorithm.')

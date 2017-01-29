@@ -60,8 +60,10 @@ class Hill(Algorithm):
 
             # Else terminate and restart
             else:
+                print("No better move")
                 return best_score
 
+        print("Timeout")
         return best_score
 
 
