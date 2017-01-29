@@ -22,16 +22,11 @@ def main():
     run_time = int(sys.argv[3]) * 1000
     _input = InputParser.parse_input(filename)
     _split = len(_input) // 3
-
-    # bin_1 = Bin1(_input[0:_split])
-    # bin_2 = Bin2(_input[_split:2*_split])
-    # bin_3 = Bin3(_input[2*_split:len(_input)])
-
+    best_bin_1 = None
+    best_bin_2 = None
+    best_bin_3 = None
+    best_score = -math.inf
     if algorithm_type == 'hill':
-        best_bin_1 = None
-        best_bin_2 = None
-        best_bin_3 = None
-        best_score = -math.inf
         while run_time > 0:
             shuffle(_input)
             bin_1 = Bin1(_input[0:_split])
@@ -43,15 +38,24 @@ def main():
                 best_bin_1 = _b1
                 best_bin_2 = _b2
                 best_bin_3 = _b3
-        print('Bin 1: ', best_bin_1, '\nBin 2: ', best_bin_2, '\nBin 3: ', best_bin_3, '\nBest Score:', best_score)
     elif algorithm_type == 'annealing':
-        print('Annealing')
+        while run_time > 0:
+            shuffle(_input)
+            bin_1 = Bin1(_input[0:_split])
+            bin_2 = Bin2(_input[_split:2 * _split])
+            bin_3 = Bin3(_input[2 * _split:len(_input)])
+            _b1, _b2, _b3, _score, run_time = Annealing(bin_1, bin_2, bin_3, run_time).run()
+            if _score > best_score:
+                best_score = _score
+                best_bin_1 = _b1
+                best_bin_2 = _b2
+                best_bin_3 = _b3
     elif algorithm_type == 'ga':
         print('Genetic Algorithm')
     else:
         print('Unsupported algorithm.')
         exit()
-
+    print('Bin 1: ', best_bin_1, '\nBin 2: ', best_bin_2, '\nBin 3: ', best_bin_3, '\nBest Score:', best_score)
 
 if __name__ == '__main__':
     main()
