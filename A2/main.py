@@ -51,6 +51,7 @@ def main():
                 best_bin_2 = _b2
                 best_bin_3 = _b3
     elif algorithm_type == 'ga':
+        # TODO: Genetic Algorithm
         print('Genetic Algorithm')
     else:
         print('Unsupported algorithm.')

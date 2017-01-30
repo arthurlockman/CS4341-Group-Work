@@ -113,6 +113,7 @@ class Annealing(Algorithm):
             if self.p_func(score, best_score, temperature) >= random.randint(0, 1):
                 best_score = score
                 Bin.swap(bin_a, a, bin_b, b)
+            # TODO: Random Restarts
 
             spin()  # Give some indication of progress
 
