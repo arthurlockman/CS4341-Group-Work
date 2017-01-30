@@ -9,13 +9,17 @@ def current_milli_time():
     return int(round(time.time() * 1000))
 
 
-spinner = itertools.cycle(['-', '/', '|', '\\'])
+spinner = itertools.cycle(['\\', '|', '/', '-'])
 
 
 def spin():
-    sys.stdout.write(next(spinner) + ' Working...')
-    sys.stdout.flush()
-    sys.stdout.write('\b\b\b\b\b\b\b\b\b\b\b\b')
+    if current_milli_time() - spin.last_spin > 100:
+        sys.stdout.write(next(spinner) + ' Working...')
+        sys.stdout.flush()
+        sys.stdout.write('\b\b\b\b\b\b\b\b\b\b\b\b')
+        spin.last_spin = current_milli_time()
+
+spin.last_spin = current_milli_time()
 
 
 class Algorithm():
@@ -114,6 +118,11 @@ class Annealing(Algorithm):
 
         return self.bin1, self.bin2, self.bin3, best_score, 0
 
-    def p_func(self, current_state_energy, new_state_energy, temperature):
-        # TODO: actually implement this
-        return 0 if temperature == 0 else math.exp(-(new_state_energy - current_state_energy) / temperature)
+    @staticmethod
+    def p_func(current_state_energy, new_state_energy, temperature):
+        if temperature == 0:
+            return 0
+        try:
+            return math.exp(-(new_state_energy - current_state_energy) / temperature)
+        except OverflowError:
+            return math.inf
