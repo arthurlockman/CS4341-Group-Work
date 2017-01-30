@@ -78,6 +78,7 @@ class Hill(Algorithm):
 class Annealing(Algorithm):
     def __init__(self, bin1, bin2, bin3, running_time_seconds):
         super().__init__(bin1, bin2, bin3, running_time_seconds)
+        self.t_max = 100
 
     def run(self):
 
@@ -87,37 +88,32 @@ class Annealing(Algorithm):
 
             start_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
             best_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
-            best_swap = None
-            for i in range(100):
 
-                # Choose two randome bins to swap numbers
-                bins = [self.bin1, self.bin1, self.bin2, self.bin2, self.bin3, self.bin3]
-                random.shuffle(bins)
-                bin_a, bin_b = bins[0], bins[1]
+            # Choose two random bins to swap numbers
+            bins = [self.bin1, self.bin1, self.bin2, self.bin2, self.bin3, self.bin3]
+            random.shuffle(bins)
+            bin_a, bin_b = bins[0], bins[1]
 
-                # Choose two indexes to swap
-                a, b = random.randint(0, self.bin_size - 1), random.randint(0, self.bin_size - 1)
+            # Choose two indexes to swap
+            a, b = random.randint(0, self.bin_size - 1), random.randint(0, self.bin_size - 1)
 
-                # Swap the numbers and evaluate the score
+            # Swap the numbers and evaluate the score
+            Bin.swap(bin_a, a, bin_b, b)
+            score = self.bin1.score() + self.bin2.score() + self.bin3.score()
+
+            # Unswap the numbers
+            Bin.swap(bin_a, a, bin_b, b)
+
+            # Is this the new state to select?
+            temperature = (float(end_time - current_milli_time()) / self.running_time_seconds) * self.t_max
+            if self.p_func(score, best_score, temperature) >= random.randint(0, 1):
+                best_score = score
                 Bin.swap(bin_a, a, bin_b, b)
-                score = self.bin1.score() + self.bin2.score() + self.bin3.score()
 
-                # Unswap the numbers
-                Bin.swap(bin_a, a, bin_b, b)
-
-                # Is the score max?
-                if score > best_score:
-                    best_score = score
-                    best_swap = (bin_a, a, bin_b, b)
-
-                spin()  # Give some indication of progress
-
-            # If found swap, swap
-            if best_score != start_score:
-                Bin.swap(*best_swap)
-
-            # Else terminate and restart
-            else:
-                return self.bin1, self.bin2, self.bin3, best_score, end_time - current_milli_time()
+            spin()  # Give some indication of progress
 
         return self.bin1, self.bin2, self.bin3, best_score, 0
+
+    def p_func(self, current_state_energy, new_state_energy, temperature):
+        # TODO: actually implement this
+        return 0 if temperature == 0 else math.exp(-(new_state_energy - current_state_energy) / temperature)
