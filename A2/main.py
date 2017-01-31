@@ -118,7 +118,7 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_
     return (best_bin_1, best_bin_2, best_bin_3, best_score)
 
 
-def run_genetic():
+def run_genetic(input_array, run_time):
 
     # Assume the best score to be negative infinity
     best_score = -math.inf
