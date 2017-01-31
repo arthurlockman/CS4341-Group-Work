@@ -82,7 +82,7 @@ class Hill(Algorithm):
 
 
 class Annealing(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_seconds, t_max=100, sideways_max=5):
+    def __init__(self, bin1, bin2, bin3, running_time_seconds, t_max=100, sideways_max=250):
         super().__init__(bin1, bin2, bin3, running_time_seconds)
         self.t_max = t_max
         self.max_sideways_moves = sideways_max
@@ -91,7 +91,7 @@ class Annealing(Algorithm):
 
         end_time = current_milli_time() + self.running_time_seconds
         best_score = None
-        best_score_count = 0
+        sideways_move_count = 0
         while current_milli_time() < end_time:
 
             start_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
@@ -114,15 +114,15 @@ class Annealing(Algorithm):
 
             # Is this the new state to select?
             temperature = (float(end_time - current_milli_time()) / self.running_time_seconds) * self.t_max
-            if self.p_func(score, best_score, temperature) >= random.randint(0, 1):
+            if self.p_func(score, best_score, temperature) >= random.random():
                 if best_score == score:
-                    best_score_count += 1
+                    sideways_move_count += 1
                 else:
-                    best_score_count = 0
+                    sideways_move_count = 0
                 best_score = score
                 Bin.swap(bin_a, a, bin_b, b)
             # Restarts based on if enough of the previous moves had the same score (5)
-            if best_score_count >= self.max_sideways_moves:
+            if sideways_move_count >= self.max_sideways_moves:
                 return self.bin1, self.bin2, self.bin3, best_score, end_time - current_milli_time()
 
             spin()  # Give some indication of progress
