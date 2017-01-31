@@ -23,21 +23,21 @@ spin.last_spin = current_milli_time()
 
 
 class Algorithm():
-    def __init__(self, bin1, bin2, bin3, running_time_seconds):
+    def __init__(self, bin1, bin2, bin3, running_time_ms):
         self.bin1 = bin1
         self.bin2 = bin2
         self.bin3 = bin3
-        self.running_time_seconds = running_time_seconds
+        self.running_time_ms = running_time_ms
         self.bin_size = bin1.get_bin_size()
 
 
 class Hill(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_seconds):
-        super().__init__(bin1, bin2, bin3, running_time_seconds)
+    def __init__(self, bin1, bin2, bin3, running_time_ms):
+        super().__init__(bin1, bin2, bin3, running_time_ms)
 
     def run(self):
 
-        end_time = current_milli_time() + self.running_time_seconds
+        end_time = current_milli_time() + self.running_time_ms
         best_score = None
         while current_milli_time() < end_time:
 
@@ -80,14 +80,15 @@ class Hill(Algorithm):
 
 
 class Annealing(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_seconds, t_max=100, sideways_max=5):
-        super().__init__(bin1, bin2, bin3, running_time_seconds)
+    def __init__(self, bin1, bin2, bin3, running_time_ms, t_max=10, sideways_max=100, t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time)):
+        super().__init__(bin1, bin2, bin3, running_time_ms)
         self.t_max = t_max
         self.max_sideways_moves = sideways_max
+        self.t_schedule_fun = t_schedule_fun
 
     def run(self):
 
-        end_time = current_milli_time() + self.running_time_seconds
+        end_time = current_milli_time() + self.running_time_ms
         best_score = None
         best_score_count = 0
         while current_milli_time() < end_time:
@@ -110,15 +111,19 @@ class Annealing(Algorithm):
             # Unswap the numbers
             Bin.swap(bin_a, a, bin_b, b)
 
+            # Modify the temperature
+            temperature = self.t_schedule_fun(float(end_time - current_milli_time()), self.t_max, self.running_time_ms)
+
+
             # Is this the new state to select?
-            temperature = (float(end_time - current_milli_time()) / self.running_time_seconds) * self.t_max
-            if self.p_func(score, best_score, temperature) >= random.randint(0, 1):
+            if self.p_func(score, best_score, temperature) >= random.random():
                 if best_score == score:
                     best_score_count += 1
                 else:
                     best_score_count = 0
                 best_score = score
                 Bin.swap(bin_a, a, bin_b, b)
+
             # Restarts based on if enough of the previous moves had the same score (5)
             if best_score_count >= self.max_sideways_moves:
                 return self.bin1, self.bin2, self.bin3, best_score, end_time - current_milli_time()
@@ -128,10 +133,10 @@ class Annealing(Algorithm):
         return self.bin1, self.bin2, self.bin3, best_score, 0
 
     @staticmethod
-    def p_func(current_state_energy, new_state_energy, temperature):
+    def p_func(current_score, new_score, temperature):
         if temperature == 0:
             return 0
         try:
-            return math.exp(-(new_state_energy - current_state_energy) / temperature)
+            return math.exp(-(max(0, new_score - current_score)) / temperature)
         except OverflowError:
             return math.inf
