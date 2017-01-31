@@ -36,8 +36,8 @@ def main():
     elif algorithm_type == 'annealing':
         best_bin_1, best_bin_2, best_bin_3, best_score = run_annealing(input_array, run_time)
     elif algorithm_type == 'ga':
-        # TODO: Genetic Algorithm
         print('Genetic Algorithm')
+        best_bin_1, best_bin_2, best_bin_3, best_score = run_genetic(input_array, run_time)
     else:
         print('Unsupported algorithm.')
         exit()
@@ -115,6 +115,39 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_
             best_bin_1 = _b1
             best_bin_2 = _b2
             best_bin_3 = _b3
+
+    return (best_bin_1, best_bin_2, best_bin_3, best_score)
+
+
+def run_genetic():
+
+    # Assume the best score to be negative infinity
+    best_score = -math.inf
+
+    # Shuffle the input array
+    shuffle(input_array)
+
+    # Get the size of each bin. The length of input is guarenteed to be divisible by 3
+    _split = len(input_array) // 3
+
+    # Initialize the bins
+    best_bin_1 = None
+    best_bin_2 = None
+    best_bin_3 = None
+
+    # Split the input array into 3 portions
+    bin_1 = Bin1(input_array[0:_split])
+    bin_2 = Bin2(input_array[_split:2 * _split])
+    bin_3 = Bin3(input_array[2 * _split:len(input_array)])
+
+    _b1, _b2, _b3, _score, run_time = GeneticAlgorithm(bin_1, bin_2, bin_3, run_time).run()
+
+    # If the score is better than the current best, log that
+    if _score > best_score:
+        best_score = _score
+        best_bin_1 = _b1
+        best_bin_2 = _b2
+        best_bin_3 = _b3
 
     return (best_bin_1, best_bin_2, best_bin_3, best_score)
 
