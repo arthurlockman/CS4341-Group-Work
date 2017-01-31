@@ -92,7 +92,7 @@ class Annealing(Algorithm):
 
         end_time = current_milli_time() + self.running_time_ms
         best_score = None
-        best_score_count = 0
+        sideways_move_count = 0
         while current_milli_time() < end_time:
 
             start_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
@@ -119,14 +119,14 @@ class Annealing(Algorithm):
             # Is this the new state to select?
             if self.p_func(score, best_score, temperature) >= random.random():
                 if best_score == score:
-                    best_score_count += 1
+                    sideways_move_count += 1
                 else:
-                    best_score_count = 0
+                    sideways_move_count = 0
                 best_score = score
                 Bin.swap(bin_a, a, bin_b, b)
 
             # Restarts based on if enough of the previous moves had the same score (5)
-            if best_score_count >= self.max_sideways_moves:
+            if sideways_move_count >= self.max_sideways_moves:
                 return self.bin1, self.bin2, self.bin3, best_score, end_time - current_milli_time()
 
             spin()  # Give some indication of progress
