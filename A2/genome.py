@@ -1,5 +1,6 @@
 import random
 from bin import *
+import math
 
 class Genome():
     def __init__(self, numbers):
@@ -41,14 +42,48 @@ class Genome():
         new_genome_1_mismatch = {}
         new_genome_2_mismatch = {}
         for key in _n1.counts():
-            new_genome_2_mismatch[key] = _n2.counts()[key] - other.counts()[key]
-            new_genome_1_mismatch[key] = _n1.counts()[key] - self.counts()[key]
-        for key in new_genome_1_mismatch:
-            if new_genome_1_mismatch[key] != 0:
-                print('G1', key, new_genome_1_mismatch[key])
-        for key in new_genome_2_mismatch:
-            if new_genome_2_mismatch[key] != 0:
-                print('G2', key, new_genome_2_mismatch[key])
+            if _n2.counts()[key] - other.counts()[key] != 0:
+                new_genome_2_mismatch[key] = _n2.counts()[key] - other.counts()[key]
+            if _n1.counts()[key] - self.counts()[key]:
+                new_genome_1_mismatch[key] = _n1.counts()[key] - self.counts()[key]
+        while len(new_genome_1_mismatch) > 0:
+            _idx = 1
+            _keys1 = list(new_genome_1_mismatch.keys())
+            key1 = _keys1[0]
+            key2 = _keys1[1]
+            count1 = new_genome_1_mismatch[_keys1[0]]
+            count2 = new_genome_1_mismatch[_keys1[_idx]]
+            while count1 / math.fabs(count1) == count2 / math.fabs(count2):
+                _idx += 1
+                count2 = new_genome_1_mismatch[_keys1[_idx]]
+                key2 = _keys1[_idx]
+            if count1 < 0:
+                new_genome_1[new_genome_1.index(key2)] = key1
+            else:
+                new_genome_1[new_genome_1.index(key1)] = key2
+            _n1 = Genome(new_genome_1)
+            for key in _n1.counts():
+                if _n1.counts()[key] - self.counts()[key]:
+                    new_genome_1_mismatch[key] = _n1.counts()[key] - self.counts()[key]
+        while len(new_genome_2_mismatch) > 0:
+            _idx = 1
+            _keys1 = list(new_genome_2_mismatch.keys())
+            key1 = _keys1[0]
+            key2 = _keys1[1]
+            count1 = new_genome_2_mismatch[_keys1[0]]
+            count2 = new_genome_2_mismatch[_keys1[_idx]]
+            while count1 / math.fabs(count1) == count2 / math.fabs(count2):
+                _idx += 1
+                count2 = new_genome_2_mismatch[_keys1[_idx]]
+                key2 = _keys1[_idx]
+            if count1 < 0:
+                new_genome_2[new_genome_2.index(key2)] = key1
+            else:
+                new_genome_2[new_genome_2.index(key1)] = key2
+            _n2 = Genome(new_genome_2)
+            for key in _n2.counts():
+                if _n2.counts()[key] - other.counts()[key]:
+                    new_genome_2_mismatch[key] = _n2.counts()[key] - other.counts()[key]
         return Genome(new_genome_1), Genome(new_genome_2)
     
     def __gt__(self, other):
