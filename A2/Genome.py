@@ -28,14 +28,19 @@ class Genome():
         """
         # Random split index
         split_index = random.randint(0, len(self.numbers()) - 1)
-        top_genome = self.numbers()[0:split_index]
-        bottom_genome = other.numbers()[split_index:len(other.numbers())-1]
-        new_genome = top_genome.extend(bottom_genome)
-        new_genome_counts = {}
+        top_genome_1 = self.numbers()[0:split_index]
+        bottom_genome_1 = other.numbers()[split_index:len(other.numbers())-1]
+        top_genome_2 = other.numbers()[0:split_index]
+        bottom_genome_2 = self.numbers()[split_index:len(other.numbers())-1]
+        new_genome_1 = top_genome_1.extend(bottom_genome_1)
+        new_genome_2 = top_genome_2.extend(bottom_genome_2)
+        new_genome_counts_1 = {}
+        new_genome_counts_2 = {}
         for n in range(-9, 10):
-            new_genome_counts[n] = new_genome.count(n)
+            new_genome_counts_1[n] = new_genome_1.count(n)
+            new_genome_counts_2[n] = new_genome_2.count(n)
         # TODO: Remove duplicate counts
-        return Genome(new_genome)
+        return Genome(new_genome_1), Genome(new_genome_2)
     
     def __gt__(self, other):
         return self.score() > other.score()
