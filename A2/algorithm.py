@@ -153,11 +153,7 @@ class GeneticAlgorithm(Algorithm):
         genomes = []
         for i in range(0, self.population_size):
             shuffle(numbers)
-            _split = len(numbers) // 3
-            _bin_1 = Bin1(numbers[0:_split])
-            _bin_2 = Bin2(numbers[_split:2 * _split])
-            _bin_3 = Bin3(numbers[2 * _split:len(numbers)])
-            new_genome = Genome(_bin_1, _bin_2, _bin_3)
+            new_genome = Genome(numbers)
             # Append the new genome to the population (bin1, bin2, bin3, counts, score)
             genomes.append(new_genome)
         genomes.sort(reverse=True)
