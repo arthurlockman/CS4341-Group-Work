@@ -134,11 +134,11 @@ class Annealing(Algorithm):
         return self.bin1, self.bin2, self.bin3, best_score, 0
 
     @staticmethod
-    def p_func(current_score, new_score, temperature):
+    def p_func(new_score, best_score, temperature):
         if temperature == 0:
             return 0
         try:
-            return math.exp(-(max(0, new_score - current_score)) / temperature)
+            return math.exp(-(max(0, best_score - new_score)) / temperature)
         except OverflowError:
             return math.inf
 
