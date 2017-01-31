@@ -3,7 +3,7 @@ from bin import *
 import random
 from random import shuffle
 import itertools, sys
-from Genome import *
+from genome import *
 
 
 # Function for current time in millis
@@ -115,7 +115,6 @@ class Annealing(Algorithm):
 
             # Modify the temperature
             temperature = self.t_schedule_fun(float(end_time - current_milli_time()), self.t_max, self.running_time_ms)
-
 
             # Is this the new state to select?
             if self.p_func(score, best_score, temperature) >= random.random():

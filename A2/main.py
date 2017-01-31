@@ -145,30 +145,40 @@ def tune_annealing():
         lambda time_left, max_temp, total_time: math.exp(time_left * (max_temp / total_time)) - 1]
 
     max_temperatures = [
-        1, 10, 100, 500, 1000
+        1000, 500, 100, 10, 5, 1, 0.5, 0.1, 0.05
     ]
 
     tuning_files = [
-        'tuning_sets/tune_600_a.txt',
-        'tuning_sets/tune_600_b.txt',
-        'tuning_sets/tune_600_c.txt',
-        'tuning_sets/tune_600_d.txt',
-        'tuning_sets/tune_600_e.txt'
+        'tuning_sets/tune_3000_a.txt',
+        'tuning_sets/tune_3000_b.txt',
+        'tuning_sets/tune_3000_c.txt',
+        'tuning_sets/tune_3000_d.txt',
+        'tuning_sets/tune_3000_e.txt'
     ]
 
     run_time_ms = 10000
 
-    for temperature_schedule_function in temperature_schedule_functions:
+    # Tune for temperature function
+    # for temperature_schedule_function in temperature_schedule_functions:
+    #     total = 0
+    #     for filename in tuning_files:
+    #         input_array = InputParser.parse_input(filename)
+    #         _, _, _, score = run_annealing(input_array, run_time_ms, t_max=10, sideways_max=100, t_schedule_fun=temperature_schedule_function)
+    #         total += score
 
+    #     average = float(total) / float(len(tuning_files))
+    #     print(average)
+
+    for max_temp in max_temperatures:
         total = 0
-
         for filename in tuning_files:
             input_array = InputParser.parse_input(filename)
-            _, _, _, score = run_annealing(input_array, run_time_ms, t_max=10, sideways_max=100, t_schedule_fun=temperature_schedule_function)
+
+            # Running with linear function. Performed best earlier
+            _, _, _, score = run_annealing(input_array, run_time_ms, t_max=max_temp, sideways_max=100, t_schedule_fun=temperature_schedule_functions[0])
             total += score
 
         average = float(total) / float(len(tuning_files))
-
         print(average)
 
 if __name__ == '__main__':
