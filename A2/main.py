@@ -122,6 +122,9 @@ def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.3):
 
     # Assume the best score to be negative infinity
     best_score = -math.inf
+    
+    # REMOVE THIS
+    input_array = [0, 1, 3, 5, 6, 2, 6, 4, 5]
 
     # Shuffle the input array
     shuffle(input_array)

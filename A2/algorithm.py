@@ -158,7 +158,7 @@ class GeneticAlgorithm(Algorithm):
         for i in range(0, self.population_size):
             shuffle(numbers)
             new_genome = Genome(numbers)
-            # Append the new genome to the population (bin1, bin2, bin3, counts, score)
+            # Append the new genome to the population
             genomes.append(new_genome)
         end_time = current_milli_time() + self.running_time_ms
         while current_milli_time() < end_time:
@@ -168,7 +168,5 @@ class GeneticAlgorithm(Algorithm):
             if self.elitism_percentage != 0.0:
                 elite_index = int(elite_index * self.elitism_percentage)
             elite_genomes = genomes[0:elite_index]
-            print(elite_genomes[0])
-            print(elite_genomes[1])
-            print(elite_genomes[0].crossover(elite_genomes[1]))
+            elite_genomes[0].crossover(elite_genomes[1])
 

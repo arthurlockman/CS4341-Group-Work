@@ -3,7 +3,8 @@ from bin import *
 
 class Genome():
     def __init__(self, numbers):
-        self.number_list = numbers
+        self.number_list = []
+        self.number_list.extend(numbers)
         _split = len(self.numbers()) // 3
         self.bin1 = Bin1(self.numbers()[0:_split])
         self.bin2 = Bin2(self.numbers()[_split:2 * _split])
@@ -28,28 +29,26 @@ class Genome():
         """
         # Random split index
         split_index = random.randint(0, len(self.numbers()) - 1)
-        print(split_index)
         new_genome_1 = self.numbers()[0:split_index]
-        bottom_genome_1 = other.numbers()[split_index:len(other.numbers())-1]
+        bottom_genome_1 = other.numbers()[split_index:len(other.numbers())]
         new_genome_2 = other.numbers()[0:split_index]
-        bottom_genome_2 = self.numbers()[split_index:len(self.numbers())-1]
+        bottom_genome_2 = self.numbers()[split_index:len(self.numbers())]
         new_genome_1.extend(bottom_genome_1)
         new_genome_2.extend(bottom_genome_2)
-        print('Genomes Equal: ', bottom_genome_1 == bottom_genome_2)
         _n1 = Genome(new_genome_1)
         _n2 = Genome(new_genome_2)
         # TODO: Remove duplicate counts
         new_genome_1_mismatch = {}
         new_genome_2_mismatch = {}
         for key in _n1.counts():
-            new_genome_1_mismatch[key] = 0
-            new_genome_2_mismatch[key] = 0
-            if _n1.counts()[key] != self.counts()[key]:
-                new_genome_1_mismatch[key] = new_genome_1_mismatch[key] + 1
-                print('g1 mismatch ', key, _n1)
-            if _n2.counts()[key] != other.counts()[key]:
-                new_genome_2_mismatch[key] = new_genome_2_mismatch[key] + 1
-                print('g2 mismatch ', key, _n2)
+            new_genome_2_mismatch[key] = _n2.counts()[key] - other.counts()[key]
+            new_genome_1_mismatch[key] = _n1.counts()[key] - self.counts()[key]
+        for key in new_genome_1_mismatch:
+            if new_genome_1_mismatch[key] != 0:
+                print('G1', key, new_genome_1_mismatch[key])
+        for key in new_genome_2_mismatch:
+            if new_genome_2_mismatch[key] != 0:
+                print('G2', key, new_genome_2_mismatch[key])
         return Genome(new_genome_1), Genome(new_genome_2)
     
     def __gt__(self, other):
@@ -62,7 +61,16 @@ class Genome():
         return other.score() == self.score()
     
     def __str__(self):
-        return 'Genome score ' + str(self.score())
+        return 'Genome score ' + str(self.score()) + ' ' + str(self.numbers())
     
     def __repr__(self):
          return str(self)
+ 
+ # UNIT TESTS
+b1 = Genome([1, 2, 3, 4, 5, 1, 2, 2, 1, 5, 1, -2, 4, 3, -7])
+assert(b1.score() == -1)
+assert(b1.numbers() == [1, 2, 3, 4, 5, 1, 2, 2, 1, 5, 1, -2, 4, 3, -7])
+assert(b1.numbers() != [1, 2, 3, 5, 4, 1, 2, 2, 1, 5, 1, -2, 4, -1, 3])
+b2 = Genome([1, 2, 3, 4, 5, 1, 2, 2, 1, 5, 1, -2, -7, 4, 3])
+assert(b1.numbers() != b2.numbers())
+
