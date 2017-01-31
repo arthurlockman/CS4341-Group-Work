@@ -85,7 +85,12 @@ def main():
 
     elif algorithm_type == 'ga':
         # TODO: Genetic Algorithm
+        # Split the input array into 3 portions
+        bin_1 = Bin1(input_array[0:_split])
+        bin_2 = Bin2(input_array[_split:2 * _split])
+        bin_3 = Bin3(input_array[2 * _split:len(input_array)])
         print('Genetic Algorithm')
+        GeneticAlgorithm(bin_1, bin_2, bin_3, run_time).run()
     else:
         print('Unsupported algorithm.')
         exit()
