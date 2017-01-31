@@ -118,7 +118,7 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_
     return (best_bin_1, best_bin_2, best_bin_3, best_score)
 
 
-def run_genetic():
+def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.3):
 
     # Assume the best score to be negative infinity
     best_score = -math.inf
@@ -134,7 +134,7 @@ def run_genetic():
     bin_2 = Bin2(input_array[_split:2 * _split])
     bin_3 = Bin3(input_array[2 * _split:len(input_array)])
 
-    GeneticAlgorithm(bin_1, bin_2, bin_3, run_time).run()
+    GeneticAlgorithm(bin_1, bin_2, bin_3, run_time, pop_size=pop_size, elitism_pct=elitism_pct).run()
 
     return (None, None, None, 0)
 

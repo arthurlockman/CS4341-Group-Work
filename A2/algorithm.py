@@ -143,8 +143,8 @@ class Annealing(Algorithm):
             return math.inf
 
 class GeneticAlgorithm(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_seconds, pop_size=100, elitism_pct=0.3):
-        super().__init__(bin1, bin2, bin3, running_time_seconds)
+    def __init__(self, bin1, bin2, bin3, running_time_ms, pop_size=100, elitism_pct=0.3):
+        super().__init__(bin1, bin2, bin3, running_time_ms)
         self.population_size = pop_size
         self.elitism_percentage = elitism_pct
     
@@ -160,6 +160,15 @@ class GeneticAlgorithm(Algorithm):
             new_genome = Genome(numbers)
             # Append the new genome to the population (bin1, bin2, bin3, counts, score)
             genomes.append(new_genome)
-        genomes.sort(reverse=True)
-        print(genomes)
+        end_time = current_milli_time() + self.running_time_ms
+        while current_milli_time() < end_time:
+            # Select elites
+            genomes.sort(reverse=True)
+            elite_index = len(genomes) - 1
+            if self.elitism_percentage != 0.0:
+                elite_index = int(elite_index * self.elitism_percentage)
+            elite_genomes = genomes[0:elite_index]
+            print(elite_genomes[0])
+            print(elite_genomes[1])
+            print(elite_genomes[0].crossover(elite_genomes[1]))
 
