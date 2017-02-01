@@ -134,11 +134,11 @@ class Annealing(Algorithm):
         return self.bin1, self.bin2, self.bin3, best_score, 0
 
     @staticmethod
-    def p_func(new_score, best_score, temperature):
+    def p_func(current_score, new_score, temperature):
         if temperature == 0:
             return 0
         try:
-            return math.exp(-(max(0, best_score - new_score)) / temperature)
+            return math.exp(-(max(0, new_score - current_score)) / temperature)
         except OverflowError:
             return math.inf
 
@@ -168,5 +168,5 @@ class GeneticAlgorithm(Algorithm):
             if self.elitism_percentage != 0.0:
                 elite_index = int(elite_index * self.elitism_percentage)
             elite_genomes = genomes[0:elite_index]
-            elite_genomes[0].crossover(elite_genomes[1])
+            print(elite_genomes[0].crossover(elite_genomes[1]))
 

@@ -1,5 +1,7 @@
 import random
 from bin import *
+import math
+
 
 class Genome():
     def __init__(self, numbers):
@@ -31,24 +33,12 @@ class Genome():
         split_index = random.randint(0, len(self.numbers()) - 1)
         new_genome_1 = self.numbers()[0:split_index]
         bottom_genome_1 = other.numbers()[split_index:len(other.numbers())]
+        new_genome_1.extend(bottom_genome_1)
         new_genome_2 = other.numbers()[0:split_index]
         bottom_genome_2 = self.numbers()[split_index:len(self.numbers())]
-        new_genome_1.extend(bottom_genome_1)
         new_genome_2.extend(bottom_genome_2)
-        _n1 = Genome(new_genome_1)
-        _n2 = Genome(new_genome_2)
         # TODO: Remove duplicate counts
-        new_genome_1_mismatch = {}
-        new_genome_2_mismatch = {}
-        for key in _n1.counts():
-            new_genome_2_mismatch[key] = _n2.counts()[key] - other.counts()[key]
-            new_genome_1_mismatch[key] = _n1.counts()[key] - self.counts()[key]
-        for key in new_genome_1_mismatch:
-            if new_genome_1_mismatch[key] != 0:
-                print('G1', key, new_genome_1_mismatch[key])
-        for key in new_genome_2_mismatch:
-            if new_genome_2_mismatch[key] != 0:
-                print('G2', key, new_genome_2_mismatch[key])
+
         return Genome(new_genome_1), Genome(new_genome_2)
     
     def __gt__(self, other):
@@ -65,12 +55,18 @@ class Genome():
     
     def __repr__(self):
          return str(self)
- 
- # UNIT TESTS
-b1 = Genome([1, 2, 3, 4, 5, 1, 2, 2, 1, 5, 1, -2, 4, 3, -7])
-assert(b1.score() == -1)
-assert(b1.numbers() == [1, 2, 3, 4, 5, 1, 2, 2, 1, 5, 1, -2, 4, 3, -7])
+
+    @staticmethod
+    def count(number_list):
+        number_count_list = {}
+        for n in range(-9, 10):
+            number_count_list[n] = number_list.count(n)
+        return number_count_list
+
+# UNIT TESTS
+b1 = Genome([1, 5, 1, -2, 4, 3, -7, 1, 2, 3, 4, 5, 1, 2, 2])
+assert(b1.numbers() == [1, 5, 1, -2, 4, 3, -7, 1, 2, 3, 4, 5, 1, 2, 2])
 assert(b1.numbers() != [1, 2, 3, 5, 4, 1, 2, 2, 1, 5, 1, -2, 4, -1, 3])
 b2 = Genome([1, 2, 3, 4, 5, 1, 2, 2, 1, 5, 1, -2, -7, 4, 3])
 assert(b1.numbers() != b2.numbers())
-
+b1.crossover(b2)
