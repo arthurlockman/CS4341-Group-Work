@@ -82,7 +82,7 @@ class Hill(Algorithm):
 
 
 class Annealing(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_ms, t_max=10, sideways_max=100, t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time)):
+    def __init__(self, bin1, bin2, bin3, running_time_ms, t_max=1000000, sideways_max=100, t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time)):
         super().__init__(bin1, bin2, bin3, running_time_ms)
         self.t_max = t_max
         self.max_sideways_moves = sideways_max
@@ -93,6 +93,8 @@ class Annealing(Algorithm):
         end_time = current_milli_time() + self.running_time_ms
         best_score = None
         sideways_move_count = 0
+        temperature = self.t_max
+
         while current_milli_time() < end_time:
 
             start_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
@@ -114,7 +116,7 @@ class Annealing(Algorithm):
             Bin.swap(bin_a, a, bin_b, b)
 
             # Modify the temperature
-            temperature = self.t_schedule_fun(float(end_time - current_milli_time()), self.t_max, self.running_time_ms)
+            temperature = self.t_schedule_fun(float(end_time - current_milli_time()), self.running_time_ms, temperature, self.t_max)
 
             # Is this the new state to select?
             if self.p_func(score, best_score, temperature) >= random.random():
