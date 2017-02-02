@@ -57,7 +57,8 @@ class Genome:
             _tmp = new_genome_2[s2]
             new_genome_2[s2] = new_genome_2[s1]
             new_genome_2[s1] = _tmp
-        return [Genome(new_genome_1), Genome(new_genome_2)]
+        return [Genome(new_genome_1, mutation_rate=self.mutation_rate),
+                Genome(new_genome_2, mutation_rate=self.mutation_rate)]
     
     def __gt__(self, other):
         return self.score() > other.score()

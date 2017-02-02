@@ -145,10 +145,11 @@ class Annealing(Algorithm):
 
 
 class GeneticAlgorithm(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_ms, pop_size=100, elitism_pct=0.3):
+    def __init__(self, bin1, bin2, bin3, running_time_ms, pop_size=100, elitism_pct=0.3, mutation_rate=0.3):
         super().__init__(bin1, bin2, bin3, running_time_ms)
         self.population_size = pop_size
         self.elitism_percentage = elitism_pct
+        self.mutation_rate = mutation_rate
 
     def run(self):
         numbers = []
@@ -159,7 +160,7 @@ class GeneticAlgorithm(Algorithm):
         genomes = []
         for i in range(0, self.population_size):
             shuffle(numbers)
-            new_genome = Genome(numbers)
+            new_genome = Genome(numbers, mutation_rate=self.mutation_rate)
             # Append the new genome to the population
             genomes.append(new_genome)
         end_time = current_milli_time() + self.running_time_ms

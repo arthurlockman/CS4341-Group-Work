@@ -118,7 +118,7 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100,
     return best_bin_1, best_bin_2, best_bin_3, best_score
 
 
-def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.30):
+def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.30, mutation_rate=0.3):
     # Shuffle the input array
     shuffle(input_array)
 
@@ -131,7 +131,7 @@ def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.30):
     bin_3 = Bin3(input_array[2 * _split:len(input_array)])
 
     _b1, _b2, _b3, _score, _ = GeneticAlgorithm(bin_1, bin_2, bin_3, run_time, pop_size=pop_size,
-                                                elitism_pct=elitism_pct).run()
+                                                elitism_pct=elitism_pct, mutation_rate=mutation_rate).run()
 
     return _b1, _b2, _b3, _score
 
