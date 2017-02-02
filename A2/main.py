@@ -211,8 +211,10 @@ def tune_genetic():
             for mut in mutation_rates:
                 for filename in tuning_files:
                     input_array = InputParser.parse_input(filename)
-                    _, _, _, score = run_genetic(input_array, 10000, elitism_pct=pct, mutation_rate=mut, pop_size=pop)
-                    print(filename + ',' + str(pop) + ',' + str(pct) + ',' + str(mut) + ',' + str(score))
+                    for i in range(5):
+                        shuffle(input_array)
+                        _, _, _, score = run_genetic(input_array, 10000, elitism_pct=pct, mutation_rate=mut, pop_size=pop)
+                        print(filename + ',' + str(pop) + ',' + str(pct) + ',' + str(mut) + ',' + str(score))
 
 
 def tune_annealing():
