@@ -1,6 +1,8 @@
 from algorithm import *
 from bin import *
 from input_parser import InputParser
+from multiprocessing import *
+
 
 
 def parse_command_line_input():
@@ -8,11 +10,12 @@ def parse_command_line_input():
         print('Error: incorrect input arguments selected.')
         print()
         print('Usage: python3 main.py [optimization type] [filename] ' +
-              '[time limit]')
+              '[time limit] [-mp]')
         print('       optimization type: hill, annealing, or ga')
         print('       filename: the input filename to read')
         print('       time limit: the time limit (in seconds) to limit ' +
               'the optimization to')
+        print('       mp processes: use -mp to use multiple processes')
         exit()
 
     # Parsing command line input
@@ -20,19 +23,32 @@ def parse_command_line_input():
     filename = sys.argv[2]
     run_time = float(sys.argv[3]) * 1000
 
-    return algorithm_type, filename, run_time
+    if '-mp' in sys.argv:
+        mp = True
+    else:
+        mp = False
+
+
+    return algorithm_type, filename, run_time, mp
 
 
 def main():
-    (algorithm_type, filename, run_time) = parse_command_line_input()
+    (algorithm_type, filename, run_time, mp) = parse_command_line_input()
 
     input_array = InputParser.parse_input(filename)
 
     best_bin_1, best_bin_2, best_bin_3, best_score = None, None, None, None
+
     if algorithm_type == 'hill':
-        best_bin_1, best_bin_2, best_bin_3, best_score = run_hill(input_array, run_time)
+        if mp == True:
+            best_bin_1, best_bin_2, best_bin_3, best_score = multi_thread_algorithm(input_array, run_time, run_hill)
+        else:
+            best_bin_1, best_bin_2, best_bin_3, best_score = run_hill(input_array, run_time)
     elif algorithm_type == 'annealing':
-        best_bin_1, best_bin_2, best_bin_3, best_score = run_annealing(input_array, run_time)
+        if mp == True:
+            best_bin_1, best_bin_2, best_bin_3, best_score = multi_thread_algorithm(input_array, run_time, run_annealing)
+        else:
+            best_bin_1, best_bin_2, best_bin_3, best_score = run_annealing(input_array, run_time)
     elif algorithm_type == 'ga':
         best_bin_1, best_bin_2, best_bin_3, best_score = run_genetic(input_array, run_time)
     else:
@@ -41,8 +57,33 @@ def main():
 
     print('Bin 1: ', best_bin_1, '\nBin 2: ', best_bin_2, '\nBin 3: ', best_bin_3, '\nBest Score:', best_score)
 
+def multi_thread_algorithm(input_array, run_time, algorithm):
 
-def run_hill(input_array, run_time):
+    result_queue = Queue()
+    processes = []
+    params = (input_array, run_time)
+
+    for i in range(cpu_count()):
+        p = Process(target=algorithm, args=params, kwargs={'result_queue':result_queue})
+        processes.append(p)
+        p.start()
+
+    # Wait for processes to finish
+    for p in processes:
+        p.join()
+
+    # Get the max result
+    best_score = -math.inf
+    while not result_queue.empty():
+        bin_1, bin_2, bin_3, score = result_queue.get()
+        print(score)
+
+        if score > best_score:
+            best_bin_1, best_bin_2, best_bin_3, best_score = bin_1, bin_2, bin_3, score
+
+    return best_bin_1, best_bin_2, best_bin_3, best_score
+
+def run_hill(input_array, run_time, result_queue=None):
     # Assume the best score to be negative infinity
     best_score = -math.inf
 
@@ -76,11 +117,14 @@ def run_hill(input_array, run_time):
             best_bin_2 = _b2
             best_bin_3 = _b3
 
-    return best_bin_1, best_bin_2, best_bin_3, best_score
+    if result_queue is None:
+        return best_bin_1, best_bin_2, best_bin_3, best_score
+    else:
+        result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
 def run_annealing(input_array, run_time, t_max=10, sideways_max=100,
-                  t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time)):
+                  t_schedule_fun=lambda time_left, total_time, current_temp, max_temp: max_temp * (time_left / total_time), result_queue=None):
     # Assume the best score to be negative infinity
     best_score = -math.inf
 
@@ -115,7 +159,10 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100,
             best_bin_2 = _b2
             best_bin_3 = _b3
 
-    return best_bin_1, best_bin_2, best_bin_3, best_score
+    if result_queue is None:
+        return best_bin_1, best_bin_2, best_bin_3, best_score
+    else:
+        result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
 def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.30, mutation_rate=0.3):
@@ -136,7 +183,7 @@ def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.30, mutation_
     return _b1, _b2, _b3, _score
 
 
-def tune_annealing():
+def tune_annealing(a):
     temperature_schedule_functions = [
     # Linear
         lambda time_left, total_time, current_temp, max_temp: max_temp * (time_left / total_time),
@@ -164,7 +211,6 @@ def tune_annealing():
 
         average = float(total) / float(len(tuning_files))
         print(average)
-
 
 if __name__ == '__main__':
 
