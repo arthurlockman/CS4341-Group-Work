@@ -118,7 +118,7 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100,
     return best_bin_1, best_bin_2, best_bin_3, best_score
 
 
-def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.30, mutation_rate=0.3):
+def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_rate=0.3):
     # Shuffle the input array
     shuffle(input_array)
 
