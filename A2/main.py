@@ -38,22 +38,24 @@ def main():
     input_array = InputParser.parse_input(filename)
 
     best_bin_1, best_bin_2, best_bin_3, best_score = None, None, None, None
+    algorithm = None
 
+    # Which algorithm is running? 
     if algorithm_type == 'hill':
-        if mp == True:
-            best_bin_1, best_bin_2, best_bin_3, best_score = multi_thread_algorithm(input_array, run_time, run_hill)
-        else:
-            best_bin_1, best_bin_2, best_bin_3, best_score = run_hill(input_array, run_time)
+        algorithm = run_hill
     elif algorithm_type == 'annealing':
-        if mp == True:
-            best_bin_1, best_bin_2, best_bin_3, best_score = multi_thread_algorithm(input_array, run_time, run_annealing)
-        else:
-            best_bin_1, best_bin_2, best_bin_3, best_score = run_annealing(input_array, run_time)
+        algorith = run_annealing
     elif algorithm_type == 'ga':
-        best_bin_1, best_bin_2, best_bin_3, best_score = run_genetic(input_array, run_time)
+        algorithm = run_genetic
     else:
         print('Unsupported algorithm.')
         exit()
+
+    # Multiprocess?
+    if mp == True:
+        best_bin_1, best_bin_2, best_bin_3, best_score = multi_thread_algorithm(input_array, run_time, algorithm)
+    else:
+        best_bin_1, best_bin_2, best_bin_3, best_score = algorithm(input_array, run_time)
 
     print('Bin 1: ', best_bin_1, '\nBin 2: ', best_bin_2, '\nBin 3: ', best_bin_3, '\nBest Score:', best_score)
 
@@ -165,7 +167,7 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100,
         result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
-def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_rate=0.3):
+def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_rate=0.3, result_queue=None):
     # Shuffle the input array
     shuffle(input_array)
 
@@ -177,10 +179,13 @@ def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_r
     bin_2 = Bin2(input_array[_split:2 * _split])
     bin_3 = Bin3(input_array[2 * _split:len(input_array)])
 
-    _b1, _b2, _b3, _score, _ = GeneticAlgorithm(bin_1, bin_2, bin_3, run_time, pop_size=pop_size,
+    best_bin_1, best_bin_2, best_bin_3, best_score, _ = GeneticAlgorithm(bin_1, bin_2, bin_3, run_time, pop_size=pop_size,
                                                 elitism_pct=elitism_pct, mutation_rate=mutation_rate).run()
 
-    return _b1, _b2, _b3, _score
+    if result_queue is None:
+        return best_bin_1, best_bin_2, best_bin_3, best_score
+    else:
+        result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
 def tune_annealing(a):
