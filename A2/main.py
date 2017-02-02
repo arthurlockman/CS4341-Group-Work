@@ -197,7 +197,7 @@ def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_r
 def tune_genetic():
     pop_size = [10, 100, 1000]
     elitism_percentages = [0.0, 0.1, 0.2, 0.3]
-    mutation_rates = [0.0, 0.1, 0.2, 0.3, 0.4]
+    mutation_rates = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
     tuning_files = [
         'tuning_sets/tune_600_a.txt',
         'tuning_sets/tune_600_b.txt',
