@@ -83,8 +83,8 @@ class Hill(Algorithm):
 
 
 class Annealing(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_ms, t_max=10, sideways_max=100,
-                 t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time)):
+    
+    def __init__(self, bin1, bin2, bin3, running_time_ms, t_max=1000000, sideways_max=100, t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time)):
         super().__init__(bin1, bin2, bin3, running_time_ms)
         self.t_max = t_max
         self.max_sideways_moves = sideways_max
@@ -95,6 +95,8 @@ class Annealing(Algorithm):
         end_time = current_milli_time() + self.running_time_ms
         best_score = None
         sideways_move_count = 0
+        temperature = self.t_max
+
         while current_milli_time() < end_time:
 
             best_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
@@ -115,7 +117,7 @@ class Annealing(Algorithm):
             Bin.swap(bin_a, a, bin_b, b)
 
             # Modify the temperature
-            temperature = self.t_schedule_fun(float(end_time - current_milli_time()), self.t_max, self.running_time_ms)
+            temperature = self.t_schedule_fun(float(end_time - current_milli_time()), self.running_time_ms, temperature, self.t_max)
 
             # Is this the new state to select?
             if self.p_func(score, best_score, temperature) >= random.random():
@@ -145,10 +147,13 @@ class Annealing(Algorithm):
 
 
 class GeneticAlgorithm(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_ms, pop_size=100, elitism_pct=0.3):
+    def __init__(self, bin1, bin2, bin3, running_time_ms, pop_size=100, elitism_pct=0.3,
+                 mutation_rate=0.3, tuning=False):
         super().__init__(bin1, bin2, bin3, running_time_ms)
         self.population_size = pop_size
         self.elitism_percentage = elitism_pct
+        self.mutation_rate = mutation_rate
+        self.tuning = tuning
 
     def run(self):
         numbers = []
@@ -159,15 +164,40 @@ class GeneticAlgorithm(Algorithm):
         genomes = []
         for i in range(0, self.population_size):
             shuffle(numbers)
-            new_genome = Genome(numbers)
+            new_genome = Genome(numbers, mutation_rate=self.mutation_rate)
             # Append the new genome to the population
             genomes.append(new_genome)
         end_time = current_milli_time() + self.running_time_ms
         while current_milli_time() < end_time:
+            new_population = []
             # Select elites
             genomes.sort(reverse=True)
             elite_index = len(genomes) - 1
             if self.elitism_percentage != 0.0:
-                elite_index = int(elite_index * self.elitism_percentage)
-            elite_genomes = genomes[0:elite_index]
-            print(elite_genomes[0].crossover(elite_genomes[1]))
+                elite_index = int(elite_index * self.elitism_percentage) + 1
+                elite_genomes = genomes[0:elite_index]
+                new_population.extend(elite_genomes)
+                genomes = genomes[elite_index:len(genomes)]
+            genomes.sort(reverse=True)
+            while len(new_population) < self.population_size:
+                # Breed while the population is too small
+                # Select breeding candidate based on probability
+                new_population.extend(self.select_and_breed_pair(genomes))
+            genomes = []
+            genomes.extend(new_population)
+            if not self.tuning:
+                spin()
+        genomes.sort(reverse=True)
+        return genomes[0].bin1, genomes[0].bin2, genomes[0].bin3, genomes[0].score(), 0
+
+    @staticmethod
+    def select_and_breed_pair(genomes):
+        selected_genomes = []
+        while len(selected_genomes) < 2:
+            for genome in genomes:
+                weight = float(len(genomes) - genomes.index(genome)) / len(genomes)
+                if weight >= random.random():
+                    selected_genomes.append(genome)
+                if len(selected_genomes) == 2:
+                    break
+        return selected_genomes[0].crossover(selected_genomes[1])
