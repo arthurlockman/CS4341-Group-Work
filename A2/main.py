@@ -4,7 +4,6 @@ from input_parser import InputParser
 from multiprocessing import *
 
 
-
 def parse_command_line_input():
     if len(sys.argv) < 4:
         print('Error: incorrect input arguments selected.')
@@ -27,7 +26,6 @@ def parse_command_line_input():
         mp = True
     else:
         mp = False
-
 
     return algorithm_type, filename, run_time, mp
 
@@ -52,21 +50,21 @@ def main():
         exit()
 
     # Multiprocess?
-    if mp == True:
+    if mp:
         best_bin_1, best_bin_2, best_bin_3, best_score = multi_thread_algorithm(input_array, run_time, algorithm)
     else:
         best_bin_1, best_bin_2, best_bin_3, best_score = algorithm(input_array, run_time)
 
     print('Bin 1: ', best_bin_1, '\nBin 2: ', best_bin_2, '\nBin 3: ', best_bin_3, '\nBest Score:', best_score)
 
-def multi_thread_algorithm(input_array, run_time, algorithm):
 
+def multi_thread_algorithm(input_array, run_time, algorithm):
     result_queue = Queue()
     processes = []
     params = (input_array, run_time)
 
     for i in range(cpu_count()):
-        p = Process(target=algorithm, args=params, kwargs={'result_queue':result_queue})
+        p = Process(target=algorithm, args=params, kwargs={'result_queue': result_queue})
         processes.append(p)
         p.start()
 
@@ -84,6 +82,7 @@ def multi_thread_algorithm(input_array, run_time, algorithm):
             best_bin_1, best_bin_2, best_bin_3, best_score = bin_1, bin_2, bin_3, score
 
     return best_bin_1, best_bin_2, best_bin_3, best_score
+
 
 def run_hill(input_array, run_time, result_queue=None):
     # Assume the best score to be negative infinity
@@ -126,10 +125,10 @@ def run_hill(input_array, run_time, result_queue=None):
 
 
 def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_fun=None, result_queue=None):
-
     if t_schedule_fun is None:
         # t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp * (time_left / total_time)
-        t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp / (1 + 0.1 * (total_time - time_left) ** 2)
+        t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp / (
+            1 + 0.1 * (total_time - time_left) ** 2)
         # t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: current_temp * 0.97
 
     # Assume the best score to be negative infinity
@@ -184,8 +183,10 @@ def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_r
     bin_2 = Bin2(input_array[_split:2 * _split])
     bin_3 = Bin3(input_array[2 * _split:len(input_array)])
 
-    best_bin_1, best_bin_2, best_bin_3, best_score, _ = GeneticAlgorithm(bin_1, bin_2, bin_3, run_time, pop_size=pop_size,
-                                                elitism_pct=elitism_pct, mutation_rate=mutation_rate).run()
+    best_bin_1, best_bin_2, best_bin_3, best_score, _ = GeneticAlgorithm(bin_1, bin_2, bin_3, run_time,
+                                                                         pop_size=pop_size,
+                                                                         elitism_pct=elitism_pct,
+                                                                         mutation_rate=mutation_rate).run()
 
     if result_queue is None:
         return best_bin_1, best_bin_2, best_bin_3, best_score
@@ -193,13 +194,34 @@ def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_r
         result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
-def tune_annealing(a):
+def tune_genetic():
+    pop_size = [10, 100, 1000]
+    elitism_percentages = [0.0, 0.1, 0.2, 0.3]
+    mutation_rates = [0.0, 0.1, 0.2, 0.3, 0.4]
+    tuning_files = [
+        'tuning_sets/tune_600_a.txt',
+        'tuning_sets/tune_600_b.txt',
+        'tuning_sets/tune_600_c.txt',
+        'tuning_sets/tune_600_d.txt',
+        'tuning_sets/tune_600_e.txt'
+    ]
+    print('Filename, population size, elitism percentage, mutation rate, score')
+    for pop in pop_size:
+        for pct in elitism_percentages:
+            for mut in mutation_rates:
+                for filename in tuning_files:
+                    input_array = InputParser.parse_input(filename)
+                    _, _, _, score = run_genetic(input_array, 10000, elitism_pct=pct, mutation_rate=mut, pop_size=pop)
+                    print(filename + ',' + str(pop) + ',' + str(pct) + ',' + str(mut) + ',' + str(score))
+
+
+def tune_annealing():
     temperature_schedule_functions = [
-    # Linear
+        # Linear
         lambda time_left, total_time, current_temp, max_temp: max_temp * (time_left / total_time),
-    # Inverse Quadratic
+        # Inverse Quadratic
         lambda time_left, total_time, current_temp, max_temp: max_temp / (1 + 0.1 * (total_time - time_left) ** 2),
-    # Geometric
+        # Geometric
         lambda time_left, total_time, current_temp, max_temp: current_temp * 0.97]
 
     tuning_files = [
@@ -222,12 +244,13 @@ def tune_annealing(a):
         average = float(total) / float(len(tuning_files))
         print(average)
 
+
 if __name__ == '__main__':
 
     if len(sys.argv) > 1 and sys.argv[1] == 'tune':
         if sys.argv[2] == 'annealing':
             tune_annealing()
         elif sys.argv[2] == 'ga':
-            pass
+            tune_genetic()
     else:
         main()
