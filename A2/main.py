@@ -44,7 +44,7 @@ def main():
     if algorithm_type == 'hill':
         algorithm = run_hill
     elif algorithm_type == 'annealing':
-        algorith = run_annealing
+        algorithm = run_annealing
     elif algorithm_type == 'ga':
         algorithm = run_genetic
     else:
@@ -125,12 +125,11 @@ def run_hill(input_array, run_time, result_queue=None):
         result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
-def run_annealing(input_array, run_time, t_max=10, sideways_max=100,
-                  t_schedule_fun=None, result_queue=None):
+def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_fun=None, result_queue=None):
 
     if t_schedule_fun is None:
-        t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp * (time_left / total_time)
-        # t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp / (1 + 0.1 * (total_time - time_left) ** 2)
+        # t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp * (time_left / total_time)
+        t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp / (1 + 0.1 * (total_time - time_left) ** 2)
         # t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: current_temp * 0.97
 
     # Assume the best score to be negative infinity
