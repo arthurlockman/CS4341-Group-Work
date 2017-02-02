@@ -148,7 +148,7 @@ class Annealing(Algorithm):
 
 class GeneticAlgorithm(Algorithm):
     def __init__(self, bin1, bin2, bin3, running_time_ms, pop_size=100, elitism_pct=0.3,
-                 mutation_rate=0.3, tuning=false):
+                 mutation_rate=0.3, tuning=False):
         super().__init__(bin1, bin2, bin3, running_time_ms)
         self.population_size = pop_size
         self.elitism_percentage = elitism_pct
