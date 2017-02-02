@@ -1,8 +1,8 @@
+import itertools
+import sys
 import time
-from bin import *
-import random
 from random import shuffle
-import itertools, sys
+
 from genome import *
 
 
@@ -21,10 +21,11 @@ def spin():
         sys.stdout.write('\b\b\b\b\b\b\b\b\b\b\b\b')
         spin.last_spin = current_milli_time()
 
+
 spin.last_spin = current_milli_time()
 
 
-class Algorithm():
+class Algorithm:
     def __init__(self, bin1, bin2, bin3, running_time_ms):
         self.bin1 = bin1
         self.bin2 = bin2
@@ -72,7 +73,7 @@ class Hill(Algorithm):
 
             # If found swap, swap
             if best_score != start_score:
-                Bin.swap(*best_swap)
+                Bin.swap(best_swap[0], best_swap[1], best_swap[2], best_swap[3])
 
             # Else terminate and restart
             else:
@@ -82,7 +83,8 @@ class Hill(Algorithm):
 
 
 class Annealing(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_ms, t_max=10, sideways_max=100, t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time)):
+    def __init__(self, bin1, bin2, bin3, running_time_ms, t_max=10, sideways_max=100,
+                 t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time)):
         super().__init__(bin1, bin2, bin3, running_time_ms)
         self.t_max = t_max
         self.max_sideways_moves = sideways_max
@@ -95,7 +97,6 @@ class Annealing(Algorithm):
         sideways_move_count = 0
         while current_milli_time() < end_time:
 
-            start_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
             best_score = self.bin1.score() + self.bin2.score() + self.bin3.score()
 
             # Choose two random bins to swap numbers
@@ -142,12 +143,13 @@ class Annealing(Algorithm):
         except OverflowError:
             return math.inf
 
+
 class GeneticAlgorithm(Algorithm):
     def __init__(self, bin1, bin2, bin3, running_time_ms, pop_size=100, elitism_pct=0.3):
         super().__init__(bin1, bin2, bin3, running_time_ms)
         self.population_size = pop_size
         self.elitism_percentage = elitism_pct
-    
+
     def run(self):
         numbers = []
         numbers.extend(self.bin1.number_list)
@@ -169,4 +171,3 @@ class GeneticAlgorithm(Algorithm):
                 elite_index = int(elite_index * self.elitism_percentage)
             elite_genomes = genomes[0:elite_index]
             print(elite_genomes[0].crossover(elite_genomes[1]))
-

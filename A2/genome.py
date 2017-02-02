@@ -1,9 +1,9 @@
 import random
+
 from bin import *
-import math
 
 
-class Genome():
+class Genome:
     def __init__(self, numbers):
         self.number_list = []
         self.number_list.extend(numbers)

@@ -119,12 +119,6 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100,
 
 
 def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.3):
-    # Assume the best score to be negative infinity
-    best_score = -math.inf
-
-    # REMOVE THIS
-    input_array = [0, 1, 3, 5, 6, 2, 6, 4, 5]
-
     # Shuffle the input array
     shuffle(input_array)
 
@@ -136,16 +130,17 @@ def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.3):
     bin_2 = Bin2(input_array[_split:2 * _split])
     bin_3 = Bin3(input_array[2 * _split:len(input_array)])
 
-    GeneticAlgorithm(bin_1, bin_2, bin_3, run_time, pop_size=pop_size, elitism_pct=elitism_pct).run()
+    _b1, _b2, _b3, _score, _ = GeneticAlgorithm(bin_1, bin_2, bin_3, run_time, pop_size=pop_size,
+                                                elitism_pct=elitism_pct).run()
 
-    return None, None, None, 0
+    return _b1, _b2, _b3, _score
 
 
 def tune_annealing():
     temperature_schedule_functions = [
-        lambda time_left, max_temp, total_time: time_left * (max_temp / total_time),
-        lambda time_left, max_temp, total_time: (time_left ** 2) * (max_temp / total_time),
-        lambda time_left, max_temp, total_time: math.exp(time_left * (max_temp / total_time)) - 1]
+        lambda time_left, _max_temp, total_time: time_left * (_max_temp / total_time),
+        lambda time_left, _max_temp, total_time: (time_left ** 2) * (_max_temp / total_time),
+        lambda time_left, _max_temp, total_time: math.exp(time_left * (_max_temp / total_time)) - 1]
 
     max_temperatures = [
         1000, 500, 100, 10, 5, 1, 0.5, 0.1, 0.05
