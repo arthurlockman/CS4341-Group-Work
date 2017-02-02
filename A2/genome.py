@@ -30,14 +30,17 @@ class Genome():
         Crossover this genome with another, return result.
         """
         # Random split index
-        split_index = random.randint(0, len(self.numbers()) - 1)
+        split_index = random.randint(2, len(self.numbers()) - 2)
+        while split_index % 2 != 0:
+            split_index = random.randint(0, len(self.numbers()) - 1)
         new_genome_1 = self.numbers()[0:split_index]
         bottom_genome_1 = other.numbers()[split_index:len(other.numbers())]
-        new_genome_1.extend(bottom_genome_1)
         new_genome_2 = other.numbers()[0:split_index]
         bottom_genome_2 = self.numbers()[split_index:len(self.numbers())]
-        new_genome_2.extend(bottom_genome_2)
-        # TODO: Remove duplicate counts
+
+        # Add bottoms with duplicates removed and counts the same
+        new_genome_1.extend(self.remove_duplicates(bottom_genome_1, bottom_genome_2))
+        new_genome_2.extend(self.remove_duplicates(bottom_genome_2, bottom_genome_1))
 
         return Genome(new_genome_1), Genome(new_genome_2)
     
@@ -54,7 +57,7 @@ class Genome():
         return 'Genome score ' + str(self.score()) + ' ' + str(self.numbers())
     
     def __repr__(self):
-         return str(self)
+        return str(self)
 
     @staticmethod
     def count(number_list):
@@ -63,10 +66,48 @@ class Genome():
             number_count_list[n] = number_list.count(n)
         return number_count_list
 
+    @staticmethod
+    def diff(number_list_1, number_list_2):
+        """
+        Get the difference between two number lists (1 - 2)
+        :param number_list_1: the first list
+        :param number_list_2: the second list
+        :return: A dict of the differences in counts
+        """
+        _list = {}
+        for key in number_list_1:
+            _list[key] = number_list_1[key] - number_list_2[key]
+        return _list
+
+    @staticmethod
+    def remaining_swaps(number_count_list):
+        _sum = 0
+        for key in number_count_list:
+            _sum += abs(number_count_list[key])
+        return _sum
+
+    def remove_duplicates(self, bottom_1, bottom_2):
+        diff_bottom_1 = self.diff(self.count(bottom_2), self.count(bottom_1))
+        new_bottom_1 = []
+        new_bottom_1.extend(bottom_1)
+        while self.remaining_swaps(diff_bottom_1) != 0:
+            first_pos = None
+            first_neg_idx = None
+            first_neg = None
+            for key in diff_bottom_1:
+                if diff_bottom_1[key] < 0 and first_neg is None:
+                    first_neg = key
+                    first_neg_idx = new_bottom_1.index(key)
+                if diff_bottom_1[key] > 0 and first_pos is None:
+                    first_pos = key
+            if first_pos is not None and first_neg is not None:
+                new_bottom_1[first_neg_idx] = first_pos
+            diff_bottom_1 = self.diff(self.count(bottom_2), self.count(new_bottom_1))
+        return new_bottom_1
+
 # UNIT TESTS
 b1 = Genome([1, 5, 1, -2, 4, 3, -7, 1, 2, 3, 4, 5, 1, 2, 2])
 assert(b1.numbers() == [1, 5, 1, -2, 4, 3, -7, 1, 2, 3, 4, 5, 1, 2, 2])
 assert(b1.numbers() != [1, 2, 3, 5, 4, 1, 2, 2, 1, 5, 1, -2, 4, -1, 3])
 b2 = Genome([1, 2, 3, 4, 5, 1, 2, 2, 1, 5, 1, -2, -7, 4, 3])
 assert(b1.numbers() != b2.numbers())
-b1.crossover(b2)
