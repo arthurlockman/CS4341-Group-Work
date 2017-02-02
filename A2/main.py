@@ -15,7 +15,7 @@ def parse_command_line_input():
         print('       filename: the input filename to read')
         print('       time limit: the time limit (in seconds) to limit ' +
               'the optimization to')
-        print('       mp processes: use -mp to use multiple processes')
+        print('       mp processes: use -mp to use multiple processes [EXPERIMENTAL]')
         exit()
 
     # Parsing command line input
@@ -126,7 +126,13 @@ def run_hill(input_array, run_time, result_queue=None):
 
 
 def run_annealing(input_array, run_time, t_max=10, sideways_max=100,
-                  t_schedule_fun=lambda time_left, total_time, current_temp, max_temp: max_temp * (time_left / total_time), result_queue=None):
+                  t_schedule_fun=None, result_queue=None):
+
+    if t_schedule_fun is None:
+        t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp * (time_left / total_time)
+        # t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp / (1 + 0.1 * (total_time - time_left) ** 2)
+        # t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: current_temp * 0.97
+
     # Assume the best score to be negative infinity
     best_score = -math.inf
 
