@@ -171,7 +171,8 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_
         result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
-def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_rate=0.3, result_queue=None):
+def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_rate=0.3,
+                result_queue=None, tuning=False):
     # Shuffle the input array
     shuffle(input_array)
 
@@ -186,7 +187,8 @@ def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_r
     best_bin_1, best_bin_2, best_bin_3, best_score, _ = GeneticAlgorithm(bin_1, bin_2, bin_3, run_time,
                                                                          pop_size=pop_size,
                                                                          elitism_pct=elitism_pct,
-                                                                         mutation_rate=mutation_rate).run()
+                                                                         mutation_rate=mutation_rate,
+                                                                         tuning=tuning).run()
 
     if result_queue is None:
         return best_bin_1, best_bin_2, best_bin_3, best_score
@@ -213,7 +215,8 @@ def tune_genetic():
                     input_array = InputParser.parse_input(filename)
                     for i in range(5):
                         shuffle(input_array)
-                        _, _, _, score = run_genetic(input_array, 10000, elitism_pct=pct, mutation_rate=mut, pop_size=pop)
+                        _, _, _, score = run_genetic(input_array, 10000, elitism_pct=pct, mutation_rate=mut,
+                                                     pop_size=pop, tuning=True)
                         print(filename + ',' + str(pop) + ',' + str(pct) + ',' + str(mut) + ',' + str(score))
 
 

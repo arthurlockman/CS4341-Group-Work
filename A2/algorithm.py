@@ -147,11 +147,13 @@ class Annealing(Algorithm):
 
 
 class GeneticAlgorithm(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_ms, pop_size=100, elitism_pct=0.3, mutation_rate=0.3):
+    def __init__(self, bin1, bin2, bin3, running_time_ms, pop_size=100, elitism_pct=0.3,
+                 mutation_rate=0.3, tuning=false):
         super().__init__(bin1, bin2, bin3, running_time_ms)
         self.population_size = pop_size
         self.elitism_percentage = elitism_pct
         self.mutation_rate = mutation_rate
+        self.tuning = tuning
 
     def run(self):
         numbers = []
@@ -183,7 +185,8 @@ class GeneticAlgorithm(Algorithm):
                 new_population.extend(self.select_and_breed_pair(genomes))
             genomes = []
             genomes.extend(new_population)
-            spin()
+            if not self.tuning:
+                spin()
         genomes.sort(reverse=True)
         return genomes[0].bin1, genomes[0].bin2, genomes[0].bin3, genomes[0].score(), 0
 
