@@ -4,7 +4,8 @@ from bin import *
 
 
 class Genome:
-    def __init__(self, numbers):
+    def __init__(self, numbers, mutation_rate=0.3):
+        self.mutation_rate = mutation_rate
         self.number_list = []
         self.number_list.extend(numbers)
         _split = len(self.numbers()) // 3
@@ -42,7 +43,21 @@ class Genome:
         new_genome_1.extend(self.remove_duplicates(bottom_genome_1, bottom_genome_2))
         new_genome_2.extend(self.remove_duplicates(bottom_genome_2, bottom_genome_1))
 
-        return Genome(new_genome_1), Genome(new_genome_2)
+        # Mutate g1 at 30% mutation rate
+        if random.random() <= self.mutation_rate:
+            s1 = random.randint(0, len(new_genome_1) - 1)
+            s2 = random.randint(0, len(new_genome_1) - 1)
+            _tmp = new_genome_1[s2]
+            new_genome_1[s2] = new_genome_1[s1]
+            new_genome_1[s1] = _tmp
+        # Mutate g2 at 30% mutation rate
+        if random.random() <= self.mutation_rate:
+            s1 = random.randint(0, len(new_genome_1) - 1)
+            s2 = random.randint(0, len(new_genome_1) - 1)
+            _tmp = new_genome_2[s2]
+            new_genome_2[s2] = new_genome_2[s1]
+            new_genome_2[s1] = _tmp
+        return [Genome(new_genome_1), Genome(new_genome_2)]
     
     def __gt__(self, other):
         return self.score() > other.score()

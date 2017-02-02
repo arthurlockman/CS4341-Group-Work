@@ -164,10 +164,34 @@ class GeneticAlgorithm(Algorithm):
             genomes.append(new_genome)
         end_time = current_milli_time() + self.running_time_ms
         while current_milli_time() < end_time:
+            new_population = []
             # Select elites
             genomes.sort(reverse=True)
             elite_index = len(genomes) - 1
             if self.elitism_percentage != 0.0:
-                elite_index = int(elite_index * self.elitism_percentage)
-            elite_genomes = genomes[0:elite_index]
-            print(elite_genomes[0].crossover(elite_genomes[1]))
+                elite_index = int(elite_index * self.elitism_percentage) + 1
+                elite_genomes = genomes[0:elite_index]
+                new_population.extend(elite_genomes)
+                genomes = genomes[elite_index:len(genomes)]
+            genomes.sort(reverse=True)
+            while len(new_population) < self.population_size:
+                # Breed while the population is too small
+                # Select breeding candidate based on probability
+                new_population.extend(self.select_and_breed_pair(genomes))
+            genomes = []
+            genomes.extend(new_population)
+            spin()
+        genomes.sort(reverse=True)
+        return genomes[0].bin1, genomes[0].bin2, genomes[0].bin3, genomes[0].score(), 0
+
+    @staticmethod
+    def select_and_breed_pair(genomes):
+        selected_genomes = []
+        while len(selected_genomes) < 2:
+            for genome in genomes:
+                weight = float(len(genomes) - genomes.index(genome)) / len(genomes)
+                if weight >= random.random():
+                    selected_genomes.append(genome)
+                if len(selected_genomes) == 2:
+                    break
+        return selected_genomes[0].crossover(selected_genomes[1])
