@@ -35,8 +35,9 @@ class Algorithm:
 
 
 class Hill(Algorithm):
-    def __init__(self, bin1, bin2, bin3, running_time_ms):
+    def __init__(self, bin1, bin2, bin3, running_time_ms, tuning=False):
         super().__init__(bin1, bin2, bin3, running_time_ms)
+        self.tuning = tuning
 
     def run(self):
 
@@ -69,7 +70,8 @@ class Hill(Algorithm):
                     best_score = score
                     best_swap = (bin_a, a, bin_b, b)
 
-                spin()  # Give some indication of progress
+                if not self.tuning:
+                    spin()  # Give some indication of progress
 
             # If found swap, swap
             if best_score != start_score:
@@ -84,11 +86,14 @@ class Hill(Algorithm):
 
 class Annealing(Algorithm):
     
-    def __init__(self, bin1, bin2, bin3, running_time_ms, t_max=1000000, sideways_max=100, t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time)):
+    def __init__(self, bin1, bin2, bin3, running_time_ms, t_max=1000000, sideways_max=100,
+                 t_schedule_fun=lambda max_temp, time_left, total_time: max_temp * (time_left / total_time),
+                 tuning=False):
         super().__init__(bin1, bin2, bin3, running_time_ms)
         self.t_max = t_max
         self.max_sideways_moves = sideways_max
         self.t_schedule_fun = t_schedule_fun
+        self.tuning = tuning
 
     def run(self):
 
@@ -132,7 +137,8 @@ class Annealing(Algorithm):
             if sideways_move_count >= self.max_sideways_moves:
                 return self.bin1, self.bin2, self.bin3, best_score, end_time - current_milli_time()
 
-            spin()  # Give some indication of progress
+            if not self.tuning:
+                spin()  # Give some indication of progress
 
         return self.bin1, self.bin2, self.bin3, best_score, 0
 
