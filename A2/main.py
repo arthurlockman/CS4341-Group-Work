@@ -255,15 +255,16 @@ def test_all(testing_file):
     print('Algorithm,Time,Score')
     input_array = InputParser.parse_input(testing_file)
     for run_time in times:
-        algorithm = run_hill
-        _, _, _, score = algorithm(input_array, run_time * 1000)
-        print('Hill,' + str(run_time) + ',' + str(score))
-        algorithm = run_annealing
-        _, _, _, score = algorithm(input_array, run_time * 1000)
-        print('Annealing,' + str(run_time) + ',' + str(score))
-        algorithm = run_genetic
-        _, _, _, score = algorithm(input_array, run_time * 1000)
-        print('Genetic,' + str(run_time) + ',' + str(score))
+        for i in range(5):
+            algorithm = run_hill
+            _, _, _, score = algorithm(input_array, run_time * 1000)
+            print('Hill,' + str(run_time) + ',' + str(score))
+            algorithm = run_annealing
+            _, _, _, score = algorithm(input_array, run_time * 1000)
+            print('Annealing,' + str(run_time) + ',' + str(score))
+            algorithm = run_genetic
+            _, _, _, score = algorithm(input_array, run_time * 1000)
+            print('Genetic,' + str(run_time) + ',' + str(score))
 
 
 if __name__ == '__main__':
