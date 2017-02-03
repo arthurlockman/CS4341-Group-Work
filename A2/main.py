@@ -171,7 +171,7 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_
         result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
-def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_rate=0.3,
+def run_genetic(input_array, run_time, pop_size=10, elitism_pct=0.0, mutation_rate=0.5,
                 result_queue=None, tuning=False):
     # Shuffle the input array
     shuffle(input_array)
@@ -250,6 +250,22 @@ def tune_annealing():
         print(average)
 
 
+def test_all(testing_file):
+    times = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0]
+    print('Algorithm,Time,Score')
+    input_array = InputParser.parse_input(testing_file)
+    for run_time in times:
+        algorithm = run_hill
+        _, _, _, score = algorithm(input_array, run_time * 1000)
+        print('Hill,' + str(run_time) + ',' + str(score))
+        algorithm = run_annealing
+        _, _, _, score = algorithm(input_array, run_time * 1000)
+        print('Annealing,' + str(run_time) + ',' + str(score))
+        algorithm = run_genetic
+        _, _, _, score = algorithm(input_array, run_time * 1000)
+        print('Genetic,' + str(run_time) + ',' + str(score))
+
+
 if __name__ == '__main__':
 
     if len(sys.argv) > 1 and sys.argv[1] == 'tune':
@@ -257,5 +273,8 @@ if __name__ == '__main__':
             tune_annealing()
         elif sys.argv[2] == 'ga':
             tune_genetic()
+    elif len(sys.argv) > 1 and sys.argv[1] == 'test':
+        filename = sys.argv[2]
+        test_all(filename)
     else:
         main()
