@@ -84,7 +84,7 @@ def multi_thread_algorithm(input_array, run_time, algorithm):
     return best_bin_1, best_bin_2, best_bin_3, best_score
 
 
-def run_hill(input_array, run_time, result_queue=None):
+def run_hill(input_array, run_time, result_queue=None, tuning=False):
     # Assume the best score to be negative infinity
     best_score = -math.inf
 
@@ -109,7 +109,7 @@ def run_hill(input_array, run_time, result_queue=None):
 
         # Perform hill climbing
         # Return the 3 bins, the score, and the time left
-        _b1, _b2, _b3, _score, run_time = Hill(bin_1, bin_2, bin_3, run_time).run()
+        _b1, _b2, _b3, _score, run_time = Hill(bin_1, bin_2, bin_3, run_time, tuning=tuning).run()
 
         # If the score is better than the current best, log that
         if _score > best_score:
@@ -124,7 +124,8 @@ def run_hill(input_array, run_time, result_queue=None):
         result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
-def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_fun=None, result_queue=None):
+def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_fun=None,
+                  result_queue=None, tuning=False):
     if t_schedule_fun is None:
         # t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp * (time_left / total_time)
         t_schedule_fun = lambda time_left, total_time, current_temp, max_temp: max_temp / (
@@ -156,7 +157,7 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_
         # Perform annealing
         # Return the 3 bins, the score, and the time left
         _b1, _b2, _b3, _score, run_time = Annealing(bin_1, bin_2, bin_3, run_time, t_max, sideways_max,
-                                                    t_schedule_fun).run()
+                                                    t_schedule_fun, tuning=tuning).run()
 
         # If the score is better than the current best, log that
         if _score > best_score:
@@ -171,7 +172,7 @@ def run_annealing(input_array, run_time, t_max=10, sideways_max=100, t_schedule_
         result_queue.put((best_bin_1, best_bin_2, best_bin_3, best_score), block=True)
 
 
-def run_genetic(input_array, run_time, pop_size=100, elitism_pct=0.0, mutation_rate=0.3,
+def run_genetic(input_array, run_time, pop_size=10, elitism_pct=0.0, mutation_rate=0.5,
                 result_queue=None, tuning=False):
     # Shuffle the input array
     shuffle(input_array)
@@ -250,6 +251,23 @@ def tune_annealing():
         print(average)
 
 
+def test_all(testing_file):
+    times = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0]
+    print('Algorithm,Time,Score')
+    input_array = InputParser.parse_input(testing_file)
+    for run_time in times:
+        for i in range(5):
+            algorithm = run_hill
+            _, _, _, score = algorithm(input_array, run_time * 1000, tuning=True)
+            print('Hill,' + str(run_time) + ',' + str(score))
+            algorithm = run_annealing
+            _, _, _, score = algorithm(input_array, run_time * 1000, tuning=True)
+            print('Annealing,' + str(run_time) + ',' + str(score))
+            algorithm = run_genetic
+            _, _, _, score = algorithm(input_array, run_time * 1000, tuning=True)
+            print('Genetic,' + str(run_time) + ',' + str(score))
+
+
 if __name__ == '__main__':
 
     if len(sys.argv) > 1 and sys.argv[1] == 'tune':
@@ -257,5 +275,8 @@ if __name__ == '__main__':
             tune_annealing()
         elif sys.argv[2] == 'ga':
             tune_genetic()
+    elif len(sys.argv) > 1 and sys.argv[1] == 'test':
+        filename = sys.argv[2]
+        test_all(filename)
     else:
         main()
