@@ -4,7 +4,40 @@ from prior import Prior
 
 def main():
     graph = compose_graph()
-    print(propogate_graph(graph))
+
+    given_states = ['HIGH', 'SNOW']
+    desired_state = 'HIGH_STRESS'
+
+    num_trials = 1000000
+    accepted_simulations = []
+
+    # Simulate the graph num_trials times and reject bad samples
+    for i in range(num_trials):
+
+        # Simulate the graph
+        simulated_states = propogate_graph(graph)
+
+        # Assume the simulation is acceptable
+        acceptable = True
+
+        # Reject the simulation if it doesn't match
+        for state in given_states:
+            if state not in simulated_states:
+                acceptable = False
+
+        if acceptable is True:
+            accepted_simulations.append(simulated_states)
+
+    sample_size = len(accepted_simulations)
+    print(sample_size)
+    num_true = 0
+
+    # Find the probability of the desired state in the accepted_simulations
+    for simulation in accepted_simulations:
+        if desired_state in simulation:
+            num_true += 1
+
+    print(num_true / sample_size)
 
 
 def propogate_graph(graph):
@@ -22,7 +55,8 @@ def propogate_graph(graph):
     exams_state = exams.determine_state(Prior([snow_state, day_state]))
     stress_state = stress.determine_state(Prior([exams_state, snow_state]))
 
-    return [humidity_state, temperature_state, day_state, icy_state, snow_state, cloudy_state, exams_state, stress_state]
+    return [humidity_state, temperature_state, day_state, icy_state, snow_state, cloudy_state, exams_state,
+            stress_state]
 
 
 def compose_graph():

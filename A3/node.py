@@ -2,7 +2,6 @@ import random
 
 
 class Node:
-    children = []
     parents = []
 
     def __init__(self, states, parents, probability_distribution):
