@@ -36,7 +36,8 @@ def main():
             accepted_simulations.append(simulated_states)
 
     sample_size = len(accepted_simulations)
-    print(sample_size)
+    print('Collected ' + str(num_trials) + ' samples')
+    print('Accepted ' + str(sample_size) + ' samples')
     num_true = 0
 
     # Find the probability of the desired state in the accepted_simulations
