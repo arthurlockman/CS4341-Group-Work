@@ -8,7 +8,7 @@ def parse_command_line_input():
     if len(sys.argv) < 4:
         print('Error: incorrect input arguments selected.')
         print()
-        print('Usage: python3 main.py [optimization type] [filename] ' +
+        print('Usage: python3 optimize.py [optimization type] [filename] ' +
               '[time limit] [-mp]')
         print('       optimization type: hill, annealing, or ga')
         print('       filename: the input filename to read')
