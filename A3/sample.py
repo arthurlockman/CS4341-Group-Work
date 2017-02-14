@@ -4,8 +4,10 @@ from sys import *
 
 
 def main():
-    if len(argv) < 4:
-        print('usage: python3 sample.py [query node = condition] [number of iterations] [observed node = condition]...')
+    if len(argv) < 3:
+        print('usage: python3 sample.py [query node=condition] [number of iterations] [observed node=condition] ...')
+        print('humidity=[LOW, HIGH], temperature=[WARM, MILD, COLD], icy=[TRUE, FALSE], snow=[TRUE, FALSE]')
+        print('day=[WEEKEND, WEEKDAY], cloudy=[TRUE, FALSE], exams=[TRUE, FALSE], stress=[HIGH, LOW]')
         exit()
 
     desired_state = str.upper(argv[1].split('=')[1]) + '_' + str.upper(argv[1].split('=')[0])
@@ -45,7 +47,7 @@ def main():
         if desired_state in simulation:
             num_true += 1
 
-    print(num_true / sample_size)
+    print('Estimated probability: ' + str(num_true / sample_size))
 
 
 def propagate_graph(graph):
@@ -69,18 +71,18 @@ def propagate_graph(graph):
 
 def compose_graph():
     humidity = Node(
-        ['LOW', 'MEDIUM', 'HIGH'],  # States
+        ['LOW_HUMIDITY', 'MEDIUM_HUMIDITY', 'HIGH_HUMIDITY'],  # States
         [],  # No parents
         {
-            Prior([None]): {'LOW': 0.2, 'MEDIUM': 0.5, 'HIGH': 0.3}
+            Prior([None]): {'LOW_HUMIDITY': 0.2, 'MEDIUM_HUMIDITY': 0.5, 'HIGH_HUMIDITY': 0.3}
         }
     )
 
     temperature = Node(
-        ['WARM', 'MILD', 'COLD'],  # States
+        ['WARM_TEMPERATURE', 'MILD_TEMPERATURE', 'COLD_TEMPERATURE'],  # States
         [],  # No parents
         {
-            Prior([None]): {'WARM': 0.1, 'MILD': 0.4, 'COLD': 0.5}
+            Prior([None]): {'WARM_TEMPERATURE': 0.1, 'MILD_TEMPERATURE': 0.4, 'COLD_TEMPERATURE': 0.5}
         }
     )
 
@@ -88,15 +90,15 @@ def compose_graph():
         ['TRUE_ICY', 'FALSE_ICY'],  # States
         [humidity, temperature],  # Parents
         {
-            Prior(['LOW', 'WARM']): {'TRUE_ICY': 0.001, 'FALSE_ICY': 0.999},
-            Prior(['LOW', 'MILD']): {'TRUE_ICY': 0.01, 'FALSE_ICY': 0.99},
-            Prior(['LOW', 'COLD']): {'TRUE_ICY': 0.05, 'FALSE_ICY': 0.95},
-            Prior(['MEDIUM', 'WARM']): {'TRUE_ICY': 0.001, 'FALSE_ICY': 0.999},
-            Prior(['MEDIUM', 'MILD']): {'TRUE_ICY': 0.03, 'FALSE_ICY': 0.97},
-            Prior(['MEDIUM', 'COLD']): {'TRUE_ICY': 0.2, 'FALSE_ICY': 0.8},
-            Prior(['HIGH', 'WARM']): {'TRUE_ICY': 0.005, 'FALSE_ICY': 0.995},
-            Prior(['HIGH', 'MILD']): {'TRUE_ICY': 0.01, 'FALSE_ICY': 0.99},
-            Prior(['HIGH', 'COLD']): {'TRUE_ICY': 0.35, 'FALSE_ICY': 0.65}
+            Prior(['LOW_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_ICY': 0.001, 'FALSE_ICY': 0.999},
+            Prior(['LOW_HUMIDITY', 'MILD_TEMPERATURE']): {'TRUE_ICY': 0.01, 'FALSE_ICY': 0.99},
+            Prior(['LOW_HUMIDITY', 'COLD_TEMPERATURE']): {'TRUE_ICY': 0.05, 'FALSE_ICY': 0.95},
+            Prior(['MEDIUM_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_ICY': 0.001, 'FALSE_ICY': 0.999},
+            Prior(['MEDIUM_HUMIDITY', 'MILD_TEMPERATURE']): {'TRUE_ICY': 0.03, 'FALSE_ICY': 0.97},
+            Prior(['MEDIUM_HUMIDITY', 'COLD_TEMPERATURE']): {'TRUE_ICY': 0.2, 'FALSE_ICY': 0.8},
+            Prior(['HIGH_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_ICY': 0.005, 'FALSE_ICY': 0.995},
+            Prior(['HIGH_HUMIDITY', 'MILD_TEMPERATURE']): {'TRUE_ICY': 0.01, 'FALSE_ICY': 0.99},
+            Prior(['HIGH_HUMIDITY', 'COLD_TEMPERATURE']): {'TRUE_ICY': 0.35, 'FALSE_ICY': 0.65}
         }
     )
 
@@ -104,23 +106,23 @@ def compose_graph():
         ['TRUE_SNOW', 'FALSE_SNOW'],  # States
         [humidity, temperature],  # Parents
         {
-            Prior(['LOW', 'WARM']): {'TRUE_SNOW': 0.00001, 'FALSE_SNOW': 0.99999},
-            Prior(['LOW', 'MILD']): {'TRUE_SNOW': 0.001, 'FALSE_SNOW': 0.999},
-            Prior(['LOW', 'COLD']): {'TRUE_SNOW': 0.1, 'FALSE_SNOW': 0.9},
-            Prior(['MEDIUM', 'WARM']): {'TRUE_SNOW': 0.00001, 'FALSE_SNOW': 0.99999},
-            Prior(['MEDIUM', 'MILD']): {'TRUE_SNOW': 0.0001, 'FALSE_SNOW': 0.9999},
-            Prior(['MEDIUM', 'COLD']): {'TRUE_SNOW': 0.25, 'FALSE_SNOW': 0.75},
-            Prior(['HIGH', 'WARM']): {'TRUE_SNOW': 0.0001, 'FALSE_SNOW': 0.9999},
-            Prior(['HIGH', 'MILD']): {'TRUE_SNOW': 0.001, 'FALSE_SNOW': 0.999},
-            Prior(['HIGH', 'COLD']): {'TRUE_SNOW': 0.4, 'FALSE_SNOW': 0.6}
+            Prior(['LOW_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_SNOW': 0.00001, 'FALSE_SNOW': 0.99999},
+            Prior(['LOW_HUMIDITY', 'MILD_TEMPERATURE']): {'TRUE_SNOW': 0.001, 'FALSE_SNOW': 0.999},
+            Prior(['LOW_HUMIDITY', 'COLD_TEMPERATURE']): {'TRUE_SNOW': 0.1, 'FALSE_SNOW': 0.9},
+            Prior(['MEDIUM_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_SNOW': 0.00001, 'FALSE_SNOW': 0.99999},
+            Prior(['MEDIUM_HUMIDITY', 'MILD_TEMPERATURE']): {'TRUE_SNOW': 0.0001, 'FALSE_SNOW': 0.9999},
+            Prior(['MEDIUM_HUMIDITY', 'COLD_TEMPERATURE']): {'TRUE_SNOW': 0.25, 'FALSE_SNOW': 0.75},
+            Prior(['HIGH_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_SNOW': 0.0001, 'FALSE_SNOW': 0.9999},
+            Prior(['HIGH_HUMIDITY', 'MILD_TEMPERATURE']): {'TRUE_SNOW': 0.001, 'FALSE_SNOW': 0.999},
+            Prior(['HIGH_HUMIDITY', 'COLD_TEMPERATURE']): {'TRUE_SNOW': 0.4, 'FALSE_SNOW': 0.6}
         }
     )
 
     day = Node(
-        ['WEEKEND', 'WEEKDAY'],  # States
+        ['WEEKEND_DAY', 'WEEKDAY_DAY'],  # States
         [],  # No parents
         {
-            Prior([None]): {'WEEKEND': 0.2, 'WEEKDAY': 0.8}
+            Prior([None]): {'WEEKEND_DAY': 0.2, 'WEEKDAY_DAY': 0.8}
         }
     )
 
@@ -137,10 +139,10 @@ def compose_graph():
         ['TRUE_EXAMS', 'FALSE_EXAMS'],  # States
         [snow, day],  # Parents
         {
-            Prior(['FALSE_SNOW', 'WEEKEND']): {'TRUE_EXAMS': 0.001, 'FALSE_EXAMS': 0.999},
-            Prior(['FALSE_SNOW', 'WEEKDAY']): {'TRUE_EXAMS': 0.1, 'FALSE_EXAMS': 0.9},
-            Prior(['TRUE_SNOW', 'WEEKEND']): {'TRUE_EXAMS': 0.0001, 'FALSE_EXAMS': 0.9999},
-            Prior(['TRUE_SNOW', 'WEEKDAY']): {'TRUE_EXAMS': 0.3, 'FALSE_EXAMS': 0.7}
+            Prior(['FALSE_SNOW', 'WEEKEND_DAY']): {'TRUE_EXAMS': 0.001, 'FALSE_EXAMS': 0.999},
+            Prior(['FALSE_SNOW', 'WEEKDAY_DAY']): {'TRUE_EXAMS': 0.1, 'FALSE_EXAMS': 0.9},
+            Prior(['TRUE_SNOW', 'WEEKEND_DAY']): {'TRUE_EXAMS': 0.0001, 'FALSE_EXAMS': 0.9999},
+            Prior(['TRUE_SNOW', 'WEEKDAY_DAY']): {'TRUE_EXAMS': 0.3, 'FALSE_EXAMS': 0.7}
         }
     )
 
