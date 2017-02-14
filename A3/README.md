@@ -24,3 +24,6 @@ The same information can be printed by running the function `python3 sample.py` 
 Depending on your system configuration, the python 3 binary may be linked to either
 `python3` or simply `python`. If you're having trouble running the program, check to make
 sure that you're actually running under python 3.
+
+The 95% confidence interval for this program was calculated using the Binomial Proportion Confidence Interval:
+https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
