@@ -1,6 +1,12 @@
 from node import Node
 from prior import Prior
 from sys import *
+import math
+import time
+
+
+def current_milli_time():
+    return int(round(time.time() * 1000))
 
 
 def main():
@@ -20,6 +26,8 @@ def main():
 
     accepted_simulations = []
 
+    start_time = current_milli_time()
+
     # Simulate the graph num_trials times and reject bad samples
     for i in range(num_trials):
 
@@ -38,8 +46,8 @@ def main():
             accepted_simulations.append(simulated_states)
 
     sample_size = len(accepted_simulations)
-    print('Collected ' + str(num_trials) + ' samples')
-    print('Accepted ' + str(sample_size) + ' samples')
+    # print('Collected ' + str(num_trials) + ' samples')
+    # print('Accepted ' + str(sample_size) + ' samples')
     num_true = 0
 
     # Find the probability of the desired state in the accepted_simulations
@@ -47,7 +55,24 @@ def main():
         if desired_state in simulation:
             num_true += 1
 
-    print('Estimated probability: ' + str(num_true / sample_size))
+    if sample_size == 0:
+        print('No samples succeeded.')
+        exit()
+
+    average = num_true / sample_size
+    # print('Estimated probability: ' + str(average))
+
+    # Calculate the confidence interval
+    # Based on the Binomial Proportion Confidence Interval
+    # https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
+
+    # Calculate confidence interval
+    z = 1.96  # This corresponds to a 95% confidence
+    confidence_interval = z * math.sqrt((1 / sample_size) * average * (1 - average))
+
+    total_time_ms = current_milli_time() - start_time
+    # print('95% confidence interval: ' + str(average) + ' +- ' + str(confidence_interval))
+    print(str(total_time_ms)+' :: '+str(average) + ' +- ' + str(confidence_interval))
 
 
 def propagate_graph(graph):
