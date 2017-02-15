@@ -131,10 +131,10 @@ def compose_graph():
         ['TRUE_SNOW', 'FALSE_SNOW'],  # States
         [humidity, temperature],  # Parents
         {
-            Prior(['LOW_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_SNOW': 0.00001, 'FALSE_SNOW': 0.99999},
+            Prior(['LOW_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_SNOW': 0.0001, 'FALSE_SNOW': 0.9999},
             Prior(['LOW_HUMIDITY', 'MILD_TEMPERATURE']): {'TRUE_SNOW': 0.001, 'FALSE_SNOW': 0.999},
             Prior(['LOW_HUMIDITY', 'COLD_TEMPERATURE']): {'TRUE_SNOW': 0.1, 'FALSE_SNOW': 0.9},
-            Prior(['MEDIUM_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_SNOW': 0.00001, 'FALSE_SNOW': 0.99999},
+            Prior(['MEDIUM_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_SNOW': 0.0001, 'FALSE_SNOW': 0.9999},
             Prior(['MEDIUM_HUMIDITY', 'MILD_TEMPERATURE']): {'TRUE_SNOW': 0.0001, 'FALSE_SNOW': 0.9999},
             Prior(['MEDIUM_HUMIDITY', 'COLD_TEMPERATURE']): {'TRUE_SNOW': 0.25, 'FALSE_SNOW': 0.75},
             Prior(['HIGH_HUMIDITY', 'WARM_TEMPERATURE']): {'TRUE_SNOW': 0.0001, 'FALSE_SNOW': 0.9999},
