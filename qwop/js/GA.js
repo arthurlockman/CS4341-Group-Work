@@ -1,27 +1,27 @@
 
 class GA {
 
-    constructor(popSize, elitismPct, mutationRate, generations) {
+    constructor(genomeSize, popSize, elitismPct, mutationRate, generations) {
+
+        this.genomeSize = genomeSize
         this.popSize = popSize
         this.elitismPct = elitismPct
         this.mutationRate = mutationRate
         this.generations = generations
 
-        var self = this
-
         this.currentGen = 0
 
-        var population = []
+        this.population = []
 
-
+        //create generation 0 with random values
+        for(var i = 0; i < this.popSize; i++){
+            this.population.push(new Genome(this.genomeSize, this.mutationRate))
+        }
 
     }
 
     run(){
-        //create generation 0 with random values
-        for(i = 0; i < this.popSize; i++){
-            population.push(new Genome())
-        }
+
 
         //loop
         while(this.currentGen < this.generations){

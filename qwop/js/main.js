@@ -4,7 +4,7 @@ var requestReset = true
 var requestTeleport = true
 
 // GLOBALS
-var ITERATIONS_PER_SECOND = 60
+var ITERATIONS_PER_SECOND = 600
 var FRAMERATE = 60
 
 // World properties
@@ -18,17 +18,19 @@ function main() {
 
     var inputManager = new InputManager(document)
 
-    new Genome()
+    var g = new Genome(600, 0.1)
 
     var p1 = new Promise((resolve, reject) => 
-        evaluate(resolve, reject, inputManager)
+        evaluate(resolve, reject, g)
     )
 
-    var p2 = new Promise((resolve, reject) => 
-        evaluate(resolve, reject, inputManager)
-    )
+    // var p2 = new Promise((resolve, reject) => 
+    //     evaluate(resolve, reject, inputManager)
+    // )
 
-    Promise.all([p1, p2]).then((val) => console.log(val))     
+    // Promise.all([p1, p2]).then((val) => console.log(val))
+    Promise.all([p1]).then((val) => console.log(val))
+
 }
 
 function evaluate(resolve, reject, inputManager) {
@@ -37,19 +39,19 @@ function evaluate(resolve, reject, inputManager) {
     var character = new Character()
     var world = new World(worldWidth, worldHeight, character)
     var game = new Game(world, character)
-    // var display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)
+    var display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)
 
     // This starts the runner
     game.resetRunner()
 
         // This runs the display loop
-    // var displayIntervalId = setInterval(
-    //     function() {
-    //         display.clearCurrentFrame()
-    //         display.drawWorld()
-    //         display.displayStats(game.farthestDistTraveled, game.elapsedTime, game.totalDistTraveled)
-    //     },
-    //     1000 / FRAMERATE)
+    var displayIntervalId = setInterval(
+        function() {
+            display.clearCurrentFrame()
+            display.drawWorld()
+            display.displayStats(game.farthestDistTraveled, game.elapsedTime, game.totalDistTraveled)
+        },
+        1000 / FRAMERATE)
 
     var score;
 
@@ -60,7 +62,7 @@ function evaluate(resolve, reject, inputManager) {
 
             if(output.has_fallen == true) {
                 score = output.score
-                // clearInterval(displayIntervalId)
+                clearInterval(displayIntervalId)
                 clearInterval(gameIntervalId)
                 console.log(score)
                 resolve(score)
