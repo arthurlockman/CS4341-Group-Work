@@ -96,13 +96,13 @@ class Game {
 
     handleInput(input) {
         // Q/W input
-        if(input[0]) {this.character.handleQPressed()}
-        else if(input[1]) {this.character.handleWPressed()}
+        if(input[0] && !input[1]) {this.character.handleQPressed()}
+        else if(input[1] && !input[0]) {this.character.handleWPressed()}
         else {this.character.handleQReleased()} // Same as handleWReleased        
 
         // O/P input
-        if(input[2]) {this.character.handleOPressed()}
-        else if(input[3]) {this.character.handlePPressed()}
+        if(input[2] && !input[3]) {this.character.handleOPressed()}
+        else if(input[3] && !input[2]) {this.character.handlePPressed()}
         else {this.character.handleOReleased()} // Same as handlePReleased 
     }
 

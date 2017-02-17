@@ -24,7 +24,7 @@ function main() {
     // Genome example
     var genomes = []
     var promises = []
-    num_children = 30
+    num_children = 1
 
     for(var i = 0; i < num_children; i++) {
         genomes.push(new Genome(600, 0.1))
