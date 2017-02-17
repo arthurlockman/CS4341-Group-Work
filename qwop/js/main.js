@@ -6,6 +6,7 @@ var requestTeleport = true
 // GLOBALS
 var ITERATIONS_PER_SECOND = 600
 var FRAMERATE = 60
+var DISPLAY = true
 
 // World properties
 var worldWidth = worldHeight = 500
@@ -16,20 +17,24 @@ main()
 
 function main() {
 
-    var inputManager = new InputManager(document)
+    // This is for controlling the guy manually
+    // var inputManager = new InputManager(document)
+    // promises = [new Promise((resolve, reject) => evaluate(resolve, reject, inputManager))]
 
-    var g = new Genome(600, 0.1)
+    // Genome example
+    var genomes = []
+    var promises = []
+    num_children = 30
 
-    var p1 = new Promise((resolve, reject) => 
-        evaluate(resolve, reject, g)
-    )
+    for(var i = 0; i < num_children; i++) {
+        genomes.push(new Genome(600, 0.1))
+        promises.push(
+            new Promise((resolve, reject) => 
+                evaluate(resolve, reject, genomes[i])
+        ))
+    }
 
-    // var p2 = new Promise((resolve, reject) => 
-    //     evaluate(resolve, reject, inputManager)
-    // )
-
-    // Promise.all([p1, p2]).then((val) => console.log(val))
-    Promise.all([p1]).then((val) => console.log(val))
+    Promise.all(promises).then((val) => console.log(val))
 
 }
 
@@ -39,32 +44,35 @@ function evaluate(resolve, reject, inputManager) {
     var character = new Character()
     var world = new World(worldWidth, worldHeight, character)
     var game = new Game(world, character)
-    var display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)
+
+    var display;
+    if(DISPLAY) {
+        display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)    
+    }
 
     // This starts the runner
     game.resetRunner()
 
-        // This runs the display loop
-    var displayIntervalId = setInterval(
-        function() {
-            display.clearCurrentFrame()
-            display.drawWorld()
-            display.displayStats(game.farthestDistTraveled, game.elapsedTime, game.totalDistTraveled)
-        },
-        1000 / FRAMERATE)
-
-    var score;
+    // This runs the display loop
+    if(DISPLAY) {
+        var displayIntervalId = setInterval(
+            function() {
+                display.clearCurrentFrame()
+                display.drawWorld()
+                display.displayStats(game.farthestDistTraveled, game.elapsedTime, game.totalDistTraveled)
+            },
+            1000 / FRAMERATE)
+    }
 
     // This runs the main loop
     var gameIntervalId = setInterval(
         function() {
-           output = game.run(world, character, inputManager)
+            output = game.run(world, character, inputManager)
 
-            if(output.has_fallen == true) {
+            if(output.has_fallen == true || game.elapsedTime > 9.9) {
                 score = output.score
-                clearInterval(displayIntervalId)
                 clearInterval(gameIntervalId)
-                console.log(score)
+                if(DISPLAY) { clearInterval(displayIntervalId) }
                 resolve(score)
             }
         },

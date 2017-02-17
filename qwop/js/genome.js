@@ -16,8 +16,6 @@ class Genome {
             }
             this.moves.push(move)
         }
-
-        console.log(this.moves)
     }
 
     selectAndBreed(genomes, mutationRate){

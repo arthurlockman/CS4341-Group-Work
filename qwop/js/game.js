@@ -26,6 +26,8 @@ class Game {
         world.step(SIMULATION_SPEED, 2, 2)
 
         // Handle key input
+        // EXTRACT GAME AND CHARACTER STATE. 
+        // PASS AS A PARAMETER TO GET_INPUT FOR THE NEURAL NETWORK
         var input = inputManager.getInput()
 
         // Check to see if resetting
@@ -82,12 +84,13 @@ class Game {
             // this.resetRunner()
             return {
                 "has_fallen": true,
-                "score": 100
+                "score": this.totalDistTraveled
             }
         }
 
         return {
             "has_fallen": false,
+            "score": this.totalDistTraveled
         }
     }
 
