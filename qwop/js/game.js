@@ -1,5 +1,5 @@
  // GLOBALS 
-var RESET_TIME = 1500
+var RESET_TIME = 0
 var SIMULATION_SPEED = 1/60
 
 class Game {
@@ -18,7 +18,7 @@ class Game {
         this.resetTime = Date.now()
     }
 
-    run(world, character, inputManager, game) {
+    run(world, character, inputManager) {
 
         // Move everything in the world forward ??
         // The two constants are for position and velocity collision detections
@@ -79,7 +79,15 @@ class Game {
         if (character.body.head.GetPosition().y < 50) {
             // notifyFall
             // Increment death
-            this.resetRunner()
+            // this.resetRunner()
+            return {
+                "has_fallen": true,
+                "score": 100
+            }
+        }
+
+        return {
+            "has_fallen": false,
         }
     }
 
@@ -230,21 +238,21 @@ class Game {
         this.character.lockRevoluteJoint(r_arm_joint,8000)
 
         /* Resets the runner to stable standing position */
-        setInterval(function() {
+        // setInterval(function() {
 
-            var r = l_hip_joint.GetJointAngle()
-            l_hip_joint.SetMotorSpeed(2*(self.character.l_hipAngle - r))
+        //     var r = l_hip_joint.GetJointAngle()
+        //     l_hip_joint.SetMotorSpeed(2*(self.character.l_hipAngle - r))
 
-            r = r_hip_joint.GetJointAngle()
-            r_hip_joint.SetMotorSpeed(2*(self.character.r_hipAngle - r))
+        //     r = r_hip_joint.GetJointAngle()
+        //     r_hip_joint.SetMotorSpeed(2*(self.character.r_hipAngle - r))
 
-            var r = l_knee_joint.GetJointAngle()
-            l_knee_joint.SetMotorSpeed(2*(self.character.l_kneeAngle - r))
+        //     var r = l_knee_joint.GetJointAngle()
+        //     l_knee_joint.SetMotorSpeed(2*(self.character.l_kneeAngle - r))
 
-            r = r_knee_joint.GetJointAngle()
-            r_knee_joint.SetMotorSpeed(2*(self.character.r_kneeAngle - r))
+        //     r = r_knee_joint.GetJointAngle()
+        //     r_knee_joint.SetMotorSpeed(2*(self.character.r_kneeAngle - r))
 
-        },100)
+        // },100)
 
         l_hip_joint.EnableLimit(true)
         l_hip_joint.SetLimits(this.character.hipLimits[0],this.character.hipLimits[1])   // -1 and 1

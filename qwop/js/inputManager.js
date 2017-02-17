@@ -1,10 +1,7 @@
 
 class InputManager {
 
-    constructor(document, character, game) {
-
-        this.character = character
-        this.game = game
+    constructor(document) {
 
         // Static reference for weird javascript scoping issues
         var self = this
