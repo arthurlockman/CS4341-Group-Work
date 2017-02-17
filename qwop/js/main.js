@@ -18,6 +18,8 @@ function main() {
 
     var inputManager = new InputManager(document)
 
+    new Genome()
+
     var p1 = new Promise((resolve, reject) => 
         evaluate(resolve, reject, inputManager)
     )

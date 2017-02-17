@@ -6,12 +6,14 @@ class Genome{
         this.moves = []
 
         for(i = 0; i < 600; i++){
-            move = []
-            for(j = 0; j < 4; j++){
-                move.push(Math.random() > .5)
+            var move = []
+            for(var j = 0; j < 4; j++){
+                move.push(Math.random() > .5 ? 0 : 1)
             }
-            moves.push(move)
+            this.moves.push(move)
         }
+
+        console.log(this.moves)
     }
 
     selectAndBreed(genomes, mutationRate){
