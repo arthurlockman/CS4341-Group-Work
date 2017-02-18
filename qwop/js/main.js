@@ -6,7 +6,7 @@ var requestTeleport = true
 // GLOBALS
 var ITERATIONS_PER_SECOND = 600
 var FRAMERATE = 60
-var DISPLAY = true
+var DISPLAY = false
 
 // World properties
 var worldWidth = worldHeight = 500
@@ -17,25 +17,11 @@ main()
 
 function main() {
 
+    console.log('hello')
     // This is for controlling the guy manually
     // var inputManager = new InputManager(document)
     // promises = [new Promise((resolve, reject) => evaluate(resolve, reject, inputManager))]
-
-    // Genome example
-    var genomes = []
-    var promises = []
-    num_children = 1
-
-    for(var i = 0; i < num_children; i++) {
-        genomes.push(new Genome(600, 0.1))
-        promises.push(
-            new Promise((resolve, reject) => 
-                evaluate(resolve, reject, genomes[i])
-        ))
-    }
-
-    Promise.all(promises).then((val) => console.log(val))
-
+    var ga = new GenerticAlgorithm(600, 30, 0.1, 0.1, 10, evaluate)
 }
 
 function evaluate(resolve, reject, inputManager) {
