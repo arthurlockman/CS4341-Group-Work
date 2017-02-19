@@ -3,15 +3,15 @@ class GA {
 
     constructor(genomeSize, popSize, elitismPct, mutationRate, generations) {
 
-        this.genomeSize = genomeSize
-        this.popSize = popSize
-        this.elitismPct = elitismPct
-        this.mutationRate = mutationRate
-        this.generations = generations
+        this.genomeSize = genomeSize;
+        this.popSize = popSize;
+        this.elitismPct = elitismPct;
+        this.mutationRate = mutationRate;
+        this.generations = generations;
 
-        this.currentGen = 0
+        this.currentGen = 0;
 
-        this.population = []
+        this.population = [];
 
         //create generation 0 with random values
         for(var i = 0; i < this.popSize; i++){
@@ -27,19 +27,16 @@ class GA {
         while(this.currentGen < this.generations){
             //assign fitnesses
             //TODO
-            genomes = []
+            genomes = [];
 
-
-            newPopulation = []
+            newPopulation = [];
 
             //elitism
             if(this.elitismPct > 0) {
                 //sort
                 //TODO
-
-                eliteIndex = floor(this.popSize * this.elitismPct)+1
-                elites = genomes.slice(0, eliteIndex)
-
+                eliteIndex = floor(this.popSize * this.elitismPct)+1;
+                elites = genomes.slice(0, eliteIndex);
                 newPopulation.push(elites)
             }
 
@@ -55,9 +52,6 @@ class GA {
 
         //return best Genome? return score?
         //TODO
-
-
-
 
     }
 
