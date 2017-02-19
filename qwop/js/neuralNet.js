@@ -16,11 +16,26 @@ class NeuralNet {
 
     }
 
-    train() {
-        setInterval(function(){ // start the learning loop
-            var action = this.agent.act(s); // s is an array of length 8
-            //... execute action in environment and get the reward
-            this.agent.learn(reward); // the agent improves its Q,policy,model, etc. reward is a float
-        }, 0);
+    /**
+     * Get input for a character state.
+     * @param state The state.
+     * @returns {[number,number,number,number]} [Q, W, O, P] 1 if pressed, 0 otherwise
+     */
+    getInput(state) {
+        // TODO: Need to get input and put in S (array of state variables)
+        var action = this.agent.act(state);
+        var _a = this.actions[action];
+        var move = [0, 0, 0, 0];
+        if (_a.includes('Q'))
+            move[0] = 1;
+        if (_a.includes('W'))
+            move[1] = 1;
+        if (_a.includes('O'))
+            move[2] = 1;
+        if (_a.includes('P'))
+            move[3] = 1;
+        // TODO: Get reward
+        this.agent.learn(reward);
+        return move;
     }
 }
