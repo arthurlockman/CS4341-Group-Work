@@ -1,7 +1,7 @@
 class NeuralNet {
     constructor() {
         // https://cs.stanford.edu/people/karpathy/convnetjs/demo/rldemo.html
-        this.actions = ['Q', 'W', 'O', 'P', 'QO', 'QP', 'WO', 'WP', 'N'];
+        this.actions = ['Q', 'W', 'O', 'P', 'QO', 'QP', 'WO', 'WP'];
         var num_inputs = 11;
         var num_actions = this.actions.length;
         var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
@@ -17,7 +17,7 @@ class NeuralNet {
         opt.experience_size = 30000;
         opt.start_learn_threshold = 1000;
         opt.gamma = 0.7;
-        opt.learning_steps_total = 200000;
+        opt.learning_steps_total = 20000;
         opt.learning_steps_burnin = 3000;
         opt.epsilon_min = 0.05;
         opt.epsilon_test_time = 0.05;
@@ -25,6 +25,7 @@ class NeuralNet {
         opt.tdtrainer_options = tdtrainer_options;
         this.brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
         this.lastScore = 0;
+        this.steps = 0;
     }
 
     learn(score) {
@@ -32,6 +33,7 @@ class NeuralNet {
         var _score = (score - this.lastScore);
         this.brain.backward(_score);
         this.lastScore = score;
+        this.steps += 1;
         return _score;
     }
 
@@ -87,5 +89,10 @@ class NeuralNet {
         var j = this.brain.value_net.toJSON();
         var t = JSON.stringify(j);
         return t;
+    }
+
+    fromJSON(json) {
+        this.brain.learning = false;
+        this.brain.value_net.fromJSON(JSON.parse(json));
     }
 }

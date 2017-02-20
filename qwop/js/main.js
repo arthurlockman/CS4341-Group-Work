@@ -59,8 +59,13 @@ function main()
         document.getElementById("dump").addEventListener("click", function() {
             document.getElementById("networkDumpTextBox").value = nn.toJSON();
         });
+        document.getElementById("load").addEventListener("click", function() {
+            nn.fromJSON(document.getElementById("networkLoadTextBox").value);
+        });
         document.getElementById("dump").style.display = 'block';
         document.getElementById("networkDumpTextBox").style.display = 'block';
+        document.getElementById("load").style.display = 'block';
+        document.getElementById("networkLoadTextBox").style.display = 'block';
         promises.push(
             new Promise((resolve, reject) =>
                 evaluateNN(resolve, reject, nn, 100000)
