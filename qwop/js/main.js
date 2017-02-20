@@ -31,11 +31,23 @@ function main() {
         new Promise((resolve, reject) =>
             evaluateNN(resolve, reject, nn, 100000)
     ));
+    resetOutput();
+    printOutput("Iteration, Score, Time");
 
     Promise.all(promises).then((val) => {
         console.log(val);
     });
 
+}
+
+function printOutput(output) {
+    var box = document.getElementById("outputTextBox");
+    box.value += output + '\n';
+}
+
+function resetOutput() {
+    var box = document.getElementById("outputTextBox");
+    box.value = ""
 }
 
 function evaluate(resolve, reject, inputManager) {
@@ -122,7 +134,7 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
                 if (counter == iterations) {
                     resolve(score)
                 } else {
-                    console.log('Iteration ' + counter + ': ' + score);
+                    printOutput(counter + ', ' + score + ', ' + game.elapsedTime);
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
             } else {

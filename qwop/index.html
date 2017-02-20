@@ -21,11 +21,19 @@
             border:15px solid #14140f;
         }
     </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
 <body>
-
+    <div>
+        <select id="algorithmSelector">
+            <option value="nn">Neural Network</option>
+            <option value="ga">Genetic Algorithm</option>
+        </select>
+        <button id="run">Run</button>
+        <textarea id="outputTextBox"></textarea>
+    </div>
     <canvas id='canvas'></canvas>
     <script type='text/javascript' src='js/main.js'></script>
 
