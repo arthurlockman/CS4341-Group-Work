@@ -7,7 +7,17 @@ class NeuralNet {
         this.env.getMaxNumActions = function() { return 11; };
 
         // create the DQN agent
-        this.spec = { alpha: 0.1, num_hidden_units: 2 }; // see full options on DQN page
+        this.spec = {};
+        this.spec.update = 'sarsa'; // qlearn | sarsa
+        // https://studywolf.wordpress.com/2013/07/01/reinforcement-learning-sarsa-vs-q-learning/
+        this.spec.gamma = 0.9; // discount factor, [0, 1)
+        this.spec.epsilon = 0.2; // initial epsilon for epsilon-greedy policy, [0, 1)
+        this.spec.alpha = 0.01; // value function learning rate
+        this.spec.experience_add_every = 10; // number of time steps before we add another experience to replay memory
+        this.spec.experience_size = 5000; // size of experience replay memory
+        this.spec.learning_steps_per_iteration = 20;
+        this.spec.tderror_clamp = 1.0; // for robustness
+        this.spec.num_hidden_units = 100; // number of neurons in hidden layer
         this.actions = ['Q', 'W', 'O', 'P', 'QW', 'QO', 'QP', 'WO', 'WP', 'OP', 'N'];
         this.agent = new RL.DQNAgent(this.env, this.spec);
         this.lastScore = 0;

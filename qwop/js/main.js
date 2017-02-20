@@ -29,7 +29,7 @@ function main() {
     var nn = new NeuralNet();
     promises.push(
         new Promise((resolve, reject) =>
-            evaluateNN(resolve, reject, nn, 10000)
+            evaluateNN(resolve, reject, nn, 100000)
     ));
 
     Promise.all(promises).then((val) => {
