@@ -37,6 +37,14 @@ class NeuralNet {
         return _score;
     }
 
+    finished() {
+        this.brain.backward(10);
+    }
+
+    failed() {
+        this.brain.backward(-10);
+    }
+
     setWorldVariables(character, world, game) {
         /** @type {(Character)} */
         this.character = character;

@@ -7,6 +7,7 @@ var requestTeleport = true;
 var ITERATIONS_PER_SECOND = 600;
 var FRAMERATE = 60;
 var DISPLAY = true;
+var NN_RUNTIME = 30.0;
 
 // World properties
 var worldWidth = worldHeight = 500;
@@ -224,8 +225,9 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
-            if(output.has_fallen == true || game.elapsedTime > 30.0) {
-                // if (output.has_fallen) inputManager.learn(-10);
+            if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
+                if (output.has_fallen) inputManager.failed();
+                else if (game.elapsedTime > NN_RUNTIME) inputManager.finished();
                 score = output.score;
                 clearInterval(gameIntervalId);
                 if(DISPLAY) { clearInterval(displayIntervalId) }
