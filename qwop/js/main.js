@@ -68,7 +68,7 @@ function main()
     } else if (select.value == "ga") 
     {
         resetOutput();
-        printOutput("Iteration, Score, Time")
+        printOutput("Generation, Score, Time")
         var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluateGA)
     } else if (select.value == "manual")
     {
@@ -128,6 +128,7 @@ function evaluateGA(resolve, reject, inputManager) {
                 clearInterval(gameIntervalId);
                 if(DISPLAY) { clearInterval(displayIntervalId) }
                 inputManager.learn(-10);
+                printOutput(1 + ', ' + score + ', ' + game.elapsedTime);
                 resolve(score);
             } else {
                 inputManager.learn(output.score);
