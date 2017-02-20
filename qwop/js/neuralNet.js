@@ -1,10 +1,10 @@
 class NeuralNet {
     constructor() {
         // https://cs.stanford.edu/people/karpathy/convnetjs/demo/rldemo.html
-        this.actions = ['Q', 'W', 'O', 'P', 'QO', 'QP', 'WO', 'WP'];
+        this.actions = ['Q', 'W', 'O', 'P', 'QO', 'QP', 'WO', 'WP', 'N'];
         var num_inputs = 11;
         var num_actions = this.actions.length;
-        var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
+        var temporal_window = 2; // amount of temporal memory. 0 = agent lives in-the-moment :)
         var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
         var layer_defs = [];
         layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:network_size});
@@ -24,25 +24,19 @@ class NeuralNet {
         opt.layer_defs = layer_defs;
         opt.tdtrainer_options = tdtrainer_options;
         this.brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
-        this.lastScore = 0;
+        this.last_hip_x = 250;
         this.steps = 0;
     }
 
-    learn(score) {
-        // console.log((score - this.lastScore) * 10.0);
-        var _score = (score - this.lastScore);
-        this.brain.backward(_score);
-        this.lastScore = score;
-        this.steps += 1;
-        return _score;
-    }
-
-    finished() {
-        this.brain.backward(10);
-    }
-
-    failed() {
-        this.brain.backward(-10);
+    learn(distance_score) {
+        var head_y = this.character.body.head.GetPosition().y;
+        var torso_angle = 1 - Math.abs(this.character.body.torso.GetAngle());
+        var hip_x = this.character.getHipBaseX();
+        var hip_x_d = (hip_x - this.last_hip_x) * 100;
+        this.last_hip_x = hip_x;
+        var score = (head_y - 175.0) + 50.0 * torso_angle + hip_x_d + distance_score * 100;
+        this.brain.backward(score);
+        return score;
     }
 
     setWorldVariables(character, world, game) {

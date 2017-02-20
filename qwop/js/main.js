@@ -72,7 +72,7 @@ function main()
                 evaluateNN(resolve, reject, nn, 100000)
         ));
         resetOutput();
-        printOutput("Iteration, Score, Time");
+        printOutput("Iteration, Score, Time, Average Reward");
     
         Promise.all(promises).then((val) => {
             console.log(val);
@@ -222,24 +222,25 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     }
 
     // This runs the main loop
+    var rewards = [];
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
-                if (output.has_fallen) inputManager.failed();
-                else if (game.elapsedTime > NN_RUNTIME) inputManager.finished();
                 score = output.score;
                 clearInterval(gameIntervalId);
                 if(DISPLAY) { clearInterval(displayIntervalId) }
                 if (counter == iterations) {
                     resolve(score);
                 } else {
-                    printOutput(counter + ', ' + score + ', ' + game.elapsedTime);
-                    drawGraph(counter, score);
+                    var reward_sum = rewards.reduce(function(a, b) { return a + b; });
+                    var avg_reward = reward_sum / rewards.length;
+                    printOutput(counter + ', ' + score + ', ' + game.elapsedTime + ', ' + avg_reward);
+                    drawGraph(counter, avg_reward);
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
             } else {
-                inputManager.learn(output.score);
+                rewards.push(inputManager.learn(output.score));
             }
         },
         1000 / ITERATIONS_PER_SECOND)
