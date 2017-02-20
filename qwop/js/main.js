@@ -12,32 +12,69 @@ var DISPLAY = true;
 var worldWidth = worldHeight = 500;
 var canvasWidth = canvasHeight= 1054;
 
+// Query string getter
+var QueryString = function () {
+  // This function is anonymous, is executed immediately and 
+  // the return value is assigned to QueryString!
+  var query_string = {};
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+        // If first entry with this name
+    if (typeof query_string[pair[0]] === "undefined") {
+      query_string[pair[0]] = decodeURIComponent(pair[1]);
+        // If second entry with this name
+    } else if (typeof query_string[pair[0]] === "string") {
+      var arr = [ query_string[pair[0]],decodeURIComponent(pair[1]) ];
+      query_string[pair[0]] = arr;
+        // If third or later entry with this name
+    } else {
+      query_string[pair[0]].push(decodeURIComponent(pair[1]));
+    }
+  } 
+  return query_string;
+}();
+
+document.getElementById("run").addEventListener("click", function() {
+    window.location.href = "/index.html?alg=" + document.getElementById("algorithmSelector").value
+});
+
 /* PROGRAM STARTS HERE */
 main();
 
-function main() {
-
-    // This is for controlling the guy manually
-    // var inputManager = new InputManager(document)
-    // promises = [new Promise((resolve, reject) => evaluate(resolve, reject, inputManager))]
+function main() 
+{
+    var select = document.getElementById("algorithmSelector")
+    if (QueryString.alg) {
+        select.value = QueryString.alg
+    }
+    selectedAlgorithm = select.value
+    if (select.value == "nn")
+    {
+        //NN Example
+        var promises = []
+        var nn = new NeuralNet();
+        promises.push(
+            new Promise((resolve, reject) =>
+                evaluateNN(resolve, reject, nn, 100000)
+        ));
+        resetOutput();
+        printOutput("Iteration, Score, Time");
     
-    // This is for GA
-    // var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluate)
-
-    //NN Example
-    var promises = []
-    var nn = new NeuralNet();
-    promises.push(
-        new Promise((resolve, reject) =>
-            evaluateNN(resolve, reject, nn, 100000)
-    ));
-    resetOutput();
-    printOutput("Iteration, Score, Time");
-
-    Promise.all(promises).then((val) => {
-        console.log(val);
-    });
-
+        Promise.all(promises).then((val) => {
+            console.log(val);
+        });
+    } else if (select.value == "ga") 
+    {
+        resetOutput();
+        printOutput("Iteration, Score, Time")
+        var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluateGA)
+    } else if (select.value == "manual")
+    {
+        var inputManager = new InputManager(document)
+        promises = [new Promise((resolve, reject) => evaluate(resolve, reject, inputManager))]
+    }
 }
 
 function printOutput(output) {
@@ -50,7 +87,7 @@ function resetOutput() {
     box.value = ""
 }
 
-function evaluate(resolve, reject, inputManager) {
+function evaluateGA(resolve, reject, inputManager) {
 
     // Init objects
     var character = new Character();
@@ -125,14 +162,13 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
-
             if(output.has_fallen == true || game.elapsedTime > 30.0) {
                 if (output.has_fallen) inputManager.learn(-10);
                 score = output.score;
                 clearInterval(gameIntervalId);
                 if(DISPLAY) { clearInterval(displayIntervalId) }
                 if (counter == iterations) {
-                    resolve(score)
+                    resolve(score);
                 } else {
                     printOutput(counter + ', ' + score + ', ' + game.elapsedTime);
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
