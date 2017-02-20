@@ -4,15 +4,9 @@ var requestReset = true;
 var requestTeleport = true;
 
 // GLOBALS
-<<<<<<< HEAD
-var ITERATIONS_PER_SECOND = 600
-var FRAMERATE = 60
-var DISPLAY = false
-=======
 var ITERATIONS_PER_SECOND = 600;
 var FRAMERATE = 60;
 var DISPLAY = true;
->>>>>>> 447bd288eb0ed9059f5da5cf4b6fed5c1e754f9a
 
 // World properties
 var worldWidth = worldHeight = 500;
@@ -26,25 +20,9 @@ function main() {
     // This is for controlling the guy manually
     // var inputManager = new InputManager(document)
     // promises = [new Promise((resolve, reject) => evaluate(resolve, reject, inputManager))]
-<<<<<<< HEAD
     
-    var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluate)
-=======
-
-    // Genome example
-    var genomes = [];
-    var promises = [];
-    num_children = 1;
-
-    // for(var i = 0; i < num_children; i++) {
-    //     genomes.push(new Genome(600, 0.1));
-    //     promises.push(
-    //         new Promise((resolve, reject) =>
-    //             evaluate(resolve, reject, genomes[i])
-    //     ))
-    // }
-    //
-    // Promise.all(promises).then((val) => console.log(val));
+    // This is for GA
+    // var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluate)
 
     //NN Example
     var nn = new NeuralNet();
@@ -57,7 +35,6 @@ function main() {
         console.log(val);
     });
 
->>>>>>> 447bd288eb0ed9059f5da5cf4b6fed5c1e754f9a
 }
 
 function evaluate(resolve, reject, inputManager) {
