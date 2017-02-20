@@ -1,5 +1,5 @@
 
-class GenerticAlgorithm {
+class GeneticAlgorithm {
 
     constructor(genomeSize, popSize, elitismPct, mutationRate, generations, evaluationFunction) {
 
@@ -15,7 +15,7 @@ class GenerticAlgorithm {
         this.population = []
 
         //create generation 0 with random values
-        for(var i = 0; i < this.popSize; i++){
+        for(var i = 0; i < this.popSize; i++) {
             this.population.push(new Genome(this.genomeSize, this.mutationRate))
         }
 
@@ -59,16 +59,20 @@ class GenerticAlgorithm {
 
     // }
 
-    prune(population, scores) {
+    prune(population, scores, GA) {
 
         var arr = []
-        for(var i = 0; i < this.popSize; i++) {
+        for(var i = 0; i < GA.popSize; i++) {
             arr.push([population[i], scores[i]])
         }
 
-        arr.sort(function(a, b) {return (a[1] > b[1])})
+        arr.sort((a, b) => (a[1] < b[1]))
 
-        console.log(arr)
+        var numKeep = Math.round(GA.popSize * GA.elitismPct)
+
+        for(var i = 0; i < numKeep; i++) {
+            
+        }
 
 
     }
@@ -76,16 +80,16 @@ class GenerticAlgorithm {
     evaluate(pruneFunction) {
 
         var promises = []
+        var self = this
 
         for(var i = 0; i < this.popSize; i++) {
-            genomes.push(new Genome(this.genomeSize, 0.1))
             promises.push(
                 new Promise((resolve, reject) => 
-                    this.evaluationFunction(resolve, reject, genomes[i])
+                    this.evaluationFunction(resolve, reject, this.population[i])
             ))
         }
 
-        Promise.all(promises).then((scores) => pruneFunction(this.population, scores))
+        Promise.all(promises).then((scores) => pruneFunction(this.population, scores, self))
     }
 
 }

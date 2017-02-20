@@ -17,11 +17,11 @@ main()
 
 function main() {
 
-    console.log('hello')
     // This is for controlling the guy manually
     // var inputManager = new InputManager(document)
     // promises = [new Promise((resolve, reject) => evaluate(resolve, reject, inputManager))]
-    var ga = new GenerticAlgorithm(600, 30, 0.1, 0.1, 10, evaluate)
+    
+    var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluate)
 }
 
 function evaluate(resolve, reject, inputManager) {
