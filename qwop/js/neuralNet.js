@@ -2,7 +2,7 @@ class NeuralNet {
     constructor() {
         // create an environment object
         this.env = {};
-        this.env.getNumStates = function() { return 6; };
+        this.env.getNumStates = function() { return 10; };
         // 11 actions: Nothing (N) Q W O P QW OP QO QP WO WP
         this.env.getMaxNumActions = function() { return 11; };
 
@@ -33,6 +33,10 @@ class NeuralNet {
         state[state.length] = this.character.joint.l_hip.GetJointAngle();
         state[state.length] = this.character.joint.r_knee.GetJointAngle();
         state[state.length] = this.character.joint.l_knee.GetJointAngle();
+        state[state.length] = this.character.getLeftFootX(this.character.body);
+        state[state.length] = this.character.getLeftFootY(this.character.body);
+        state[state.length] = this.character.getRightFootX(this.character.body);
+        state[state.length] = this.character.getRightFootY(this.character.body);
         return state;
     }
 
