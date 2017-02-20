@@ -25,6 +25,7 @@ function main() {
     // var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluate)
 
     //NN Example
+    var promises = []
     var nn = new NeuralNet();
     promises.push(
         new Promise((resolve, reject) =>
