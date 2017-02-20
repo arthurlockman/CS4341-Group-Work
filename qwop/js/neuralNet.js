@@ -8,7 +8,7 @@ class NeuralNet {
 
         // create the DQN agent
         this.spec = {};
-        this.spec.update = 'sarsa'; // qlearn | sarsa
+        this.spec.update = 'qlearn'; // qlearn | sarsa
         // https://studywolf.wordpress.com/2013/07/01/reinforcement-learning-sarsa-vs-q-learning/
         this.spec.gamma = 0.9; // discount factor, [0, 1)
         this.spec.epsilon = 0.2; // initial epsilon for epsilon-greedy policy, [0, 1)
@@ -17,13 +17,14 @@ class NeuralNet {
         this.spec.experience_size = 5000; // size of experience replay memory
         this.spec.learning_steps_per_iteration = 20;
         this.spec.tderror_clamp = 1.0; // for robustness
-        this.spec.num_hidden_units = 100; // number of neurons in hidden layer
+        this.spec.num_hidden_units = 8; // number of neurons in hidden layer
         this.actions = ['Q', 'W', 'O', 'P', 'QW', 'QO', 'QP', 'WO', 'WP', 'OP', 'N'];
         this.agent = new RL.DQNAgent(this.env, this.spec);
         this.lastScore = 0;
     }
 
     learn(score) {
+        // console.log((score - this.lastScore) * 10.0);
         this.agent.learn((score - this.lastScore) * 10.0);
         this.lastScore = score;
     }
@@ -33,6 +34,7 @@ class NeuralNet {
         this.character = character;
         /** @type {(World)} */
         this.world = world;
+        this.lastScore = 0;
     }
 
     getState() {
@@ -55,7 +57,6 @@ class NeuralNet {
      * @returns {[number,number,number,number]} [Q, W, O, P] 1 if pressed, 0 otherwise
      */
     getInput() {
-        // TODO: Need to get input and put in S (array of state variables)
         var action = this.agent.act(this.getState());
         var _a = this.actions[action];
         var move = [0, 0, 0, 0];
