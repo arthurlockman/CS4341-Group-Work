@@ -4,7 +4,7 @@ class NeuralNet {
         this.actions = ['Q', 'W', 'O', 'P', 'QO', 'QP', 'WO', 'WP', 'N'];
         var num_inputs = 11;
         var num_actions = this.actions.length;
-        var temporal_window = 0; // amount of temporal memory. 0 = agent lives in-the-moment :)
+        var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
         var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
         var layer_defs = [];
         layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:network_size});
@@ -29,7 +29,7 @@ class NeuralNet {
 
     learn(score) {
         // console.log((score - this.lastScore) * 10.0);
-        var _score = (score - this.lastScore) * 100.0;
+        var _score = (score - this.lastScore);
         this.brain.backward(_score);
         this.lastScore = score;
         return _score;
