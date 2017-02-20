@@ -42,6 +42,11 @@ class Genome {
 
     }
 
+    learn() {
+        // Do nothing, not NN
+    }
 
-
+    setWorldVariables(character, world) {
+        // Do nothing, not NN
+    }
 }
