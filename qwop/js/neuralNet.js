@@ -1,14 +1,15 @@
 class NeuralNet {
     constructor() {
         // https://cs.stanford.edu/people/karpathy/convnetjs/demo/rldemo.html
+        this.actions = ['Q', 'W', 'O', 'P', 'QO', 'QP', 'WO', 'WP', 'N'];
         var num_inputs = 11;
-        var num_actions = 10; // 5 possible angles agent can turn
-        var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
+        var num_actions = this.actions.length;
+        var temporal_window = 0; // amount of temporal memory. 0 = agent lives in-the-moment :)
         var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
         var layer_defs = [];
         layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:network_size});
-        layer_defs.push({type:'fc', num_neurons: 6, activation:'relu'});
-        layer_defs.push({type:'fc', num_neurons: 6, activation:'relu'});
+        layer_defs.push({type:'fc', num_neurons: 10, activation:'relu'});
+        layer_defs.push({type:'fc', num_neurons: 10, activation:'relu'});
         layer_defs.push({type:'regression', num_neurons:num_actions});
         var tdtrainer_options = {learning_rate:0.001, momentum:0.0, batch_size:64, l2_decay:0.01};
         var opt = {};
@@ -24,22 +25,23 @@ class NeuralNet {
         opt.tdtrainer_options = tdtrainer_options;
         this.brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
         this.lastScore = 0;
-        this.actions = ['Q', 'W', 'O', 'P', 'QW', 'QO', 'QP', 'WO', 'WP', 'OP', 'N'];
     }
 
     learn(score) {
         // console.log((score - this.lastScore) * 10.0);
-        var _score = (score - this.lastScore) * 10.0;
+        var _score = (score - this.lastScore) * 100.0;
         this.brain.backward(_score);
         this.lastScore = score;
         return _score;
     }
 
-    setWorldVariables(character, world) {
+    setWorldVariables(character, world, game) {
         /** @type {(Character)} */
         this.character = character;
         /** @type {(World)} */
         this.world = world;
+        /** @type {(Game)} */
+        this.game = game;
         this.lastScore = 0;
     }
 
@@ -55,6 +57,7 @@ class NeuralNet {
         state[state.length] = this.character.getLeftFootY(this.character.body);
         state[state.length] = this.character.getRightFootX(this.character.body);
         state[state.length] = this.character.getRightFootY(this.character.body);
+        state[state.length] = this.game.elapsedTime;
         return state;
     }
 

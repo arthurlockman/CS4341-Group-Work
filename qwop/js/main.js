@@ -51,12 +51,16 @@ function main()
     if (QueryString.alg) {
         select.value = QueryString.alg
     }
-    selectedAlgorithm = select.value;
     if (select.value == "nn")
     {
         //NN Example
         var promises = [];
         var nn = new NeuralNet();
+        document.getElementById("dump").addEventListener("click", function() {
+            document.getElementById("networkDumpTextBox").value = nn.toJSON();
+        });
+        document.getElementById("dump").style.display = 'block';
+        document.getElementById("networkDumpTextBox").style.display = 'block';
         promises.push(
             new Promise((resolve, reject) =>
                 evaluateNN(resolve, reject, nn, 100000)
@@ -190,7 +194,7 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     var character = new Character();
     var world = new World(worldWidth, worldHeight, character);
     var game = new Game(world, character);
-    inputManager.setWorldVariables(character, world);
+    inputManager.setWorldVariables(character, world, game);
 
     var display;
     if(DISPLAY) {
