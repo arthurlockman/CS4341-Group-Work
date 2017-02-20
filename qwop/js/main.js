@@ -73,7 +73,7 @@ function main()
     } else if (select.value == "manual")
     {
         var inputManager = new InputManager(document);
-        promises = [new Promise((resolve, reject) => evaluate(resolve, reject, inputManager))]
+        promises = [new Promise((resolve, reject) => evaluateGA(resolve, reject, inputManager))]
         Promise.all(promises).then((val) => {
             console.log(val);
         });
