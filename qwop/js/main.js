@@ -73,7 +73,7 @@ function main()
     } else if (select.value == "manual")
     {
         var inputManager = new InputManager(document);
-        promises = [new Promise((resolve, reject) => evaluateGA(resolve, reject, inputManager))]
+        promises = [new Promise((resolve, reject) => evaluateManual(resolve, reject, inputManager))]
         Promise.all(promises).then((val) => {
             console.log(val);
         });
@@ -97,6 +97,7 @@ function evaluateGA(resolve, reject, inputManager) {
     var world = new World(worldWidth, worldHeight, character);
     var game = new Game(world, character);
     inputManager.setWorldVariables(character, world);
+    inputManager.game = game;
 
     var display;
     if(DISPLAY) {
@@ -130,6 +131,46 @@ function evaluateGA(resolve, reject, inputManager) {
                 resolve(score);
             } else {
                 inputManager.learn(output.score);
+            }
+        },
+        1000 / ITERATIONS_PER_SECOND)
+}
+
+function evaluateManual(resolve, reject, inputManager) {
+
+    // Init objects
+    var character = new Character();
+    var world = new World(worldWidth, worldHeight, character);
+    var game = new Game(world, character);
+    inputManager.setWorldVariables(character, world);
+    inputManager.game = game;
+
+    var display;
+    if(DISPLAY) {
+        display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)    
+    }
+
+    // This starts the runner
+    game.resetRunner();
+
+    // This runs the display loop
+    if(DISPLAY) {
+        var displayIntervalId = setInterval(
+            function() {
+                display.clearCurrentFrame();
+                display.drawWorld();
+                display.displayStats(game.farthestDistTraveled, game.elapsedTime, game.totalDistTraveled)
+            },
+            1000 / FRAMERATE)
+    }
+
+    // This runs the main loop
+    var gameIntervalId = setInterval(
+        function() {
+            output = game.run(world, character, inputManager);
+
+            if(output.has_fallen == true) {
+                score = output.score;
             }
         },
         1000 / ITERATIONS_PER_SECOND)
