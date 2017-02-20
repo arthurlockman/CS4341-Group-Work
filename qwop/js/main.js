@@ -4,9 +4,15 @@ var requestReset = true;
 var requestTeleport = true;
 
 // GLOBALS
+<<<<<<< HEAD
+var ITERATIONS_PER_SECOND = 600
+var FRAMERATE = 60
+var DISPLAY = false
+=======
 var ITERATIONS_PER_SECOND = 600;
 var FRAMERATE = 60;
 var DISPLAY = true;
+>>>>>>> 447bd288eb0ed9059f5da5cf4b6fed5c1e754f9a
 
 // World properties
 var worldWidth = worldHeight = 500;
@@ -20,6 +26,10 @@ function main() {
     // This is for controlling the guy manually
     // var inputManager = new InputManager(document)
     // promises = [new Promise((resolve, reject) => evaluate(resolve, reject, inputManager))]
+<<<<<<< HEAD
+    
+    var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluate)
+=======
 
     // Genome example
     var genomes = [];
@@ -47,6 +57,7 @@ function main() {
         console.log(val);
     });
 
+>>>>>>> 447bd288eb0ed9059f5da5cf4b6fed5c1e754f9a
 }
 
 function evaluate(resolve, reject, inputManager) {
