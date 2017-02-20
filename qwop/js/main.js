@@ -11,6 +11,7 @@ var DISPLAY = true;
 // World properties
 var worldWidth = worldHeight = 500;
 var canvasWidth = canvasHeight= 1054;
+var reward_graph;
 
 // Query string getter
 var QueryString = function () {
@@ -45,15 +46,16 @@ main();
 
 function main() 
 {
-    var select = document.getElementById("algorithmSelector")
+    reward_graph = new cnnvis.Graph();
+    var select = document.getElementById("algorithmSelector");
     if (QueryString.alg) {
         select.value = QueryString.alg
     }
-    selectedAlgorithm = select.value
+    selectedAlgorithm = select.value;
     if (select.value == "nn")
     {
         //NN Example
-        var promises = []
+        var promises = [];
         var nn = new NeuralNet();
         promises.push(
             new Promise((resolve, reject) =>
@@ -68,16 +70,22 @@ function main()
     } else if (select.value == "ga") 
     {
         resetOutput();
-        printOutput("Generation, Score, Time")
-        var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluateGA)
+        printOutput("Generation, Score, Time");
+        var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluateGA);
     } else if (select.value == "manual")
     {
         var inputManager = new InputManager(document);
-        promises = [new Promise((resolve, reject) => evaluateManual(resolve, reject, inputManager))]
+        promises = [new Promise((resolve, reject) => evaluateManual(resolve, reject, inputManager))];
         Promise.all(promises).then((val) => {
             console.log(val);
         });
     }
+}
+
+function drawGraph(x, y) {
+    reward_graph.add(x, y);
+    var gcanvas = document.getElementById("graph_canvas");
+    reward_graph.drawSelf(gcanvas);
 }
 
 function printOutput(output) {
@@ -216,6 +224,7 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
                     resolve(score);
                 } else {
                     printOutput(counter + ', ' + score + ', ' + game.elapsedTime);
+                    drawGraph(counter, score);
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
             } else {
