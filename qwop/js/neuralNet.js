@@ -24,18 +24,19 @@ class NeuralNet {
         opt.layer_defs = layer_defs;
         opt.tdtrainer_options = tdtrainer_options;
         this.brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
-        this.last_hip_x = 250;
+        this.lastScore = 0;
     }
 
     learn(distance_score) {
-        var head_y = this.character.body.head.GetPosition().y;
-        var torso_angle = 1 - Math.abs(this.character.body.torso.GetAngle());
-        var hip_x = this.character.getHipBaseX();
-        var hip_x_d = (hip_x - this.last_hip_x) * 100;
-        this.last_hip_x = hip_x;
-        var score = (head_y - 175.0) + 50.0 * torso_angle + hip_x_d + distance_score * 100;
+        // var head_y = this.character.body.head.GetPosition().y;
+        // var torso_angle = 1 - Math.abs(this.character.body.torso.GetAngle());
+        // var hip_x = this.character.getHipBaseX();
+        // var hip_x_d = (hip_x - this.last_hip_x) * 100;
+        // this.last_hip_x = hip_x;
+        // var score = (head_y - 175.0) + 50.0 * torso_angle + hip_x_d + distance_score * 100;
+        var score = 10 * (distance_score - this.lastScore);
+        this.lastScore = distance_score;
         this.brain.backward(score);
-        console.log(this.character.body.lr_leg.GetPosition().y + ', ' + this.character.body.ll_leg.GetPosition().y);
         return score;
     }
 
