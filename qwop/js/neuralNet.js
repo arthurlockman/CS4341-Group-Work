@@ -19,10 +19,10 @@ class NeuralNet {
         // How many previous states each node gets
         opt.temporal_window = temporal_window;
         opt.experience_size = 30000;
-        opt.start_learn_threshold = 100;
+        opt.start_learn_threshold = 1000;
         opt.gamma = 0.7;
         opt.learning_steps_total = 200000;
-        opt.learning_steps_burnin = 300;
+        opt.learning_steps_burnin = 3000;
 
         // When model is trained, how random are its actions. Think of this as the minimum temperature for annealing
         opt.epsilon_min = 0.05;
@@ -30,13 +30,13 @@ class NeuralNet {
         opt.layer_defs = layer_defs;
         opt.tdtrainer_options = tdtrainer_options;
         this.brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
-        this.lastScore = 0;
+        this.lastReward = 0;
     }
 
-    learn(distance_score) {
-        var hip_x = this.character.getHipBaseX();
-        this.brain.backward(hip_x);
-        return hip_x;
+    learn(reward) {
+//         var hip_x = this.character.getHipBaseX();
+        this.brain.backward(reward);
+        return reward;
     }
 
     setWorldVariables(character, world, game) {
@@ -98,5 +98,9 @@ class NeuralNet {
     fromJSON(json) {
         this.brain.learning = false;
         this.brain.value_net.fromJSON(JSON.parse(json));
+    }
+    
+    visSelf(elt) {
+        this.brain.visSelf(elt);
     }
 }
