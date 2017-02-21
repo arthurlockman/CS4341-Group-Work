@@ -226,7 +226,9 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
         function() {
             output = game.run(world, character, inputManager);
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
-                inputManager.learn(output.score)
+                var reward = output.score;
+                if (output.has_fallen == true) reward = reward - 5.0;
+                inputManager.learn(reward);
                 score = output.score;
                 clearInterval(gameIntervalId);
                 if(DISPLAY) { clearInterval(displayIntervalId) }
@@ -237,6 +239,9 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
                     drawGraph(counter, inputManager.learn(output.score));
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
+            } else {
+                var reward = output.score;
+                inputManager.learn(reward);
             }
         },
         1000 / ITERATIONS_PER_SECOND)
