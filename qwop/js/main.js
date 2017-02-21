@@ -225,6 +225,7 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
+            inputManager.visSelf(document.getElementById("netvis"));
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
                 var reward = output.score;
                 if (output.has_fallen == true) reward = reward - 5.0;
@@ -236,12 +237,9 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
                     resolve(score);
                 } else {
                     printOutput(counter + ', ' + score + ', ' + game.elapsedTime);
-                    drawGraph(counter, inputManager.learn(output.score));
+                    drawGraph(counter, reward);
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
-            } else {
-                var reward = output.score;
-                inputManager.learn(reward);
             }
         },
         1000 / ITERATIONS_PER_SECOND)

@@ -30,7 +30,7 @@ class NeuralNet {
         opt.layer_defs = layer_defs;
         opt.tdtrainer_options = tdtrainer_options;
         this.brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
-        this.lastScore = 0;
+        this.lastReward = 0;
     }
 
     learn(reward) {
@@ -98,5 +98,9 @@ class NeuralNet {
     fromJSON(json) {
         this.brain.learning = false;
         this.brain.value_net.fromJSON(JSON.parse(json));
+    }
+    
+    visSelf(elt) {
+        this.brain.visSelf(elt);
     }
 }
