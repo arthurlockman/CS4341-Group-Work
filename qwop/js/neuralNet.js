@@ -2,23 +2,29 @@ class NeuralNet {
     constructor() {
         // https://cs.stanford.edu/people/karpathy/convnetjs/demo/rldemo.html
         this.actions = ['Q', 'W', 'O', 'P', 'QO', 'QP', 'WO', 'WP', 'N'];
-        var num_inputs = 11;
+        var num_inputs = 7;
         var num_actions = this.actions.length;
         var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
         var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
         var layer_defs = [];
         layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:network_size});
-        layer_defs.push({type:'fc', num_neurons: 10, activation:'relu'});
-        layer_defs.push({type:'fc', num_neurons: 10, activation:'relu'});
+        layer_defs.push({type:'fc', num_neurons: 8, activation:'relu'});
+        layer_defs.push({type:'fc', num_neurons: 8, activation:'relu'});
         layer_defs.push({type:'regression', num_neurons:num_actions});
         var tdtrainer_options = {learning_rate:0.001, momentum:0.0, batch_size:64, l2_decay:0.01};
+
+        // NN Options
         var opt = {};
+
+        // How many previous states each node gets
         opt.temporal_window = temporal_window;
         opt.experience_size = 30000;
-        opt.start_learn_threshold = 3000;
+        opt.start_learn_threshold = 100;
         opt.gamma = 0.7;
         opt.learning_steps_total = 200000;
-        opt.learning_steps_burnin = 10000;
+        opt.learning_steps_burnin = 300;
+
+        // When model is trained, how random are its actions. Think of this as the minimum temperature for annealing
         opt.epsilon_min = 0.05;
         opt.epsilon_test_time = 0.05;
         opt.layer_defs = layer_defs;
@@ -28,16 +34,9 @@ class NeuralNet {
     }
 
     learn(distance_score) {
-        var head_y = this.character.body.head.GetPosition().y;
-        var torso_angle = 1 - Math.abs(this.character.body.torso.GetAngle());
         var hip_x = this.character.getHipBaseX();
-        var hip_x_d = (hip_x - this.last_hip_x) * 100;
-        this.last_hip_x = hip_x;
-        var score = (head_y - 175.0) + 50.0 * torso_angle + hip_x_d + distance_score * 100;
-        // var score = 10 * (distance_score - this.lastScore);
-        this.lastScore = distance_score;
-        this.brain.backward(score);
-        return score;
+        this.brain.backward(hip_x);
+        return hip_x;
     }
 
     setWorldVariables(character, world, game) {
@@ -53,16 +52,18 @@ class NeuralNet {
     getState() {
         var state = [];
         state[state.length] = this.character.curVelX;
-        state[state.length] = this.character.curX;
+        // state[state.length] = this.character.curX;
         state[state.length] = this.character.joint.r_hip.GetJointAngle();
         state[state.length] = this.character.joint.l_hip.GetJointAngle();
         state[state.length] = this.character.joint.r_knee.GetJointAngle();
         state[state.length] = this.character.joint.l_knee.GetJointAngle();
-        state[state.length] = this.character.getLeftFootX(this.character.body);
-        state[state.length] = this.character.getLeftFootY(this.character.body);
-        state[state.length] = this.character.getRightFootX(this.character.body);
-        state[state.length] = this.character.getRightFootY(this.character.body);
-        state[state.length] = this.game.elapsedTime;
+        state[state.length] = this.character.body.torso.GetAngle();
+        state[state.length] = this.character.body.head.GetPosition().y;
+        // state[state.length] = this.character.getLeftFootX(this.character.body);
+        // state[state.length] = this.character.getLeftFootY(this.character.body);
+        // state[state.length] = this.character.getRightFootX(this.character.body);
+        // state[state.length] = this.character.getRightFootY(this.character.body);
+        // state[state.length] = this.game.elapsedTime;
         return state;
     }
 

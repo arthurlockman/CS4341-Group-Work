@@ -81,7 +81,7 @@ function main()
     {
         resetOutput();
         printOutput("Generation, Score, Time");
-        var ga = new GeneticAlgorithm(600, 30, 0.1, 0.1, 10, evaluateGA);
+        var ga = new GeneticAlgorithm(NN_RUNTIME * 60, 30, 0.1, 0.1, 10, evaluateGA);
     } else if (select.value == "manual")
     {
         var inputManager = new InputManager(document);
@@ -222,27 +222,21 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     }
 
     // This runs the main loop
-    var rewards = [];
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
-                // if (output.has_fallen) rewards.push(inputManager.learn(-10));
-                // if (game.elapsedTime > NN_RUNTIME) rewards.push(inputManager.learn(10));
+                inputManager.learn(output.score)
                 score = output.score;
                 clearInterval(gameIntervalId);
                 if(DISPLAY) { clearInterval(displayIntervalId) }
                 if (counter == iterations) {
                     resolve(score);
                 } else {
-                    var reward_sum = rewards.reduce(function(a, b) { return a + b; });
-                    var avg_reward = reward_sum / rewards.length;
-                    printOutput(counter + ', ' + score + ', ' + game.elapsedTime + ', ' + avg_reward);
-                    drawGraph(counter, avg_reward);
+                    printOutput(counter + ', ' + score + ', ' + game.elapsedTime);
+                    drawGraph(counter, inputManager.learn(output.score));
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
-            } else {
-                rewards.push(inputManager.learn(output.score));
             }
         },
         1000 / ITERATIONS_PER_SECOND)

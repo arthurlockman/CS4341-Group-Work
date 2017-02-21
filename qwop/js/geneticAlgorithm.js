@@ -69,11 +69,13 @@ class GeneticAlgorithm {
         arr.sort((a, b) => (a[1] < b[1]))
 
         var numKeep = Math.round(GA.popSize * GA.elitismPct)
+        var elites = []
 
         for(var i = 0; i < numKeep; i++) {
-            
+            elites.push(arr[i][0])
         }
 
+        
 
     }
 
