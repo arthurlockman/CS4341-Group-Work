@@ -6,7 +6,7 @@ var requestTeleport = true;
 // GLOBALS
 var ITERATIONS_PER_SECOND = 600;
 var FRAMERATE = 60;
-var DISPLAY = true;
+var DISPLAY = false;
 var NN_RUNTIME = 30.0;
 
 // World properties
@@ -52,6 +52,7 @@ function main()
     if (QueryString.alg) {
         select.value = QueryString.alg
     }
+    select.value  = 'ga'
     if (select.value == "nn")
     {
         //NN Example
@@ -81,7 +82,18 @@ function main()
     {
         resetOutput();
         printOutput("Generation, Score, Time");
-        var ga = new GeneticAlgorithm(NN_RUNTIME * 60, 30, 0.1, 0.1, 10, evaluateGA);
+        // var ga = new GeneticAlgorithm(NN_RUNTIME * 60, 30, 0.1, 0.1, 0.1, 10, evaluateGA);
+        // ga.evaluate(ga)
+
+        var ga = new GeneticAlgorithm(5, 5, 0.4, 0, 0.5, 10, evaluateGA);
+        g1 = new Genome(5); g1.moves = [[9, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]];
+        g2 = new Genome(5); g2.moves = [[16, 17, 18], [4, 9, 11], [2, 4, 6], [10, 11, 12], [13, 14, 15]];
+        g3 = new Genome(5); g3.moves = [[4, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]];
+        g4 = new Genome(5); g4.moves = [[5, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]];
+        g5 = new Genome(5); g5.moves = [[6, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]];
+
+        ga.prune([g1, g2, g3, g4, g5], [5, 4, 3, 2, 1], ga)
+
     } else if (select.value == "manual")
     {
         var inputManager = new InputManager(document);

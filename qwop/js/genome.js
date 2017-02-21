@@ -2,10 +2,9 @@
 
 class Genome {
 
-    constructor(genomeSize, mutationRate){
+    constructor(genomeSize){
 
         this.genomeSize = genomeSize
-        this.mutationRate = mutationRate
         this.moves = []
         this.counter = 0
 
@@ -18,24 +17,16 @@ class Genome {
         }
     }
 
-    selectAndBreed(genomes, mutationRate){
-        //choose two from genomes and return two children
-
-
-        //mutate
-
-    }
-
     getInput() {
         return this.moves[this.counter++]
     }
 
-    mutate() {
+    mutate(self, mutationRate) {
 
-        for(var i = 0; i < this.genomeSize; i++) {
+        for(var i = 0; i < self.genomeSize; i++) {
             for(var j = 0; j < 4; j++) {
-                if(Math.randome() < mutationRate) {
-                    this.moves[i][j] = this.this.moves[i][j] == 0 ? 1 : 0
+                if(Math.random() < mutationRate) {
+                    self.moves[i][j] = (self.moves[i][j] == 0) ? 1 : 0
                 }
             }
         }
