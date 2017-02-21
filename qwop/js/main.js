@@ -227,6 +227,8 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
         function() {
             output = game.run(world, character, inputManager);
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
+                // if (output.has_fallen) rewards.push(inputManager.learn(-10));
+                // if (game.elapsedTime > NN_RUNTIME) rewards.push(inputManager.learn(10));
                 score = output.score;
                 clearInterval(gameIntervalId);
                 if(DISPLAY) { clearInterval(displayIntervalId) }
