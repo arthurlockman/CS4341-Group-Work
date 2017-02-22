@@ -8,8 +8,8 @@ class NeuralNet {
         var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
         var layer_defs = [];
         layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:network_size});
-        layer_defs.push({type:'fc', num_neurons: 8, activation:'relu'});
-        layer_defs.push({type:'fc', num_neurons: 8, activation:'relu'});
+        layer_defs.push({type:'fc', num_neurons: 10, activation:'relu'});
+        layer_defs.push({type:'fc', num_neurons: 10, activation:'relu'});
         layer_defs.push({type:'regression', num_neurons:num_actions});
         var tdtrainer_options = {learning_rate:0.001, momentum:0.0, batch_size:64, l2_decay:0.01};
 
@@ -30,11 +30,9 @@ class NeuralNet {
         opt.layer_defs = layer_defs;
         opt.tdtrainer_options = tdtrainer_options;
         this.brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
-        this.lastReward = 0;
     }
 
     learn(reward) {
-//         var hip_x = this.character.getHipBaseX();
         this.brain.backward(reward);
         return reward;
     }
@@ -102,5 +100,9 @@ class NeuralNet {
     
     visSelf(elt) {
         this.brain.visSelf(elt);
+    }
+
+    getSmoothedReward() {
+        return this.brain.average_reward_window.get_average()
     }
 }

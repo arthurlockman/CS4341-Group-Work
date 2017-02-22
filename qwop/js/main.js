@@ -8,6 +8,7 @@ var ITERATIONS_PER_SECOND = 600;
 var FRAMERATE = 60;
 var DISPLAY = true;
 var NN_RUNTIME = 30.0;
+var REWARD_AFTER_EACH_SIM = false;
 
 // World properties
 var worldWidth = worldHeight = 500;
@@ -51,6 +52,12 @@ function main()
     var select = document.getElementById("algorithmSelector");
     if (QueryString.alg) {
         select.value = QueryString.alg
+    }
+    if (QueryString.nnreward) {
+        if (QueryString.nnreward == "eachsim") {
+            REWARD_AFTER_EACH_SIM = true;
+            document.getElementById("rewardtype").innerHTML = "<p>Rewarding after each simulation</p>"
+        }
     }
     if (select.value == "nn")
     {
@@ -222,22 +229,29 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     }
 
     // This runs the main loop
+    var lastOutput = character.getHipBaseX();
+    var once = false;
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
+            if (!REWARD_AFTER_EACH_SIM) {
+                inputManager.learn(character.getHipBaseX() - lastOutput);
+                lastOutput = character.getHipBaseX();
+            }
             inputManager.visSelf(document.getElementById("netvis"));
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
                 var reward = output.score;
-                if (output.has_fallen == true) reward = reward - 5.0;
-                inputManager.learn(reward);
-                score = output.score;
+                if (REWARD_AFTER_EACH_SIM) {
+                    if (output.has_fallen == true) reward = reward - 5.0;
+                    inputManager.learn(reward);
+                }
                 clearInterval(gameIntervalId);
                 if(DISPLAY) { clearInterval(displayIntervalId) }
                 if (counter == iterations) {
-                    resolve(score);
+                    resolve(reward);
                 } else {
-                    printOutput(counter + ', ' + score + ', ' + game.elapsedTime);
-                    drawGraph(counter, reward);
+                    printOutput(counter + ', ' + reward + ', ' + game.elapsedTime);
+                    drawGraph(counter, inputManager.getSmoothedReward());
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
             }
