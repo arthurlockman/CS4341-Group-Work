@@ -229,14 +229,22 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     }
 
     // This runs the main loop
-    var lastOutput = character.getHipBaseX();
-    var once = false;
+    var lastDistance = character.getHipBaseX();
+    var lastDDistance = character.getHipBaseX();
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
             if (!REWARD_AFTER_EACH_SIM) {
-                inputManager.learn(character.getHipBaseX() - lastOutput);
-                lastOutput = character.getHipBaseX();
+                var dDistance = character.getHipBaseX() - lastDistance;
+                var ddDistance = dDistance - lastDDistance;
+                // console.log(0.1 * distanceAccum, dDistance, ddDistance);
+                // Want to penalize it for not moving forward
+                var speedPenalty = 0;
+                if (Math.abs(ddDistance) < 0.01)
+                    speedPenalty = -5;
+                inputManager.learn(dDistance + ddDistance + speedPenalty);
+                lastDDistance = dDistance;
+                lastDistance = character.getHipBaseX();
             }
             inputManager.visSelf(document.getElementById("netvis"));
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
