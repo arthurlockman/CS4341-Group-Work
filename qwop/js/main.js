@@ -248,17 +248,17 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
             }
             inputManager.visSelf(document.getElementById("netvis"));
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
-                var reward = output.score;
+                var reward = character.getHipBaseX();
                 if (REWARD_AFTER_EACH_SIM) {
-                    if (output.has_fallen == true) reward = reward - 5.0;
+                    if (output.has_fallen == true) reward = reward - 500.0;
                     inputManager.learn(reward);
                 }
                 clearInterval(gameIntervalId);
                 if(DISPLAY) { clearInterval(displayIntervalId) }
                 if (counter == iterations) {
-                    resolve(reward);
+                    resolve(output.score);
                 } else {
-                    printOutput(counter + ', ' + reward + ', ' + game.elapsedTime);
+                    printOutput(counter + ', ' + output.score + ', ' + game.elapsedTime);
                     drawGraph(counter, inputManager.getSmoothedReward());
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
