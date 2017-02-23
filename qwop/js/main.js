@@ -58,6 +58,10 @@ function main()
             REWARD_AFTER_EACH_SIM = true;
             document.getElementById("rewardtype").innerHTML = "<p>Rewarding after each simulation</p>"
         }
+    } if (QueryString.display) {
+        if (QueryString.display == "false") {
+            DISPLAY = false;
+        }
     }
     if (select.value == "nn")
     {
