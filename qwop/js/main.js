@@ -15,6 +15,8 @@ var worldWidth = worldHeight = 500;
 var canvasWidth = canvasHeight= 1054;
 var reward_graph;
 
+var scoreAccumulator = 0;
+
 // Query string getter
 var QueryString = function () {
   // This function is anonymous, is executed immediately and 
@@ -233,13 +235,14 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     }
 
     // This runs the main loop
-    var lastDistance = character.getHipBaseX();
-    var lastDDistance = character.getHipBaseX();
+    var lastScore = 0;
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
+            scoreAccumulator += output.score - lastScore;
+            lastScore = output.score;
             if (!REWARD_AFTER_EACH_SIM) {
-                inputManager.learn(output.bestScore);
+                inputManager.learn(scoreAccumulator);
             }
             inputManager.visSelf(document.getElementById("netvis"));
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
@@ -253,8 +256,9 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
                 if (counter == iterations) {
                     resolve(output.score);
                 } else {
-                    printOutput(counter + ', ' + output.score + ', ' + game.elapsedTime);
-                    drawGraph(counter, inputManager.getSmoothedReward());
+                    var _r = inputManager.getSmoothedReward();
+                    printOutput(counter + ', ' + output.score + ', ' + game.elapsedTime + ', ' + _r);
+                    drawGraph(counter, _r);
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
             }

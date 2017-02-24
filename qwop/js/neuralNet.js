@@ -2,7 +2,7 @@ class NeuralNet {
     constructor() {
         // https://cs.stanford.edu/people/karpathy/convnetjs/demo/rldemo.html
         this.actions = ['Q', 'W', 'O', 'P', 'QO', 'QP', 'WO', 'WP', 'N'];
-        var num_inputs = 8;
+        var num_inputs = 7;
         var num_actions = this.actions.length;
         var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
         var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
@@ -18,10 +18,10 @@ class NeuralNet {
 
         // How many previous states each node gets
         opt.temporal_window = temporal_window;
-        opt.experience_size = 300000;
+        opt.experience_size = 30000;
         opt.start_learn_threshold = 1000;
         opt.gamma = 0.7;
-        opt.learning_steps_total = 2000000;
+        opt.learning_steps_total = 200000;
         opt.learning_steps_burnin = 3000;
 
         // When model is trained, how random are its actions. Think of this as the minimum temperature for annealing
@@ -61,7 +61,7 @@ class NeuralNet {
         // state[state.length] = this.character.getLeftFootY(this.character.body);
         // state[state.length] = this.character.getRightFootX(this.character.body);
         // state[state.length] = this.character.getRightFootY(this.character.body);
-        state[state.length] = this.game.elapsedTime;
+        // state[state.length] = this.game.elapsedTime;
         return state;
     }
 
