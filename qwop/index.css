@@ -1,0 +1,27 @@
+body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+  margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+  width: auto;
+}
+
+#canvas {
+    border-radius:15px;
+    border:15px solid #14140f;
+}
+
+#graph_canvas {
+    position: fixed;	bottom: 0;	right: 0;	padding:10px;	-webkit-border-top-left-radius: 10px;	-moz-border-radius-topleft: 10px;	border-top-left-radius: 10px;
+}
