@@ -2,27 +2,27 @@
 class Display {
 
      constructor(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight) {
-          this.world = world
-          this.worldWidth = worldWidth
-          this.worldHeight = worldHeight
+          this.world = world;
+          this.worldWidth = worldWidth;
+          this.worldHeight = worldHeight;
 
-          this.setCanvasProperties(document, canvasWidth, canvasHeight)
+          this.setCanvasProperties(document, canvasWidth, canvasHeight);
      }
 
      setCanvasProperties(document, width, height) {
-          var canvasElement = document.getElementById('canvas')
-          this.canvas = canvasElement.getContext('2d')
-          this.canvasWidth = canvasElement.width = width
-          this.canvasHeight = canvasElement.height = height
+          var canvasElement = document.getElementById('canvas');
+          this.canvas = canvasElement.getContext('2d');
+          this.canvasWidth = canvasElement.width = width;
+          this.canvasHeight = canvasElement.height = height;
      }
 
      displayStats(farthestDistTraveled, elapsedTime, totalDistTraveled) {
-          this.canvas.font = '20pt Calibri'
-          this.canvas.fillStyle = 'black'
+          this.canvas.font = '20pt Calibri';
+          this.canvas.fillStyle = 'black';
 
-          this.canvas.fillText('Best Distance: ' + round(farthestDistTraveled) + ' m', 100, 50)
-          this.canvas.fillText('Time Elapsed: ' + Math.round(elapsedTime*10)/10 + ' s', 100, 100)
-          this.canvas.fillText('Total Distance: ' + round(totalDistTraveled) + ' m', 100, 200)
+          this.canvas.fillText('Best Distance: ' + round(farthestDistTraveled) + ' m', 100, 50);
+          this.canvas.fillText('Time Elapsed: ' + Math.round(elapsedTime*10)/10 + ' s', 100, 100);
+          this.canvas.fillText('Total Distance: ' + round(totalDistTraveled) + ' m', 100, 200);
           // canvas.fillText('Keystate: ' + keyPressed,100,150)
           // action_strings[keyState] = keyPressed
      }
@@ -31,7 +31,6 @@ class Display {
 
          var pos = node.GetPosition();
          var fList = node.GetFixtureList();
-
          if (fList !== null) {
 
              var shape = fList.GetShape();
@@ -39,7 +38,7 @@ class Display {
 
              if (shapeType == b2Shape.e_circleShape) {
                  this.canvas.beginPath();
-                 this.canvas.arc(this.xToCanvas(pos.x), this.yToCanvas(pos.y), 40, 0, 2 * PI, false);
+                 this.canvas.arc(this.xToCanvas(pos.x), this.yToCanvas(pos.y), (40.0 / 1054.0) * this.canvasWidth, 0, 2 * PI, false);
                  this.canvas.fillStyle = '#FFF3C3';
                  this.canvas.fill();
                  this.canvas.lineWidth = 5;
@@ -77,10 +76,10 @@ class Display {
 
      /* Draws all of the nodes in the world */
      drawWorld() {
-          var node = this.world.world.GetBodyList()
+          var node = this.world.world.GetBodyList();
 
           while (node.GetNext() !== null) {
-               this.draw(node)
+               this.draw(node);
                node = node.GetNext()
           }
      }

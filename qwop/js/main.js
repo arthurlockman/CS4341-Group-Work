@@ -45,6 +45,12 @@ document.getElementById("run").addEventListener("click", function() {
     window.location.href = "/index.html?alg=" + document.getElementById("algorithmSelector").value
 });
 
+function getCanvasWidth() {
+    let windowHeight = window.innerHeight - 200;
+    let textWidth = document.getElementById('outputTextBox').offsetWidth - 30;
+    return (textWidth > windowHeight) ? windowHeight : textWidth;
+}
+
 /* PROGRAM STARTS HERE */
 main();
 
@@ -131,8 +137,13 @@ function evaluateGA(resolve, reject, inputManager) {
     inputManager.game = game;
 
     var display;
+    let evt;
     if(DISPLAY) {
-        display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)    
+        display = new Display(document, getCanvasWidth(), getCanvasWidth(), world, worldWidth, worldHeight);
+        evt = function (event) {
+            display.setCanvasProperties(document, getCanvasWidth(), getCanvasWidth());
+        };
+        window.addEventListener('resize', evt);
     }
 
     // This starts the runner
@@ -157,7 +168,10 @@ function evaluateGA(resolve, reject, inputManager) {
             if(output.has_fallen == true || game.elapsedTime > 9.9) {
                 score = output.score;
                 clearInterval(gameIntervalId);
-                if(DISPLAY) { clearInterval(displayIntervalId) }
+                if(DISPLAY) {
+                    clearInterval(displayIntervalId);
+                    window.removeEventListener('resize', evt);
+                }
                 inputManager.learn(-10);
                 printOutput(1 + ', ' + score + ', ' + game.elapsedTime);
                 resolve(score);
@@ -178,8 +192,13 @@ function evaluateManual(resolve, reject, inputManager) {
     inputManager.game = game;
 
     var display;
+    let evt;
     if(DISPLAY) {
-        display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)    
+        display = new Display(document, getCanvasWidth(), getCanvasWidth(), world, worldWidth, worldHeight);
+        evt = function (event) {
+            display.setCanvasProperties(document, getCanvasWidth(), getCanvasWidth());
+        };
+        window.addEventListener('resize', evt);
     }
 
     // This starts the runner
@@ -216,8 +235,13 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     inputManager.setWorldVariables(character, world, game);
 
     var display;
+    let evt;
     if(DISPLAY) {
-        display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)
+        display = new Display(document, getCanvasWidth(), getCanvasWidth(), world, worldWidth, worldHeight);
+        evt = function (event) {
+            display.setCanvasProperties(document, getCanvasWidth(), getCanvasWidth());
+        };
+        window.addEventListener('resize', evt);
     }
 
     // This starts the runner
@@ -252,7 +276,10 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
                     inputManager.learn(reward);
                 }
                 clearInterval(gameIntervalId);
-                if(DISPLAY) { clearInterval(displayIntervalId) }
+                if(DISPLAY) {
+                    clearInterval(displayIntervalId);
+                    window.removeEventListener('resize', evt);
+                }
                 if (counter == iterations) {
                     resolve(output.score);
                 } else {

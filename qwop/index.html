@@ -60,20 +60,21 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-    
-    <div style="margin-top:5px" class="container">
+    <div style="text-align: center;" class="container" id="canvas_container">
+        <canvas id='canvas'></canvas>
+    </div>
+    <div style="margin-top:10px" class="container">
         <textarea class="form-control" rows=5 id="outputTextBox"></textarea>
-        <canvas id="graph_canvas" width="350" height="150"></canvas>
     </div>
     <div class="container">
         <div class="row-fluid">
             <div class="col-md-4">
                 <button type="button" class="btn btn-primary btn-block" id="dump" style="display: none; margin-bottom:10px; margin-top:10px">Dump Network</button>
-                <textarea class="form-control" id="networkDumpTextBox" style="display: none"></textarea>
+                <textarea class="form-control" rows=3 id="networkDumpTextBox" style="display: none"></textarea>
             </div>
             <div class="col-md-4">
                 <button type="button" class="btn btn-primary btn-block" id="load" style="display: none; margin-bottom:10px; margin-top:10px">Load Network</button>
-                <textarea class="form-control" rows=2 id="networkLoadTextBox" style="display: none"></textarea>
+                <textarea class="form-control" rows=3 id="networkLoadTextBox" style="display: none"></textarea>
             </div>
             <div class="col-md-4">
                 <div id="rewardtype" style="margin-top:10px"><p>Rewarding after each step</p></div>
@@ -81,9 +82,7 @@
             </div>
         </div>
     </div>
-    <div style="margin-top:5px" class="container">
-        <canvas id='canvas'></canvas>
-    </div>
+    <canvas id="graph_canvas" width="350" height="150"></canvas>
     <!-- Body load JS -->
     <script type='text/javascript' src='js/main.js'></script>
 </body>
