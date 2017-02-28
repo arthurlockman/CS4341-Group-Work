@@ -42,7 +42,18 @@ var QueryString = function () {
 }();
 
 document.getElementById("run").addEventListener("click", function() {
-    window.location.href = "/index.html?alg=" + document.getElementById("algorithmSelector").value
+    let newURL = window.location.href;
+    if (newURL.includes('alg'))
+    {
+        newURL = newURL.replace(/alg=[a-z]*/g, "alg="+document.getElementById("algorithmSelector").value);
+    }
+    else if (newURL.includes('?'))
+    {
+        newURL += "&alg=" + document.getElementById("algorithmSelector").value
+    } else {
+        newURL += "?alg=" + document.getElementById("algorithmSelector").value
+    }
+    window.location.href = newURL;
 });
 
 function getCanvasWidth() {
@@ -86,6 +97,7 @@ function main()
         document.getElementById("networkDumpTextBox").style.display = 'block';
         document.getElementById("load").style.display = 'block';
         document.getElementById("networkLoadTextBox").style.display = 'block';
+        document.getElementById("rewardtype").style.display = 'block';
         promises.push(
             new Promise((resolve, reject) =>
                 evaluateNN(resolve, reject, nn, 100000)
