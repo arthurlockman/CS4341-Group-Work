@@ -43,6 +43,7 @@ class GeneticAlgorithm {
         for(var i = 0; i < numKeep; i++) {
             keep.push(arr[i][0])
         }
+        console.log(keep);
 
         // Purge the scum
         var numPurge = Math.round(self.popSize * self.scumismPct);
@@ -61,30 +62,23 @@ class GeneticAlgorithm {
             var genomeA, genomeB;
 
             var summedScore = 0;
-            var dice = Math.random();
-            while (genomeA == undefined)
-            {
-                summedScore = 0;
-                dice = Math.random();
-                for(var j = 0; j < arr.length; j++) {
-                    summedScore += arr[j][1] / totalScore;
-                    if(dice < summedScore) {
-                        genomeA = arr[j][0];
-                        break
-                    }
+            summedScore = 0;
+            dice = Math.random();
+            for(var j = 0; j < arr.length; j++) {
+                summedScore += arr[j][1] / totalScore;
+                if(dice < summedScore) {
+                    genomeA = arr[j][0];
+                    break
                 }
             }
+            summedScore = 0;
+            dice = Math.random();
 
-            while (genomeB == undefined) {
-                summedScore = 0;
-                dice = Math.random();
-
-                for (var j = 0; j < arr.length; j++) {
-                    summedScore += arr[j][1] / totalScore;
-                    if (dice < summedScore) {
-                        genomeB = arr[j][0];
-                        break
-                    }
+            for (var j = 0; j < arr.length; j++) {
+                summedScore += arr[j][1] / totalScore;
+                if (dice < summedScore) {
+                    genomeB = arr[j][0];
+                    break
                 }
             }
 

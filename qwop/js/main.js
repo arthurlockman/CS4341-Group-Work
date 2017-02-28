@@ -6,7 +6,7 @@ var requestTeleport = true;
 // GLOBALS
 var ITERATIONS_PER_SECOND = 600;
 var FRAMERATE = 60;
-var DISPLAY = false;
+var DISPLAY = true;
 var NN_RUNTIME = 30.0;
 var REWARD_AFTER_EACH_SIM = false;
 
