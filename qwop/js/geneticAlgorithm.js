@@ -23,7 +23,9 @@ class GeneticAlgorithm {
 
     prune(self, population, scores) {
 
-        var totalScore = 0
+        console.log(population[0]);
+
+        var totalScore = 0;
         for(var i = 0; i < scores.length; i++) {
             totalScore += scores[i]
         }
@@ -35,7 +37,6 @@ class GeneticAlgorithm {
             arr.push([population[i], scores[i]])
         }
         arr.sort((a, b) => (b[1] - a[1]));
-        console.log(arr[0]);
 
         // Keep the elites
         var numKeep = Math.round(self.popSize * self.elitismPct);
@@ -43,7 +44,6 @@ class GeneticAlgorithm {
         for(var i = 0; i < numKeep; i++) {
             keep.push(arr[i][0])
         }
-        console.log(keep);
 
         // Purge the scum
         var numPurge = Math.round(self.popSize * self.scumismPct);
@@ -54,16 +54,18 @@ class GeneticAlgorithm {
         // Insert the elites into the next gen
         var nextGen = [];
         nextGen = nextGen.concat(keep);
+        console.log(arr[0][0]);
 
         // Create next gen
         var numNextGenerationToCreate = self.popSize - numKeep;
         for(var i = 0; i < numNextGenerationToCreate; i++) {
 
             var genomeA, genomeB;
+            //Error happens when sometimes these end up null (no idea why)
 
             var summedScore = 0;
+            var dice = Math.random();
             summedScore = 0;
-            dice = Math.random();
             for(var j = 0; j < arr.length; j++) {
                 summedScore += arr[j][1] / totalScore;
                 if(dice < summedScore) {
@@ -90,8 +92,9 @@ class GeneticAlgorithm {
             nextGen[i].mutate(nextGen[i], self.mutationRate)
         }
 
-        self.population = nextGen;
-        // return nextGen
+        // self.population = nextGen;
+        this.population = nextGen;
+        return nextGen;
 
     }
 
@@ -119,9 +122,8 @@ class GeneticAlgorithm {
         }
 
         Promise.all(promises).then(function(scores) {
-            self.prune(self, self.population, scores)
-
             // Recursive evaluation
+            self.population = self.prune(self, self.population, scores);
             self.evaluate(self)
         })
     }
