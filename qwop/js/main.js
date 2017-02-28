@@ -129,6 +129,12 @@ function drawGraph(x, y) {
     reward_graph.drawSelf(gcanvas);
 }
 
+let graphCounter = 0;
+function drawGraphY(y) {
+    drawGraph(graphCounter, y);
+    graphCounter += 1;
+}
+
 function printOutput(output) {
     var box = document.getElementById("outputTextBox");
     box.value += output + '\n';
@@ -184,11 +190,9 @@ function evaluateGA(resolve, reject, inputManager) {
                     clearInterval(displayIntervalId);
                     window.removeEventListener('resize', evt);
                 }
-                inputManager.learn(-10);
                 printOutput(1 + ', ' + score + ', ' + game.elapsedTime);
+                drawGraphY(score);
                 resolve(score);
-            } else {
-                inputManager.learn(output.score);
             }
         },
         1000 / ITERATIONS_PER_SECOND)
@@ -231,7 +235,7 @@ function evaluateManual(resolve, reject, inputManager) {
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
-
+            drawGraphY(output.score);
             if(output.has_fallen == true) {
                 score = output.score;
             }
@@ -297,7 +301,7 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
                 } else {
                     var _r = inputManager.getSmoothedReward();
                     printOutput(counter + ', ' + output.score + ', ' + game.elapsedTime + ', ' + _r);
-                    drawGraph(counter, _r);
+                    drawGraph(counter, output.score);
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
             }
