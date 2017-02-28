@@ -6,7 +6,7 @@ var requestTeleport = true;
 // GLOBALS
 var ITERATIONS_PER_SECOND = 600;
 var FRAMERATE = 60;
-var DISPLAY = true;
+var DISPLAY = false;
 var NN_RUNTIME = 30.0;
 var REWARD_AFTER_EACH_SIM = false;
 
@@ -62,8 +62,23 @@ function getCanvasWidth() {
     return (textWidth > windowHeight) ? windowHeight : textWidth;
 }
 
+function testPrune() {
+
+    var ga = new GeneticAlgorithm(5, 5, 0.4, 0, 0.5, 10, evaluateGA);
+    var g1 = new Genome(5); g1.moves = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]];
+    var g2 = new Genome(5); g2.moves = [[16, 17, 18], [19, 20, 21], [22, 23, 24], [25, 26, 26], [28, 29, 30]];
+    var g3 = new Genome(5); g3.moves = [[4, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]];
+    var g4 = new Genome(5); g4.moves = [[5, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]];
+    var g5 = new Genome(5); g5.moves = [[6, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]];
+
+    console.log(ga.population)
+    ga.prune(ga, [g1, g2, g3, g4, g5], [1, 10, 3, 7, -1])
+    console.log(ga.population)
+}
+
 /* PROGRAM STARTS HERE */
 main();
+// testPrune()
 
 function main() 
 {
@@ -82,6 +97,10 @@ function main()
             DISPLAY = false;
         }
     }
+
+    /* FORCING GA */
+    select.value = 'ga'
+
     if (select.value == "nn")
     {
         //NN Example
@@ -113,7 +132,7 @@ function main()
         resetOutput();
         printOutput("Generation, Score, Time");
         var genomeSize = NN_RUNTIME * 60;
-        var popSize = 30;
+        var popSize = 10;
         var elitismPct = 0.1;
         var scumismPct = 0.1;
         var mutationRate = 0.1;

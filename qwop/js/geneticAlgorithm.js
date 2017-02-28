@@ -23,20 +23,25 @@ class GeneticAlgorithm {
 
     prune(self, population, scores) {
 
-        console.log(population[0]);
-
-        var totalScore = 0;
-        for(var i = 0; i < scores.length; i++) {
-            totalScore += scores[i]
-        }
-        
-
         // Sort the genomes by their scores
         var arr = [];
         for(var i = 0; i < self.popSize; i++) {
             arr.push([population[i], scores[i]])
         }
         arr.sort((a, b) => (b[1] - a[1]));
+        console.log(arr[0][1])
+
+        // Make all the scores positive
+        var min_score = arr[arr.length-1][1]
+        for(var i = 0; i < arr.length; i++) {
+            arr[i][1] = arr[i][1] - min_score
+        }
+
+        // Calculate the total score
+        var totalScore = 0;
+        for(var i = 0; i < arr.length; i++) {
+            totalScore += arr[i][1]
+        }
 
         // Keep the elites
         var numKeep = Math.round(self.popSize * self.elitismPct);
@@ -54,7 +59,6 @@ class GeneticAlgorithm {
         // Insert the elites into the next gen
         var nextGen = [];
         nextGen = nextGen.concat(keep);
-        console.log(arr[0][0]);
 
         // Create next gen
         var numNextGenerationToCreate = self.popSize - numKeep;
@@ -65,7 +69,6 @@ class GeneticAlgorithm {
 
             var summedScore = 0;
             var dice = Math.random();
-            summedScore = 0;
             for(var j = 0; j < arr.length; j++) {
                 summedScore += arr[j][1] / totalScore;
                 if(dice < summedScore) {
@@ -73,6 +76,7 @@ class GeneticAlgorithm {
                     break
                 }
             }
+
             summedScore = 0;
             dice = Math.random();
 
@@ -90,6 +94,22 @@ class GeneticAlgorithm {
         // Mutate
         for(var i = numKeep; i < nextGen.length; i++) {
             nextGen[i].mutate(nextGen[i], self.mutationRate)
+        }
+
+        if(nextGen.length != self.popSize) {
+            console.log("Not enough children!")
+        }
+
+        for(var j = 0; j < nextGen.length; j++) {
+            if(nextGen[j].genomeSize != self.genomeSize) {
+                console.log("Genome size wrong!")
+            }
+        }
+
+        for(var j = 0; j < keep.length; j++) {
+            if(!nextGen.includes(keep[j])) {
+                console.log("Elitism wrong!")
+            }
         }
 
         // self.population = nextGen;
