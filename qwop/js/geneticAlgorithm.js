@@ -1,14 +1,13 @@
 
 class GeneticAlgorithm {
 
-    constructor(genomeSize, popSize, elitismPct, scumismPct, mutationRate, generations, evaluationFunction) {
+    constructor(genomeSize, popSize, elitismPct, scumismPct, mutationRate, evaluationFunction) {
 
         this.genomeSize = genomeSize;
         this.popSize = popSize;
         this.elitismPct = elitismPct;
         this.scumismPct = scumismPct;
         this.mutationRate = mutationRate;
-        this.generations = generations;
         this.evaluationFunction = evaluationFunction;
 
         this.currentGen = 0;
@@ -22,26 +21,31 @@ class GeneticAlgorithm {
 
     }
 
-    prune(population, scores, GA) {
+    prune(self, population, scores) {
 
-        var totalScore = scores.reduce((a, b) => a + b, 0);
+        var totalScore = 0
+        for(var i = 0; i < scores.length; i++) {
+            totalScore += scores[i]
+        }
+        
 
         // Sort the genomes by their scores
         var arr = [];
-        for(var i = 0; i < GA.popSize; i++) {
+        for(var i = 0; i < self.popSize; i++) {
             arr.push([population[i], scores[i]])
         }
         arr.sort((a, b) => (a[1] < b[1]));
+        console.log(arr[0])
 
         // Keep the elites
-        var numKeep = Math.round(GA.popSize * GA.elitismPct);
+        var numKeep = Math.round(self.popSize * self.elitismPct);
         var keep = [];
         for(var i = 0; i < numKeep; i++) {
             keep.push(arr[i][0])
         }
 
         // Purge the scum
-        var numPurge = Math.round(GA.popSize * GA.scumismPct);
+        var numPurge = Math.round(self.popSize * self.scumismPct);
         for(var i = 0; i < numPurge; i++) {
             arr.splice(-1,1)
         }
@@ -51,7 +55,7 @@ class GeneticAlgorithm {
         nextGen = nextGen.concat(keep);
 
         // Create next gen
-        var numNextGenerationToCreate = GA.popSize - numKeep;
+        var numNextGenerationToCreate = self.popSize - numKeep;
         for(var i = 0; i < numNextGenerationToCreate; i++) {
 
             var genomeA, genomeB;
@@ -78,23 +82,24 @@ class GeneticAlgorithm {
                 }
             }
 
-            nextGen.push(GA.merge(genomeA, genomeB, GA))
+            nextGen.push(self.merge(self, genomeA, genomeB))
         }
 
         // Mutate
         for(var i = numKeep; i < nextGen.length; i++) {
-            nextGen[i].mutate(nextGen[i], GA.mutationRate)
+            nextGen[i].mutate(nextGen[i], self.mutationRate)
         }
 
-        return nextGen
+        self.population = nextGen
+        // return nextGen
 
     }
 
-    merge(genomeA, genomeB, GA) {
+    merge(self, genomeA, genomeB) {
 
-        var splitNum  = Math.round(Math.random() * GA.genomeSize);
+        var splitNum  = Math.round(Math.random() * self.genomeSize);
 
-        var newGenome = new Genome(GA.genomeSize);
+        var newGenome = new Genome(self.genomeSize);
         var genomeAMoves = arrayClone(genomeA.moves)
         var genomeBMoves = arrayClone(genomeB.moves)
 
@@ -114,7 +119,12 @@ class GeneticAlgorithm {
             ))
         }
 
-        Promise.all(promises).then((scores) => self.prune(self.population, scores, self))
+        Promise.all(promises).then(function(scores) {
+            self.prune(self, self.population, scores)
+
+            // Recursive evaluation
+            self.evaluate(self)
+        })
     }
 }
 
