@@ -6,13 +6,16 @@ var requestTeleport = true;
 // GLOBALS
 var ITERATIONS_PER_SECOND = 600;
 var FRAMERATE = 60;
-var DISPLAY = false;
+var DISPLAY = true;
 var NN_RUNTIME = 30.0;
+var REWARD_AFTER_EACH_SIM = false;
 
 // World properties
 var worldWidth = worldHeight = 500;
 var canvasWidth = canvasHeight= 1054;
 var reward_graph;
+
+var scoreAccumulator = 0;
 
 // Query string getter
 var QueryString = function () {
@@ -39,8 +42,25 @@ var QueryString = function () {
 }();
 
 document.getElementById("run").addEventListener("click", function() {
-    window.location.href = "/index.html?alg=" + document.getElementById("algorithmSelector").value
+    let newURL = window.location.href;
+    if (newURL.includes('alg'))
+    {
+        newURL = newURL.replace(/alg=[a-z]*/g, "alg="+document.getElementById("algorithmSelector").value);
+    }
+    else if (newURL.includes('?'))
+    {
+        newURL += "&alg=" + document.getElementById("algorithmSelector").value
+    } else {
+        newURL += "?alg=" + document.getElementById("algorithmSelector").value
+    }
+    window.location.href = newURL;
 });
+
+function getCanvasWidth() {
+    let windowHeight = window.innerHeight - 200;
+    let textWidth = document.getElementById('outputTextBox').offsetWidth - 30;
+    return (textWidth > windowHeight) ? windowHeight : textWidth;
+}
 
 /* PROGRAM STARTS HERE */
 main();
@@ -52,7 +72,16 @@ function main()
     if (QueryString.alg) {
         select.value = QueryString.alg
     }
-    select.value  = 'ga'
+    if (QueryString.nnreward) {
+        if (QueryString.nnreward == "eachsim") {
+            REWARD_AFTER_EACH_SIM = true;
+            document.getElementById("rewardtype").innerHTML = "<p>Rewarding after each simulation</p>"
+        }
+    } if (QueryString.display) {
+        if (QueryString.display == "false") {
+            DISPLAY = false;
+        }
+    }
     if (select.value == "nn")
     {
         //NN Example
@@ -68,6 +97,7 @@ function main()
         document.getElementById("networkDumpTextBox").style.display = 'block';
         document.getElementById("load").style.display = 'block';
         document.getElementById("networkLoadTextBox").style.display = 'block';
+        document.getElementById("rewardtype").style.display = 'block';
         promises.push(
             new Promise((resolve, reject) =>
                 evaluateNN(resolve, reject, nn, 100000)
@@ -110,6 +140,12 @@ function drawGraph(x, y) {
     reward_graph.drawSelf(gcanvas);
 }
 
+let graphCounter = 0;
+function drawGraphY(y) {
+    drawGraph(graphCounter, y);
+    graphCounter += 1;
+}
+
 function printOutput(output) {
     var box = document.getElementById("outputTextBox");
     box.value += output + '\n';
@@ -130,8 +166,13 @@ function evaluateGA(resolve, reject, inputManager) {
     inputManager.game = game;
 
     var display;
+    let evt;
     if(DISPLAY) {
-        display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)    
+        display = new Display(document, getCanvasWidth(), getCanvasWidth(), world, worldWidth, worldHeight);
+        evt = function (event) {
+            display.setCanvasProperties(document, getCanvasWidth(), getCanvasWidth());
+        };
+        window.addEventListener('resize', evt);
     }
 
     // This starts the runner
@@ -156,12 +197,13 @@ function evaluateGA(resolve, reject, inputManager) {
             if(output.has_fallen == true || game.elapsedTime > 9.9) {
                 score = output.score;
                 clearInterval(gameIntervalId);
-                if(DISPLAY) { clearInterval(displayIntervalId) }
-                inputManager.learn(-10);
+                if(DISPLAY) {
+                    clearInterval(displayIntervalId);
+                    window.removeEventListener('resize', evt);
+                }
                 printOutput(1 + ', ' + score + ', ' + game.elapsedTime);
+                drawGraphY(score);
                 resolve(score);
-            } else {
-                inputManager.learn(output.score);
             }
         },
         1000 / ITERATIONS_PER_SECOND)
@@ -177,8 +219,13 @@ function evaluateManual(resolve, reject, inputManager) {
     inputManager.game = game;
 
     var display;
+    let evt;
     if(DISPLAY) {
-        display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)    
+        display = new Display(document, getCanvasWidth(), getCanvasWidth(), world, worldWidth, worldHeight);
+        evt = function (event) {
+            display.setCanvasProperties(document, getCanvasWidth(), getCanvasWidth());
+        };
+        window.addEventListener('resize', evt);
     }
 
     // This starts the runner
@@ -199,7 +246,7 @@ function evaluateManual(resolve, reject, inputManager) {
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
-
+            drawGraphY(output.score);
             if(output.has_fallen == true) {
                 score = output.score;
             }
@@ -215,8 +262,13 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     inputManager.setWorldVariables(character, world, game);
 
     var display;
+    let evt;
     if(DISPLAY) {
-        display = new Display(document, canvasWidth, canvasHeight, world, worldWidth, worldHeight)
+        display = new Display(document, getCanvasWidth(), getCanvasWidth(), world, worldWidth, worldHeight);
+        evt = function (event) {
+            display.setCanvasProperties(document, getCanvasWidth(), getCanvasWidth());
+        };
+        window.addEventListener('resize', evt);
     }
 
     // This starts the runner
@@ -234,22 +286,33 @@ function evaluateNN(resolve, reject, inputManager, iterations, counter=0) {
     }
 
     // This runs the main loop
+    var lastScore = 0;
     var gameIntervalId = setInterval(
         function() {
             output = game.run(world, character, inputManager);
+            scoreAccumulator += output.score - lastScore;
+            lastScore = output.score;
+            if (!REWARD_AFTER_EACH_SIM) {
+                inputManager.learn(scoreAccumulator);
+            }
             inputManager.visSelf(document.getElementById("netvis"));
             if(output.has_fallen == true || game.elapsedTime > NN_RUNTIME) {
-                var reward = output.score;
-                if (output.has_fallen == true) reward = reward - 5.0;
-                inputManager.learn(reward);
-                score = output.score;
+                var reward = character.getHipBaseX();
+                if (REWARD_AFTER_EACH_SIM) {
+                    if (output.has_fallen == true) reward = reward - 500.0;
+                    inputManager.learn(reward);
+                }
                 clearInterval(gameIntervalId);
-                if(DISPLAY) { clearInterval(displayIntervalId) }
+                if(DISPLAY) {
+                    clearInterval(displayIntervalId);
+                    window.removeEventListener('resize', evt);
+                }
                 if (counter == iterations) {
-                    resolve(score);
+                    resolve(output.score);
                 } else {
-                    printOutput(counter + ', ' + score + ', ' + game.elapsedTime);
-                    drawGraph(counter, reward);
+                    var _r = inputManager.getSmoothedReward();
+                    printOutput(counter + ', ' + output.score + ', ' + game.elapsedTime + ', ' + _r);
+                    drawGraph(counter, output.score);
                     evaluateNN(resolve, reject, inputManager, iterations, counter + 1);
                 }
             }

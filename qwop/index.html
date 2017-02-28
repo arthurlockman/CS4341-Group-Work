@@ -18,36 +18,71 @@
     <script type="text/javascript" src="js/neuralNet.js"></script>
 
     <!-- CSS -->
-    <style type='text/css'>
-        #canvas {
-            border-radius:15px;
-            border:15px solid #14140f;
-        }
-    </style>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="index.css" rel="stylesheet">
+    <!-- Boostrap garbage -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
 </head>
 
 <body>
-    <div>
-        <select id="algorithmSelector">
-            <option value="nn">Neural Network</option>
-            <option value="ga">Genetic Algorithm</option>
-            <option value="manual">Manual</option>
-        </select>
-        <button id="run">Run</button>
-        <textarea id="outputTextBox"></textarea>
-        <canvas id="graph_canvas" width="350" height="150"></canvas>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">QWOP</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+          <form class="navbar-form form-inline" action="javascript:void(0);">
+            <div class="input-group">
+                <div class="input-group-addon">Select an algorithm to run</div>
+                <select class="form-control" id="algorithmSelector">
+                    <option value="nn">Neural Network</option>
+                    <option value="ga">Genetic Algorithm</option>
+                    <option value="manual">Manual</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="run">Run</button>
+        </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div style="text-align: center;" class="container" id="canvas_container">
+        <canvas id='canvas'></canvas>
     </div>
-    <div>
-        <button id="dump" style="display: none">Dump Network</button>
-        <textarea id="networkDumpTextBox" style="display: none"></textarea>
-        <button id="load" style="display: none">Load Network</button>
-        <textarea id="networkLoadTextBox" style="display: none"></textarea>
+    <div style="margin-top:10px" class="container">
+        <textarea class="form-control" rows=5 id="outputTextBox"></textarea>
     </div>
-    <div id="netvis">
+    <div class="container">
+        <div class="row-fluid">
+            <div class="col-md-4">
+                <button type="button" class="btn btn-primary btn-block" id="dump" style="display: none; margin-bottom:10px; margin-top:10px">Dump Network</button>
+                <textarea class="form-control" rows=3 id="networkDumpTextBox" style="display: none"></textarea>
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn btn-primary btn-block" id="load" style="display: none; margin-bottom:10px; margin-top:10px">Load Network</button>
+                <textarea class="form-control" rows=3 id="networkLoadTextBox" style="display: none"></textarea>
+            </div>
+            <div class="col-md-4">
+                <div id="rewardtype" style="margin-top:10px; display:none;"><p>Rewarding after each step</p></div>
+                <div id="netvis"></div>
+            </div>
+        </div>
     </div>
-    <canvas id='canvas'></canvas>
+    <canvas id="graph_canvas" width="350" height="150"></canvas>
+    <!-- Body load JS -->
     <script type='text/javascript' src='js/main.js'></script>
-
 </body>

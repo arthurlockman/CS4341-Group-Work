@@ -84,13 +84,15 @@ class Game {
             // this.resetRunner()
             return {
                 "has_fallen": true,
-                "score": this.totalDistTraveled
+                "score": this.totalDistTraveled,
+                "bestScore": this.farthestDistTraveled
             }
         }
 
         return {
             "has_fallen": false,
-            "score": this.totalDistTraveled
+            "score": this.totalDistTraveled,
+            "bestScore": this.farthestDistTraveled
         }
     }
 
