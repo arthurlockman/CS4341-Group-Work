@@ -112,12 +112,12 @@ function main()
     {
         resetOutput();
         printOutput("Generation, Score, Time");
-        var genomeSize = NN_RUNTIME * 60
-        var popSize = 30
-        var elitismPct = 0.1
-        var scumismPct = 0.1
-        var mutationRate = 0.1
-        var evaluationFunction = evaluateGA
+        var genomeSize = NN_RUNTIME * 60;
+        var popSize = 30;
+        var elitismPct = 0.1;
+        var scumismPct = 0.1;
+        var mutationRate = 0.1;
+        var evaluationFunction = evaluateGA;
         var ga = new GeneticAlgorithm(genomeSize, popSize, elitismPct, scumismPct, mutationRate, evaluationFunction);
         ga.evaluate(ga)
 

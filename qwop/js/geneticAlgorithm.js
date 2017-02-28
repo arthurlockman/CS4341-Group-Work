@@ -34,8 +34,8 @@ class GeneticAlgorithm {
         for(var i = 0; i < self.popSize; i++) {
             arr.push([population[i], scores[i]])
         }
-        arr.sort((a, b) => (a[1] < b[1]));
-        console.log(arr[0])
+        arr.sort((a, b) => (b[1] - a[1]));
+        console.log(arr[0]);
 
         // Keep the elites
         var numKeep = Math.round(self.popSize * self.elitismPct);
@@ -62,23 +62,29 @@ class GeneticAlgorithm {
 
             var summedScore = 0;
             var dice = Math.random();
-
-            for(var j = 0; j < arr.length; j++) {
-                summedScore += arr[j][1] / totalScore;
-                if(dice < summedScore) {
-                    genomeA = arr[j][0];
-                    break
+            while (genomeA == undefined)
+            {
+                summedScore = 0;
+                dice = Math.random();
+                for(var j = 0; j < arr.length; j++) {
+                    summedScore += arr[j][1] / totalScore;
+                    if(dice < summedScore) {
+                        genomeA = arr[j][0];
+                        break
+                    }
                 }
             }
 
-            summedScore = 0;
-            dice = Math.random();
+            while (genomeB == undefined) {
+                summedScore = 0;
+                dice = Math.random();
 
-            for(var j = 0; j < arr.length; j++) {
-                summedScore += arr[j][1] / totalScore;
-                if(dice < summedScore) {
-                    genomeB = arr[j][0];
-                    break
+                for (var j = 0; j < arr.length; j++) {
+                    summedScore += arr[j][1] / totalScore;
+                    if (dice < summedScore) {
+                        genomeB = arr[j][0];
+                        break
+                    }
                 }
             }
 
@@ -90,18 +96,17 @@ class GeneticAlgorithm {
             nextGen[i].mutate(nextGen[i], self.mutationRate)
         }
 
-        self.population = nextGen
+        self.population = nextGen;
         // return nextGen
 
     }
 
     merge(self, genomeA, genomeB) {
-
         var splitNum  = Math.round(Math.random() * self.genomeSize);
 
         var newGenome = new Genome(self.genomeSize);
-        var genomeAMoves = arrayClone(genomeA.moves)
-        var genomeBMoves = arrayClone(genomeB.moves)
+        var genomeAMoves = arrayClone(genomeA.moves);
+        var genomeBMoves = arrayClone(genomeB.moves);
 
         newGenome.moves = genomeAMoves.slice(0, splitNum).concat(genomeBMoves.slice(splitNum, genomeB.moves.length));
 
