@@ -44,6 +44,28 @@ class Genome {
     setWorldVariables(character, world) {
         // Do nothing, not NN
     }
+
+    dump() {
+        let final = [];
+        for (let i = 0; i < this.moves.length; i++)
+        {
+            let move = this.moves[i];
+            let _tmp = "";
+            _tmp += move[0] + "," + move[1]  + "," + move[2]  + "," + move[3];
+            final.push(_tmp);
+        }
+        return final.join(":");
+    }
+
+    load(genomeString) {
+        let moves = genomeString.split(":");
+        this.moves = [];
+        for (let i = 0; i < moves.length; i++)
+        {
+            let move = moves[i].split(',');
+            this.moves.push(move);
+        }
+    }
 }
 
 Genome.prototype.toString = function() {

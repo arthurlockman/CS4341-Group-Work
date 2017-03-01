@@ -29,6 +29,7 @@ class GeneticAlgorithm {
         }
         arr.sort((a, b) => (b[1] - a[1]));
         printOutput(ga.generationCount + ', ' + arr[0][1]);
+        printGenome(arr[0][0].dump());
         drawGraphY(arr[0][1]);
 
         // Make all the scores positive

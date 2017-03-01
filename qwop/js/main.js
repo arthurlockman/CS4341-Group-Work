@@ -100,7 +100,7 @@ function main()
     }
 
     /* FORCING GA */
-    select.value = 'ga'
+    // select.value = 'ga';
 
     if (select.value == "nn")
     {
@@ -130,6 +130,7 @@ function main()
         });
     } else if (select.value == "ga") 
     {
+        document.getElementById("genomeArea").style.display = 'block';
         resetOutput();
         printOutput("Generation, Score");
         var genomeSize = NN_RUNTIME * 60;
@@ -171,6 +172,12 @@ function printOutput(output) {
 function resetOutput() {
     var box = document.getElementById("outputTextBox");
     box.value = ""
+}
+
+function printGenome(genome) {
+    var box = document.getElementById("gaTextBox");
+    box.value = "";
+    box.value = genome;
 }
 
 function evaluateGA(resolve, reject, inputManager) {
