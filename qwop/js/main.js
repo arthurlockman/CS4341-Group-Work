@@ -131,7 +131,7 @@ function main()
     } else if (select.value == "ga") 
     {
         resetOutput();
-        printOutput("Generation, Score, Time");
+        printOutput("Generation, Score");
         var genomeSize = NN_RUNTIME * 60;
         var popSize = 10;
         var elitismPct = 0.1;
@@ -218,8 +218,8 @@ function evaluateGA(resolve, reject, inputManager) {
                     clearInterval(displayIntervalId);
                     window.removeEventListener('resize', evt);
                 }
-                printOutput(ga.generationCount + ', ' + score + ', ' + game.elapsedTime);
-                drawGraphY(score);
+                // printOutput(ga.generationCount + ', ' + score + ', ' + game.elapsedTime);
+                // drawGraphY(score);
                 resolve(score);
             }
         },

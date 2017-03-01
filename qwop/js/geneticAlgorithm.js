@@ -28,6 +28,8 @@ class GeneticAlgorithm {
             arr.push([population[i], scores[i]])
         }
         arr.sort((a, b) => (b[1] - a[1]));
+        printOutput(ga.generationCount + ', ' + arr[0][1]);
+        drawGraphY(arr[0][1]);
 
         // Make all the scores positive
         var min_score = arr[arr.length-1][1]
