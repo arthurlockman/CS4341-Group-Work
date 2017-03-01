@@ -9,8 +9,7 @@ class GeneticAlgorithm {
         this.scumismPct = scumismPct;
         this.mutationRate = mutationRate;
         this.evaluationFunction = evaluationFunction;
-
-        this.currentGen = 0;
+        this.generationCount = 0;
 
         this.population = [];
 
@@ -29,7 +28,6 @@ class GeneticAlgorithm {
             arr.push([population[i], scores[i]])
         }
         arr.sort((a, b) => (b[1] - a[1]));
-        console.log(arr[0][1])
 
         // Make all the scores positive
         var min_score = arr[arr.length-1][1]
@@ -144,6 +142,7 @@ class GeneticAlgorithm {
         Promise.all(promises).then(function(scores) {
             // Recursive evaluation
             self.population = self.prune(self, self.population, scores);
+            self.generationCount += 1;
             self.evaluate(self)
         })
     }

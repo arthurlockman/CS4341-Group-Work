@@ -7,6 +7,10 @@ class Genome {
         this.genomeSize = genomeSize
         this.moves = []
         this.counter = 0
+        this.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
 
         for(i = 0; i < genomeSize; i++){
             var move = []
@@ -41,3 +45,8 @@ class Genome {
         // Do nothing, not NN
     }
 }
+
+Genome.prototype.toString = function() {
+    return "Size: " + this.genomeSize + ", counter: " + this.counter + ", uuid: "
+        + this.uuid + "\nMoves: " + this.moves;
+};

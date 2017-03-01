@@ -6,7 +6,7 @@ var requestTeleport = true;
 // GLOBALS
 var ITERATIONS_PER_SECOND = 600;
 var FRAMERATE = 60;
-var DISPLAY = false;
+var DISPLAY = true;
 var NN_RUNTIME = 30.0;
 var REWARD_AFTER_EACH_SIM = false;
 
@@ -16,6 +16,7 @@ var canvasWidth = canvasHeight= 1054;
 var reward_graph;
 
 var scoreAccumulator = 0;
+var ga;
 
 // Query string getter
 var QueryString = function () {
@@ -137,7 +138,7 @@ function main()
         var scumismPct = 0.1;
         var mutationRate = 0.1;
         var evaluationFunction = evaluateGA;
-        var ga = new GeneticAlgorithm(genomeSize, popSize, elitismPct, scumismPct, mutationRate, evaluationFunction);
+        ga = new GeneticAlgorithm(genomeSize, popSize, elitismPct, scumismPct, mutationRate, evaluationFunction);
         ga.evaluate(ga)
 
     } else if (select.value == "manual")
@@ -217,7 +218,7 @@ function evaluateGA(resolve, reject, inputManager) {
                     clearInterval(displayIntervalId);
                     window.removeEventListener('resize', evt);
                 }
-                printOutput(1 + ', ' + score + ', ' + game.elapsedTime);
+                printOutput(ga.generationCount + ', ' + score + ', ' + game.elapsedTime);
                 drawGraphY(score);
                 resolve(score);
             }
